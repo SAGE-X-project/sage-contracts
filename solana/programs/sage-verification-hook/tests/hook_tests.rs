@@ -2,11 +2,11 @@
 // Copyright (c) 2025 SAGE-X-project
 // SPDX-License-Identifier: MIT
 
+use anchor_lang::prelude::Pubkey;
 use sage_verification_hook::{
-    HookState, UserState, ErrorCode, RegistrationRecorded, BlacklistUpdated,
+    BlacklistUpdated, ErrorCode, HookState, RegistrationRecorded, UserState,
     MAX_REGISTRATIONS_PER_DAY, REGISTRATION_COOLDOWN,
 };
-use anchor_lang::prelude::Pubkey;
 
 #[cfg(test)]
 mod hook_tests {
@@ -60,16 +60,17 @@ mod hook_tests {
 
         // Invalid DIDs
         let invalid_dids = vec![
-            "sage:123",      // Missing "did:"
-            "did:",          // Too short
-            "did:a",         // Too short
-            "notadid:test",  // Wrong prefix
+            "sage:123",     // Missing "did:"
+            "did:",         // Too short
+            "did:a",        // Too short
+            "notadid:test", // Wrong prefix
         ];
 
         for did in invalid_dids {
             assert!(
                 !did.starts_with("did:") || did.len() < 10,
-                "DID {} should be invalid", did
+                "DID {} should be invalid",
+                did
             );
         }
     }
@@ -194,12 +195,7 @@ mod hook_tests {
         let valid_sig = vec![0u8; 64];
         assert_eq!(valid_sig.len(), 64);
 
-        let invalid_sigs = vec![
-            vec![0u8; 32],
-            vec![0u8; 63],
-            vec![0u8; 65],
-            vec![0u8; 128],
-        ];
+        let invalid_sigs = vec![vec![0u8; 32], vec![0u8; 63], vec![0u8; 65], vec![0u8; 128]];
 
         for sig in invalid_sigs {
             assert_ne!(sig.len(), 64, "Signature length {} is invalid", sig.len());

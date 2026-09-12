@@ -79,16 +79,16 @@ pub mod sage_verification_hook {
     pub fn after_registration(ctx: Context<AfterRegistration>) -> Result<()> {
         let user_state = &mut ctx.accounts.user_state;
         let clock = Clock::get()?;
-        
+
         user_state.registration_count += 1;
         user_state.last_registration = clock.unix_timestamp;
-        
+
         emit!(RegistrationRecorded {
             user: ctx.accounts.signer.key(),
             timestamp: clock.unix_timestamp,
             count: user_state.registration_count,
         });
-        
+
         Ok(())
     }
 
@@ -96,13 +96,13 @@ pub mod sage_verification_hook {
     pub fn add_to_blacklist(ctx: Context<ManageBlacklist>) -> Result<()> {
         let user_state = &mut ctx.accounts.user_state;
         user_state.blacklisted = true;
-        
+
         emit!(BlacklistUpdated {
             user: ctx.accounts.target_user.key(),
             blacklisted: true,
             authority: ctx.accounts.authority.key(),
         });
-        
+
         Ok(())
     }
 
@@ -110,13 +110,13 @@ pub mod sage_verification_hook {
     pub fn remove_from_blacklist(ctx: Context<ManageBlacklist>) -> Result<()> {
         let user_state = &mut ctx.accounts.user_state;
         user_state.blacklisted = false;
-        
+
         emit!(BlacklistUpdated {
             user: ctx.accounts.target_user.key(),
             blacklisted: false,
             authority: ctx.accounts.authority.key(),
         });
-        
+
         Ok(())
     }
 }
@@ -254,22 +254,21 @@ pub enum ErrorCode {
 }
 
 /// Verify Ed25519 signature using ed25519-dalek
-fn verify_ed25519_signature(
-    pubkey: &Pubkey,
-    message: &[u8],
-    signature: &[u8],
-) -> Result<()> {
+fn verify_ed25519_signature(pubkey: &Pubkey, message: &[u8], signature: &[u8]) -> Result<()> {
     require!(signature.len() == 64, ErrorCode::InvalidSignature);
 
     // Convert Pubkey to VerifyingKey (Ed25519 public key is 32 bytes)
-    let pubkey_bytes: &[u8; 32] = pubkey.as_ref().try_into()
+    let pubkey_bytes: &[u8; 32] = pubkey
+        .as_ref()
+        .try_into()
         .map_err(|_| ErrorCode::InvalidSignature)?;
 
-    let verifying_key = VerifyingKey::from_bytes(pubkey_bytes)
-        .map_err(|_| ErrorCode::InvalidSignature)?;
+    let verifying_key =
+        VerifyingKey::from_bytes(pubkey_bytes).map_err(|_| ErrorCode::InvalidSignature)?;
 
     // Convert signature bytes to Signature
-    let sig_bytes: [u8; 64] = signature.try_into()
+    let sig_bytes: [u8; 64] = signature
+        .try_into()
         .map_err(|_| ErrorCode::InvalidSignature)?;
     let sig = Signature::from_bytes(&sig_bytes);
 

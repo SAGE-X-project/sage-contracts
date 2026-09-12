@@ -42,21 +42,35 @@ pub mod sage_registry {
         // Validate inputs
         require!(did.len() <= MAX_DID_LEN, ErrorCode::DIDTooLong);
         require!(name.len() <= MAX_NAME_LEN, ErrorCode::NameTooLong);
-        require!(description.len() <= MAX_DESCRIPTION_LEN, ErrorCode::DescriptionTooLong);
-        require!(endpoint.len() <= MAX_ENDPOINT_LEN, ErrorCode::EndpointTooLong);
-        require!(capabilities.len() <= MAX_CAPABILITIES_LEN, ErrorCode::CapabilitiesTooLong);
+        require!(
+            description.len() <= MAX_DESCRIPTION_LEN,
+            ErrorCode::DescriptionTooLong
+        );
+        require!(
+            endpoint.len() <= MAX_ENDPOINT_LEN,
+            ErrorCode::EndpointTooLong
+        );
+        require!(
+            capabilities.len() <= MAX_CAPABILITIES_LEN,
+            ErrorCode::CapabilitiesTooLong
+        );
         require!(!public_keys.is_empty(), ErrorCode::NoKeysProvided);
-        require!(public_keys.len() <= MAX_KEYS_PER_AGENT, ErrorCode::TooManyKeys);
-        require!(public_keys.len() == key_types.len(), ErrorCode::KeyArrayMismatch);
-        require!(public_keys.len() == signatures.len(), ErrorCode::KeyArrayMismatch);
+        require!(
+            public_keys.len() <= MAX_KEYS_PER_AGENT,
+            ErrorCode::TooManyKeys
+        );
+        require!(
+            public_keys.len() == key_types.len(),
+            ErrorCode::KeyArrayMismatch
+        );
+        require!(
+            public_keys.len() == signatures.len(),
+            ErrorCode::KeyArrayMismatch
+        );
 
         // Verify all key ownership proofs
         // For initial registration, use owner pubkey + DID as message (nonce is not yet initialized)
-        let message = [
-            ctx.accounts.owner.key().as_ref(),
-            did.as_bytes(),
-        ]
-        .concat();
+        let message = [ctx.accounts.owner.key().as_ref(), did.as_bytes()].concat();
 
         for i in 0..public_keys.len() {
             let key_type = key_types[i];
@@ -109,7 +123,10 @@ pub mod sage_registry {
     ) -> Result<()> {
         let agent = &mut ctx.accounts.agent;
 
-        require!(agent.key_count < MAX_KEYS_PER_AGENT as u8, ErrorCode::TooManyKeys);
+        require!(
+            agent.key_count < MAX_KEYS_PER_AGENT as u8,
+            ErrorCode::TooManyKeys
+        );
         require!(key_type == 0, ErrorCode::UnsupportedKeyType); // Only Ed25519 on Solana
 
         // Verify key ownership proof
@@ -140,14 +157,14 @@ pub mod sage_registry {
     }
 
     /// Revoke a key
-    pub fn revoke_key(
-        ctx: Context<UpdateAgent>,
-        key_index: u8,
-    ) -> Result<()> {
+    pub fn revoke_key(ctx: Context<UpdateAgent>, key_index: u8) -> Result<()> {
         let agent = &mut ctx.accounts.agent;
 
         require!(key_index < agent.key_count, ErrorCode::InvalidKeyIndex);
-        require!(!agent.key_revoked[key_index as usize], ErrorCode::KeyAlreadyRevoked);
+        require!(
+            !agent.key_revoked[key_index as usize],
+            ErrorCode::KeyAlreadyRevoked
+        );
 
         // Count active keys
         let active_keys = (0..agent.key_count)
@@ -181,7 +198,10 @@ pub mod sage_registry {
         let agent = &mut ctx.accounts.agent;
 
         require!(old_key_index < agent.key_count, ErrorCode::InvalidKeyIndex);
-        require!(!agent.key_revoked[old_key_index as usize], ErrorCode::KeyAlreadyRevoked);
+        require!(
+            !agent.key_revoked[old_key_index as usize],
+            ErrorCode::KeyAlreadyRevoked
+        );
         require!(new_key_type == 0, ErrorCode::UnsupportedKeyType);
 
         // Verify new key ownership
@@ -223,7 +243,10 @@ pub mod sage_registry {
             agent.name = n;
         }
         if let Some(d) = description {
-            require!(d.len() <= MAX_DESCRIPTION_LEN, ErrorCode::DescriptionTooLong);
+            require!(
+                d.len() <= MAX_DESCRIPTION_LEN,
+                ErrorCode::DescriptionTooLong
+            );
             agent.description = d;
         }
         if let Some(e) = endpoint {
@@ -231,7 +254,10 @@ pub mod sage_registry {
             agent.endpoint = e;
         }
         if let Some(c) = capabilities {
-            require!(c.len() <= MAX_CAPABILITIES_LEN, ErrorCode::CapabilitiesTooLong);
+            require!(
+                c.len() <= MAX_CAPABILITIES_LEN,
+                ErrorCode::CapabilitiesTooLong
+            );
             agent.capabilities = c;
         }
 
@@ -369,8 +395,7 @@ pub struct Agent {
 }
 
 impl Agent {
-    pub const LEN: usize =
-        4 + MAX_DID_LEN +
+    pub const LEN: usize = 4 + MAX_DID_LEN +
         4 + MAX_NAME_LEN +
         4 + MAX_DESCRIPTION_LEN +
         4 + MAX_ENDPOINT_LEN +
@@ -383,7 +408,7 @@ impl Agent {
         1 +  // key_count
         (32 * MAX_KEYS_PER_AGENT) + // public_keys
         MAX_KEYS_PER_AGENT +         // key_types
-        MAX_KEYS_PER_AGENT;          // key_revoked
+        MAX_KEYS_PER_AGENT; // key_revoked
 }
 
 #[event]
@@ -465,14 +490,10 @@ pub enum ErrorCode {
 }
 
 /// Verify Ed25519 signature using ed25519-dalek
-fn verify_ed25519_signature(
-    pubkey: &[u8; 32],
-    message: &[u8],
-    signature: &[u8; 64],
-) -> Result<()> {
+fn verify_ed25519_signature(pubkey: &[u8; 32], message: &[u8], signature: &[u8; 64]) -> Result<()> {
     // Convert public key bytes to VerifyingKey
-    let verifying_key = VerifyingKey::from_bytes(pubkey)
-        .map_err(|_| ErrorCode::InvalidSignature)?;
+    let verifying_key =
+        VerifyingKey::from_bytes(pubkey).map_err(|_| ErrorCode::InvalidSignature)?;
 
     // Convert signature bytes to Signature
     let sig = Signature::from_bytes(signature);

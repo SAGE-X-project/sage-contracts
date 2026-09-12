@@ -2,13 +2,12 @@
 // Copyright (c) 2025 SAGE-X-project
 // SPDX-License-Identifier: MIT
 
-use sage_registry::{
-    Agent, Registry, ErrorCode, AgentRegistered, AgentUpdated, AgentDeactivated,
-    KeyAdded, KeyRevoked, KeyRotated, HookUpdated,
-    MAX_KEYS_PER_AGENT, MAX_DID_LEN, MAX_NAME_LEN, MAX_DESCRIPTION_LEN,
-    MAX_ENDPOINT_LEN, MAX_CAPABILITIES_LEN,
-};
 use anchor_lang::prelude::Pubkey;
+use sage_registry::{
+    Agent, AgentDeactivated, AgentRegistered, AgentUpdated, ErrorCode, HookUpdated, KeyAdded,
+    KeyRevoked, KeyRotated, Registry, MAX_CAPABILITIES_LEN, MAX_DESCRIPTION_LEN, MAX_DID_LEN,
+    MAX_ENDPOINT_LEN, MAX_KEYS_PER_AGENT, MAX_NAME_LEN,
+};
 
 #[cfg(test)]
 mod registry_tests {
@@ -17,8 +16,7 @@ mod registry_tests {
     #[test]
     fn test_agent_len_calculation() {
         // Verify Agent struct size calculation is correct
-        let expected_len =
-            4 + MAX_DID_LEN +           // did
+        let expected_len = 4 + MAX_DID_LEN +           // did
             4 + MAX_NAME_LEN +          // name
             4 + MAX_DESCRIPTION_LEN +   // description
             4 + MAX_ENDPOINT_LEN +      // endpoint
@@ -31,7 +29,7 @@ mod registry_tests {
             1 +                          // key_count
             (32 * MAX_KEYS_PER_AGENT) + // public_keys
             MAX_KEYS_PER_AGENT +        // key_types
-            MAX_KEYS_PER_AGENT;         // key_revoked
+            MAX_KEYS_PER_AGENT; // key_revoked
 
         assert_eq!(Agent::LEN, expected_len);
     }
@@ -124,7 +122,10 @@ mod registry_tests {
         // Test that we can't exceed MAX_KEYS_PER_AGENT
         let max_keys = MAX_KEYS_PER_AGENT;
         assert!(max_keys > 0, "Must allow at least one key");
-        assert!(max_keys <= 10, "Should not allow too many keys for gas efficiency");
+        assert!(
+            max_keys <= 10,
+            "Should not allow too many keys for gas efficiency"
+        );
     }
 
     #[test]
@@ -171,11 +172,7 @@ mod registry_tests {
     #[test]
     fn test_did_format_validation() {
         // Valid DID formats
-        let valid_dids = vec![
-            "did:sage:123",
-            "did:sage:abc123",
-            "did:example:testing",
-        ];
+        let valid_dids = vec!["did:sage:123", "did:sage:abc123", "did:example:testing"];
 
         for did in valid_dids {
             assert!(did.starts_with("did:"));
@@ -185,15 +182,16 @@ mod registry_tests {
 
         // Invalid DID formats
         let invalid_dids = vec![
-            "sage:123",           // Missing "did:"
-            "did:",               // Too short
-            "did:a",              // Too short
+            "sage:123", // Missing "did:"
+            "did:",     // Too short
+            "did:a",    // Too short
         ];
 
         for did in invalid_dids {
             assert!(
                 !did.starts_with("did:") || did.len() < 10,
-                "DID {} should be invalid", did
+                "DID {} should be invalid",
+                did
             );
         }
     }
@@ -248,9 +246,7 @@ mod registry_tests {
         key_revoked[3] = true;
 
         // Count active keys
-        let active_keys = (0..key_count)
-            .filter(|&i| !key_revoked[i as usize])
-            .count();
+        let active_keys = (0..key_count).filter(|&i| !key_revoked[i as usize]).count();
 
         assert_eq!(active_keys, 3); // 5 total - 2 revoked = 3 active
     }
@@ -261,9 +257,7 @@ mod registry_tests {
         let key_revoked = [false; MAX_KEYS_PER_AGENT];
         let key_count = 1u8;
 
-        let active_keys = (0..key_count)
-            .filter(|&i| !key_revoked[i as usize])
-            .count();
+        let active_keys = (0..key_count).filter(|&i| !key_revoked[i as usize]).count();
 
         assert_eq!(active_keys, 1);
 
@@ -438,11 +432,7 @@ mod ed25519_tests {
         let verifying_key = signing_key.verifying_key();
 
         // Sign multiple messages
-        let messages = vec![
-            b"message 1" as &[u8],
-            b"message 2",
-            b"message 3",
-        ];
+        let messages = vec![b"message 1" as &[u8], b"message 2", b"message 3"];
 
         for msg in messages {
             let signature = signing_key.sign(msg);
