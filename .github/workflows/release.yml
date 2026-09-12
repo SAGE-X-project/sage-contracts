@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  abi:
+    name: Publish ABI archive
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ethereum/package-lock.json
+      - name: Install dependencies
+        working-directory: ethereum
+        run: npm ci --ignore-scripts
+      - name: Compile
+        working-directory: ethereum
+        run: npm run compile
+      - name: Export ABIs and verify they match the committed set
+        run: |
+          scripts/export-abi.sh /tmp/abi
+          diff -r /tmp/abi abi
+      - name: Package
+        run: |
+          tar -C abi -czf sage-contracts-abi-${GITHUB_REF_NAME}.tar.gz .
+          sha256sum sage-contracts-abi-${GITHUB_REF_NAME}.tar.gz > sage-contracts-abi-${GITHUB_REF_NAME}.tar.gz.sha256
+      - name: Attach to the release
+        run: gh release create "$GITHUB_REF_NAME" --generate-notes sage-contracts-abi-*.tar.gz*
+        env:
+          GH_TOKEN: ${{ github.token }}

@@ -1,0 +1,56 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  hardhat:
+    name: Hardhat tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: ethereum
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ethereum/package-lock.json
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+      - name: Lint Solidity
+        run: npm run lint
+      - name: Compile
+        run: npm run compile
+      - name: Test
+        run: npm test
+      - name: ABI drift check
+        # abi/*.json must match what the sources compile to.
+        working-directory: .
+        run: |
+          scripts/export-abi.sh /tmp/abi
+          diff -r /tmp/abi abi
+
+  solana:
+    name: Solana programs (syntax only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check Rust formatting
+        # The Anchor programs have no Anchor.toml or lockfile yet (sage BACKLOG C-04);
+        # until they build in CI this job only checks formatting.
+        working-directory: solana
+        run: |
+          rustup component add rustfmt
+          find programs -name '*.rs' -print0 | xargs -0 rustfmt --check --edition 2021
