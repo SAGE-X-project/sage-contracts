@@ -1,0 +1,59 @@
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 1 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  slither:
+    name: Slither
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ethereum/package-lock.json
+      - name: Install dependencies
+        working-directory: ethereum
+        run: npm ci --ignore-scripts
+      - name: Compile
+        working-directory: ethereum
+        run: npx hardhat compile
+      - name: Run Slither (blocking on High)
+        working-directory: ethereum
+        # crytic-compile >= 0.4 is required to read Hardhat 3 build-info files.
+        run: |
+          pip3 install slither-analyzer==0.11.6 crytic-compile==0.4.2
+          slither . --config-file .slither.config.json --compile-force-framework hardhat --fail-high --sarif ../slither-results.sarif
+      - name: Upload SARIF
+        if: always() && hashFiles('slither-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: slither-results.sarif
+
+  npm-licenses:
+    name: npm licences
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        working-directory: ethereum
+        run: npm ci --ignore-scripts
+      - name: Check licences
+        working-directory: ethereum
+        run: |
+          npx --yes license-checker@25.0.1 --summary
+          npx --yes license-checker@25.0.1 --failOn "GPL;AGPL"
