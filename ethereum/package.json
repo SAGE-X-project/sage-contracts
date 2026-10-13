@@ -102,7 +102,7 @@
     "@typechain/ethers-v6": "^0.5.1",
     "@typechain/hardhat": "^9.1.0",
     "axios": "^1.18.0",
-    "chai": "^6.2.2",
+    "chai": "^6.3.0",
     "dotenv": "^17.4.2",
     "ethers": "^6.17.0",
     "hardhat": "^3.16.0",
