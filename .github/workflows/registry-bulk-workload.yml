@@ -1,0 +1,132 @@
+name: Registry bounded workload research
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  evaluation:
+    name: Ordinary bulk signatures (${{ matrix.fork }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        fork: [paris, shanghai]
+    defaults:
+      run:
+        working-directory: research/registry-bulk-workload
+    env:
+      SAGE_EVM_FORK: ${{ matrix.fork }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: research/registry-bulk-workload/package-lock.json
+      - name: Install fixed isolated dependencies
+        run: |
+          mkdir -p evidence
+          npm ci --ignore-scripts --no-audit --no-fund > evidence/npm-ci.log 2>&1
+          npm ls --all --json > evidence/npm-tree.json
+      - name: Verify fixed compiler, SHA-512 and license inputs
+        run: python3 ../registry-ed25519/prepare.py
+      - name: Unit scenarios and normal single-call workloads
+        run: >-
+          node --max-old-space-size=512 --test --test-concurrency=1
+          --experimental-test-coverage --test-coverage-lines=90
+          --test-coverage-include='**/registry-bulk-workload/*.mjs'
+          --test-coverage-exclude='**/unit.mjs'
+          --test-reporter=spec --test-reporter-destination=stdout
+          --test-reporter=lcov --test-reporter-destination=evidence/js-coverage.lcov
+          unit.mjs evaluate.mjs > evidence/execution.log 2>&1
+      - name: Seal actual research evidence
+        run: |
+          python3 - <<'PYCODE'
+          import hashlib, json, os, pathlib, subprocess
+          root = pathlib.Path.cwd()
+          evidence = root / 'evidence'
+          results = json.loads((evidence / 'results.json').read_text())
+          assert results['target'] == os.environ['SAGE_EVM_FORK']
+          assert results['gas_cap'] == '1000000000' and results['record_bytes'] == 65513
+          rows = results['rows']
+          assert len(rows) == 9 and len({v['name'] for v in rows}) == 9
+          assert all(v['exception'] is None and v['actual'] == v['expected'] for v in rows)
+          assert [(v['proofs'], v['instruction_trace']) for v in rows if v['ordinary']] == [(1, True), (128, False)]
+          assert all(v['local_vm_wrapper_code_installed'] for v in rows)
+          digest = lambda value: hashlib.sha256(value).hexdigest()
+          for kind in ['layout', 'verifier', 'batch']:
+              primary = json.loads((evidence / (kind + '-input.json')).read_text())
+              unit = json.loads((evidence / ('unit-' + kind + '-input.json')).read_text())
+              assert primary == unit and primary['settings']['evmVersion'] == results['target']
+              assert json.loads((evidence / (kind + '-output.json')).read_text()) == json.loads((evidence / ('unit-' + kind + '-output.json')).read_text())
+          verifier = json.loads((evidence / 'verifier-output.json').read_text())['contracts']['StrictEd25519.sol']['StrictEd25519']['evm']['deployedBytecode']['object']
+          wrapper = json.loads((evidence / 'batch-output.json').read_text())['contracts']['Batch.sol']['BatchProbe']['evm']['deployedBytecode']['object']
+          assert all(v['verifier_runtime_sha256'] == digest(bytes.fromhex(verifier)) and v['wrapper_runtime_sha256'] == digest(bytes.fromhex(wrapper)) for v in rows)
+          assert len({v['verifier_code_hash'] for v in rows}) == 1
+          template = (root / 'Batch.sol').read_text()
+          marker = 'bytes32(0); // BUILD_CODE_HASH'
+          assert template.count(marker) == 1
+          compiled = template.replace(marker, 'bytes32(0x' + rows[0]['verifier_code_hash'] + '); // BUILD_CODE_HASH')
+          assert (evidence / 'Batch.compiled.sol').read_text() == compiled == (evidence / 'unit-Batch.compiled.sol').read_text()
+          coverage = json.loads((evidence / 'solidity-coverage.json').read_text())
+          assert coverage['executable'] > 0 and coverage['percent'] >= 90
+          layout = json.loads((evidence / 'layout-check.json').read_text())
+          assert (layout['roots'], layout['structs'], layout['members'], layout['reachable_types']) == (4, 6, 28, 25)
+          lcov = (evidence / 'js-coverage.lcov').read_text().splitlines()
+          files = {}
+          for block in '\n'.join(lcov).split('end_of_record'):
+              lines = block.strip().splitlines()
+              if not lines: continue
+              source = next(line[3:] for line in lines if line.startswith('SF:'))
+              total = int(next(line[3:] for line in lines if line.startswith('LF:')))
+              hit = int(next(line[3:] for line in lines if line.startswith('LH:')))
+              assert total > 0 and 100 * hit / total >= 90
+              name = pathlib.Path(source).name
+              assert name not in files
+              files[name] = {'total': total, 'hit': hit}
+          assert set(files) == {'compile.mjs', 'fixture.mjs', 'layout.mjs', 'codec.mjs', 'source-lines.mjs', 'evaluate.mjs'}
+          (evidence / 'js-coverage-summary.json').write_text(json.dumps(files, indent=2) + '\n')
+          research = root.parent
+          paths = [p for p in root.rglob('*') if p.is_file() and not {'node_modules', '__pycache__'}.intersection(p.parts) and p.name != 'receipt.json']
+          old = research / 'registry-ed25519'
+          paths += [old / name for name in ['StrictEd25519.sol', 'prepare.py', 'SOURCE-NOTICES.md', 'LICENSES/speccheck-Apache-2.0.txt', 'evidence/soljson.cjs', 'evidence/source-receipt.json']]
+          paths += [p for p in (old / 'upstream').rglob('*') if p.is_file()]
+          files = {str(p.relative_to(research)): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
+          workflow = root.parent.parent / '.github/workflows/registry-bulk-workload.yml'
+          receipt = {
+              'scope': results['scope'],
+              'checkout': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+              'tree': subprocess.check_output(['git', 'rev-parse', 'HEAD^{tree}'], text=True).strip(),
+              'run_id': os.environ['GITHUB_RUN_ID'], 'run_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+              'fork': os.environ['SAGE_EVM_FORK'],
+              'node': subprocess.check_output(['node', '--version'], text=True).strip(),
+              'npm': subprocess.check_output(['npm', '--version'], text=True).strip(),
+              'workflow_sha256': hashlib.sha256(workflow.read_bytes()).hexdigest(), 'sha256': files,
+          }
+          (evidence / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+          PYCODE
+      - name: Preserve inputs, receipts, actual results and notices
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: registry-bulk-workload-${{ matrix.fork }}
+          if-no-files-found: error
+          include-hidden-files: true
+          path: |
+            research/registry-bulk-workload/
+            !research/registry-bulk-workload/node_modules/
+            !research/registry-bulk-workload/__pycache__/
+            research/registry-ed25519/StrictEd25519.sol
+            research/registry-ed25519/prepare.py
+            research/registry-ed25519/SOURCE-NOTICES.md
+            research/registry-ed25519/LICENSES/speccheck-Apache-2.0.txt
+            research/registry-ed25519/upstream/
+            research/registry-ed25519/evidence/soljson.cjs
+            research/registry-ed25519/evidence/source-receipt.json

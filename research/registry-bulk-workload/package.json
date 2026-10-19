@@ -1,0 +1,20 @@
+{
+  "name": "sage-registry-bulk-workload",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Isolated ordinary-signature component and abstract storage layout experiment",
+  "scripts": {
+    "test": "node --test unit.mjs",
+    "evaluate": "node evaluate.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@ethereumjs/common": "10.1.0",
+    "@ethereumjs/util": "10.1.0",
+    "@ethereumjs/vm": "10.1.0",
+    "@noble/hashes": "2.4.0"
+  }
+}

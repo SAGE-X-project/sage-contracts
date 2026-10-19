@@ -1,0 +1,16 @@
+{
+  "root": [
+    ["configuredChainId", "uint256"],
+    ["registryId", "string"],
+    ["records", "mapping(string=>Record)"],
+    ["claims", "mapping(address=>mapping(bytes32=>Claim))"]
+  ],
+  "structs": {
+    "Key": [["name", "string"], ["alg", "string"], ["material", "bytes"], ["signer", "string"], ["proof", "bytes"], ["hasExpiry", "bool"], ["expires", "uint64"], ["revoked", "bool"]],
+    "Service": [["name", "string"], ["serviceType", "string"], ["uri", "string"]],
+    "Grant": [["operator", "address"], ["scope", "uint8"]],
+    "History": [["command", "bytes"], ["entry", "bytes"]],
+    "Claim": [["commitBlock", "uint256"], ["consumed", "bool"], ["present", "bool"]],
+    "Record": [["controller", "address"], ["version", "uint64"], ["state", "uint8"], ["admitted", "uint64"], ["keys", "Key[]"], ["services", "Service[]"], ["grants", "Grant[]"], ["usedNames", "mapping(string=>bool)"], ["usedMaterial", "mapping(bytes=>bool)"], ["history", "mapping(uint64=>History)"]]
+  }
+}
