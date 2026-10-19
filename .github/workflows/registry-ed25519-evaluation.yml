@@ -1,0 +1,100 @@
+name: Registry Ed25519 evaluation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  evaluation:
+    name: Isolated raw-key signature evaluation
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: research/registry-ed25519
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: research/registry-ed25519/package-lock.json
+      - name: Install isolated evaluation dependencies
+        run: |
+          mkdir -p evidence
+          npm ci --ignore-scripts --no-audit --no-fund > evidence/npm-ci.log 2>&1
+          npm ls --all --json > evidence/npm-tree.json
+      - name: Verify fixed source and compiler inputs
+        run: python3 prepare.py
+      - name: Test evidence tools and check Python line coverage
+        run: python3 test_evaluation_tools.py > evidence/python-tests.log 2>&1
+      - name: Execute ordinary signatures and fixed unit controls
+        run: >-
+          node --max-old-space-size=512 --test --experimental-test-coverage
+          --test-coverage-lines=90 --test-coverage-include='**/evaluate.mjs'
+          --test-reporter=spec --test-reporter-destination=stdout
+          --test-reporter=lcov --test-reporter-destination=evidence/js-coverage.lcov
+          evaluate.mjs > evidence/execution.log 2>&1
+      - name: Check compiled source-map line coverage
+        run: python3 check_source_coverage.py
+      - name: Seal actual evaluation evidence
+        run: |
+          python3 - <<'PYCODE'
+          import hashlib, json, os, pathlib, subprocess
+          root = pathlib.Path.cwd()
+          evidence = root / 'evidence'
+          data = json.loads((evidence / 'results.json').read_text())
+          assert len(data['rows']) == 88
+          assert all(row['exception'] is None and row['actual'] == row['expected'] for row in data['rows'])
+          assert {row['evmVersion'] for row in data['rows']} == {'paris', 'shanghai'}
+          coverage = json.loads((evidence / 'coverage.json').read_text())
+          assert len(coverage) == 2 and all(row['percent'] >= 90 for row in coverage)
+          tools = json.loads((evidence / 'python-coverage.json').read_text())
+          assert {v['file'] for v in tools} == {'prepare.py', 'check_source_coverage.py'}
+          assert all(v['percent'] >= 90 for v in tools)
+          lcov = (evidence / 'js-coverage.lcov').read_text().splitlines()
+          total = sum(int(line[3:]) for line in lcov if line.startswith('LF:'))
+          hit = sum(int(line[3:]) for line in lcov if line.startswith('LH:'))
+          assert total > 0 and 100 * hit / total >= 90
+          paths = [p for p in root.rglob('*') if p.is_file() and not {'node_modules', '__pycache__'}.intersection(p.parts) and p.name != 'receipt.json']
+          workflow = root.parent.parent / '.github/workflows/registry-ed25519-evaluation.yml'
+          files = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
+          receipt = {
+              'scope': 'isolated evaluation only; no Registry admission, chain transaction, deployment or new conformance verdict',
+              'checkout': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+              'tree': subprocess.check_output(['git', 'rev-parse', 'HEAD^{tree}'], text=True).strip(),
+              'run_id': os.environ['GITHUB_RUN_ID'], 'run_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+              'python': subprocess.check_output(['python3', '--version'], text=True).strip(),
+              'node': subprocess.check_output(['node', '--version'], text=True).strip(),
+              'npm': subprocess.check_output(['npm', '--version'], text=True).strip(),
+              'workflow_sha256': hashlib.sha256(workflow.read_bytes()).hexdigest(),
+              'sha256': files,
+          }
+          (evidence / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+          PYCODE
+      - name: Preserve evaluation inputs, outputs and notices
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: registry-ed25519-evaluation
+          if-no-files-found: error
+          include-hidden-files: true
+          path: |
+            research/registry-ed25519/.gitignore
+            research/registry-ed25519/evidence/
+            research/registry-ed25519/upstream/
+            research/registry-ed25519/LICENSES/
+            research/registry-ed25519/SOURCE-NOTICES.md
+            research/registry-ed25519/point-components.json
+            research/registry-ed25519/package.json
+            research/registry-ed25519/package-lock.json
+            research/registry-ed25519/StrictEd25519.sol
+            research/registry-ed25519/evaluate.mjs
+            research/registry-ed25519/prepare.py
+            research/registry-ed25519/check_source_coverage.py
+            research/registry-ed25519/test_evaluation_tools.py
+            research/registry-ed25519/README.md

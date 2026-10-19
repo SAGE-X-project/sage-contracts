@@ -1,0 +1,18 @@
+{
+  "name": "sage-registry-ed25519-evaluation",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Isolated verification and cost experiment; not an adopted Registry implementation",
+  "scripts": {
+    "test": "node evaluate.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@ethereumjs/common": "10.1.0",
+    "@ethereumjs/util": "10.1.0",
+    "@ethereumjs/vm": "10.1.0"
+  }
+}
