@@ -1,4 +1,8 @@
-"""Check and bind actual owned-VM research evidence; never a conformance verdict."""
+"""Bind files and basic accounting, not an independent state/coverage verdict.
+
+An external read-only collector must rederive ABI/state/event/coverage joins
+from the downloaded archive before publication is accepted.
+"""
 import hashlib
 import json
 import os
@@ -29,6 +33,8 @@ def main():
         assert [r['index'] for r in rows] == list(range(len(rows)))
         for row in rows:
             before = int(row['execution_gas']) + int(row['intrinsic_gas'])
+            assert all(int(row[k]) >= 0 for k in ['execution_gas', 'intrinsic_gas', 'gas_refund_raw'])
+            assert 0 < before <= 5_000_000_000
             refund = min(int(row['gas_refund_raw']), before // 5)
             assert int(row['refund_applied']) == refund
             assert int(row['total_gas']) == before - refund < 5_000_000_000
@@ -59,13 +65,30 @@ def main():
         for suffix in ['input', 'output']:
             assert read(kind + '-' + suffix + '.json') == read('unit-' + kind + '-' + suffix + '.json')
         assert read(kind + '-input.json')['settings']['evmVersion'] == results['target']
+    compiled = read('paths-output.json')
+    strict = read('strict-output.json')['contracts']['StrictEd25519.sol']['StrictEd25519']
+    identity = {'target': results['target'], 'compiler': results['compiler'],
+                'output_sha256': digest(json.dumps(compiled, separators=(',', ':'), ensure_ascii=False).encode()),
+                'verifier_runtime_sha256': digest(bytes.fromhex(strict['evm']['deployedBytecode']['object']))}
+    assert read('unit-visited.json')['identity'] == identity
+    assert read('visited.json')['identity'] == identity
+    units = read('unit-results.json')
+    assert units['identity'] == identity and units['target'] == results['target'] and len(units['rows']) == 23
     assert (EVIDENCE / 'PathProbe.compiled.sol').read_bytes() == (EVIDENCE / 'unit-PathProbe.compiled.sol').read_bytes()
     for name, code in results['code'].items():
+        file, contract = name.split(':')
+        raw = bytes.fromhex(compiled['contracts'][file][contract]['evm']['deployedBytecode']['object'])
+        assert code == {'bytes': len(raw), 'sha256': digest(raw)}
         if name.endswith((':PathProbe', ':OrdinaryWallet', ':CodecControls')):
             assert 0 < code['bytes'] <= 24576
     coverage = read('solidity-coverage.json')
     assert set(coverage) == {'Codec.sol', 'PathProbe.sol'}
     assert all(v['executable'] > 0 and v['percent'] >= 90 for v in coverage.values())
+    for value in coverage.values():
+        assert len(value['hit']) == len(set(value['hit'])) and len(value['missing']) == len(set(value['missing']))
+        assert not set(value['hit']).intersection(value['missing'])
+        assert value['executable'] == len(value['hit']) + len(value['missing'])
+        assert value['percent'] == 100 * len(value['hit']) / value['executable']
     files = {}
     for block in (EVIDENCE / 'js-coverage.lcov').read_text().split('end_of_record'):
         lines = block.strip().splitlines()
@@ -89,11 +112,13 @@ def main():
     workflow = ROOT.parent.parent / '.github/workflows/registry-resource-paths.yml'
     receipt = {
         'scope': results['scope'], 'calls': calls,
+        'validation': 'File integrity/basic accounting only; independent downloaded ABI/state/event/coverage joins required',
         'checkout': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
         'tree': subprocess.check_output(['git', 'rev-parse', 'HEAD^{tree}'], text=True).strip(),
         'run_id': os.environ['GITHUB_RUN_ID'], 'run_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
         'fork': results['target'], 'node': subprocess.check_output(['node', '--version'], text=True).strip(),
         'npm': subprocess.check_output(['npm', '--version'], text=True).strip(),
+        'python': subprocess.check_output(['python3', '--version'], text=True).strip(),
         'workflow_sha256': digest(workflow.read_bytes()),
         'sha256': {str(p.relative_to(research)): digest(p.read_bytes()) for p in paths},
     }

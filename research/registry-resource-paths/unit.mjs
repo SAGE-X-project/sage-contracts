@@ -41,6 +41,6 @@ test('owned pure-codec runtime controls, including every short padding and escap
  }
  await env.transact('inspect',['한',Buffer.alloc(0),0n,'0x'+'0'.repeat(40)],{target:'codec',category:'fixed-codec-unit',expectSuccess:false});
  write('unit-visited.json',{identity:identity(compiled),visited:Object.fromEntries(Object.entries(env.visited).map(([k,v])=>[k,[...v]]))});
- write('unit-results.json',{scope:'Fixed ABI/fixture/pure ASCII codec units only; no signature forgery, protocol conformance or public chain',target,rows:env.rows});
+ write('unit-results.json',{scope:'Fixed ABI/fixture/pure ASCII codec units only; no signature forgery, protocol conformance or public chain',target,identity:identity(compiled),rows:env.rows});
  assert(fs.existsSync(new URL('unit-paths-output.json',evidence)));
 });

@@ -48,7 +48,21 @@ jobs:
           --test-reporter=lcov --test-reporter-destination=evidence/js-coverage.lcov
           suite.mjs > evidence/execution.log 2>&1
       - name: Seal actual source, state and cost evidence
-        run: python3 seal.py
+        run: |
+          python3 - <<'PYCODE'
+          import hashlib, json, pathlib, trace
+          source = pathlib.Path('seal.py').resolve()
+          tracker = trace.Trace(count=True, trace=False)
+          namespace = {'__name__': '__main__', '__file__': str(source)}
+          tracker.runctx(compile(source.read_bytes(), str(source), 'exec'), namespace, namespace)
+          executable = set(trace._find_executable_linenos(str(source)))
+          hit = {line for (name, line), count in tracker.results().counts.items() if name == str(source) and count and line in executable}
+          assert executable and 100 * len(hit) / len(executable) >= 90
+          value = {'file': 'seal.py', 'sha256': hashlib.sha256(source.read_bytes()).hexdigest(), 'scope': 'Executed basic file/accounting checks, not independent state or branch coverage', 'hit': sorted(hit), 'missing': sorted(executable - hit), 'percent': 100 * len(hit) / len(executable)}
+          pathlib.Path('evidence/python-coverage.json').write_text(json.dumps(value, indent=2) + '\n')
+          import seal
+          seal.main()
+          PYCODE
       - name: Preserve actual results and original notices
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

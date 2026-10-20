@@ -90,3 +90,11 @@ Cost rules used by the measured forks are specified by
 [EIP-2929](https://eips.ethereum.org/EIPS/eip-2929) and
 [EIP-3529](https://eips.ethereum.org/EIPS/eip-3529).
 The runtime code-size limit is [EIP-170](https://eips.ethereum.org/EIPS/eip-170).
+
+`seal.py` checks file identity, compiler/PC identity and basic gas accounting.
+It does not independently re-execute the VM or certify all state/ABI/coverage
+claims. Acceptance also requires read-only rederivation of those joins from
+downloaded CI archives and independent review. Paris/Shanghai are qualification
+baselines, not current-mainnet fork qualification. In particular this artificial
+5-billion-gas ceiling does not implement the post-Fusaka transaction cap in
+[EIP-7825](https://eips.ethereum.org/EIPS/eip-7825).
