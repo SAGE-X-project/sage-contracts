@@ -34,7 +34,21 @@ jobs:
         # crytic-compile >= 0.4 is required to read Hardhat 3 build-info files.
         run: |
           pip3 install slither-analyzer==0.11.6 crytic-compile==0.4.2
-          slither . --config-file .slither.config.json --compile-force-framework hardhat --fail-high --sarif ../slither-results.sarif
+          status=0
+          slither . --config-file .slither.config.json --compile-force-framework hardhat --fail-high --sarif ../slither-results.sarif --json ../slither-results.json > ../slither-run.log 2>&1 || status=$?
+          cat ../slither-run.log
+          if [ -f ../slither-results.json ]; then cat ../slither-results.json; fi
+          exit "$status"
+      - name: Preserve failed analysis diagnostics
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: slither-failure-diagnostics
+          if-no-files-found: warn
+          path: |
+            slither-run.log
+            slither-results.json
+            slither-results.sarif
       - name: Upload SARIF
         if: always() && hashFiles('slither-results.sarif') != ''
         uses: github/codeql-action/upload-sarif@v4
