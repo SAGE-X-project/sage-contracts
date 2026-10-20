@@ -3,15 +3,15 @@ import hashlib
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import MagicMock, patch
-import urllib.error
+from unittest.mock import patch
+import subprocess
 import prepare
 
 class CompilerInputTests(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
-        self.root = Path(self.directory.name) / 'project/ethereum/test/chain-registry'
+        self.root = Path(self.directory.name) / 'project/ethereum/component-tests/chain-registry'
         self.root.mkdir(parents=True)
         self.data = b'fixed inert compiler-input test data'
         self.digest = hashlib.sha256(self.data).hexdigest()
@@ -21,22 +21,17 @@ class CompilerInputTests(unittest.TestCase):
             patcher.start()
             self.addCleanup(patcher.stop)
 
-    def response(self, data):
-        response = MagicMock()
-        response.__enter__.return_value.read.return_value = data
-        return response
-
     def test_existing_verified_file_never_fetches(self):
         self.target.parent.mkdir(parents=True)
         self.target.write_bytes(self.data)
-        with patch.object(prepare.urllib.request, 'urlopen', side_effect=AssertionError('unexpected fetch')):
+        with patch.object(prepare.subprocess, 'check_output', side_effect=AssertionError('unexpected fetch')):
             prepare.main()
         self.assertEqual(self.target.read_bytes(), self.data)
 
     def test_verified_local_cache_is_copied(self):
         self.cache.parent.mkdir(parents=True)
         self.cache.write_bytes(self.data)
-        with patch.object(prepare.urllib.request, 'urlopen', side_effect=AssertionError('unexpected fetch')):
+        with patch.object(prepare.subprocess, 'check_output', side_effect=AssertionError('unexpected fetch')):
             prepare.main()
         self.assertEqual(self.target.read_bytes(), self.data)
 
@@ -45,25 +40,24 @@ class CompilerInputTests(unittest.TestCase):
         self.target.write_bytes(b'unverified')
         self.cache.parent.mkdir(parents=True)
         self.cache.write_bytes(b'unverified')
-        response = self.response(self.data)
-        with patch.object(prepare.urllib.request, 'urlopen', return_value=response) as fetch:
+        with patch.object(prepare.subprocess, 'check_output', return_value=self.data) as fetch:
             prepare.main()
-            fetch.assert_called_once_with(prepare.URL, timeout=60)
-        response.__enter__.return_value.read.assert_called_once_with(16777217)
+            fetch.assert_called_once_with(['curl', '--fail', '--silent', '--show-error',
+                                           '--max-time', '60', '--max-filesize', '16777216', prepare.URL], timeout=65)
         self.assertEqual(self.target.read_bytes(), self.data)
 
     def test_digest_and_size_refusal_preserve_existing_file(self):
         self.target.parent.mkdir(parents=True)
         self.target.write_bytes(b'unverified')
         for body in [b'wrong digest', b'0' * 16777217]:
-            with self.subTest(size=len(body)), patch.object(prepare.urllib.request, 'urlopen', return_value=self.response(body)):
+            with self.subTest(size=len(body)), patch.object(prepare.subprocess, 'check_output', return_value=body):
                 with self.assertRaises(ValueError):
                     prepare.main()
             self.assertEqual(self.target.read_bytes(), b'unverified')
 
     def test_transport_failure_never_creates_a_compiler(self):
-        with patch.object(prepare.urllib.request, 'urlopen', side_effect=urllib.error.URLError('fixed unit refusal')):
-            with self.assertRaises(urllib.error.URLError):
+        with patch.object(prepare.subprocess, 'check_output', side_effect=subprocess.CalledProcessError(22, ['curl'])):
+            with self.assertRaises(subprocess.CalledProcessError):
                 prepare.main()
         self.assertFalse(self.target.exists())
 

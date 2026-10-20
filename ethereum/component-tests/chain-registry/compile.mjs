@@ -20,7 +20,7 @@ export function compile(target, coverage = false) {
   assert.equal(version, '0.8.20+commit.a1b79de6.Emscripten.clang');
   const names = ['ethereum/contracts/chain-registry/IChainRegistry.sol',
     'ethereum/contracts/chain-registry/RegistryFraming.sol',
-    'ethereum/test/chain-registry/FramingHarness.sol'];
+    'ethereum/component-tests/chain-registry/FramingHarness.sol'];
   const sources = Object.fromEntries(names.map(name => [name, {content: fs.readFileSync(new URL(name, project), 'utf8')}]));
   const input = {language: 'Solidity', sources, settings: {
     optimizer: coverage ? {enabled: true, runs: 200, details: {peephole: false, inliner: false, jumpdestRemover: false, orderLiterals: false, deduplicate: false, cse: false, constantOptimizer: false, yul: true, yulDetails: {stackAllocation: true, optimizerSteps: 'u:'}}} : {enabled: true, runs: 200}, viaIR: true, evmVersion: target,
@@ -32,7 +32,7 @@ export function compile(target, coverage = false) {
   write(label + '-input.json', input);
   write(label + '-output.json', output);
   assert.equal((output.errors ?? []).filter(error => error.severity === 'error').length, 0, JSON.stringify(output.errors));
-  const harness = output.contracts['ethereum/test/chain-registry/FramingHarness.sol'].FramingHarness;
+  const harness = output.contracts['ethereum/component-tests/chain-registry/FramingHarness.sol'].FramingHarness;
   assert(/^(?:[0-9a-f]{2})+$/.test(harness.evm.deployedBytecode.object), 'Refuse unresolved library placeholders before any VM call');
   write(label + '-compiler.json', {scope: 'Interface and framing components only; no Registry deployment or conformance',
     node: process.version, compiler: version, compiler_sha256: compilerDigest, target,

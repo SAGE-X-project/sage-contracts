@@ -17,7 +17,7 @@ ordinary failures need separate qualification at that entry point. A framing
 success establishes none of those later conditions. No alternate selector,
 algorithm, key, Registry or unprotected operation is a permitted fallback.
 
-The tests under `../../test/chain-registry` compile the exact interface and a
+The tests under `../../component-tests/chain-registry` compile the exact interface and a
 pure unit harness for Paris and Shanghai. The source-map observation uses a
 separately identified minimally optimized build so optimized-away source
 locations are not falsely reported as executed. Every fixed normal/refusal

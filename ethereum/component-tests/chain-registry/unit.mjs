@@ -10,7 +10,7 @@ const read = name => JSON.parse(fs.readFileSync(new URL('fixtures/' + name, dire
 const functions = read('functions.json'), outcomes = read('outcomes.json'), binding = read('binding.json');
 const typeKey = 'ethereum/contracts/chain-registry/IChainRegistry.sol';
 const frameKey = 'ethereum/contracts/chain-registry/RegistryFraming.sol';
-const harnessKey = 'ethereum/test/chain-registry/FramingHarness.sol';
+const harnessKey = 'ethereum/component-tests/chain-registry/FramingHarness.sol';
 function normalize(value) {
   if (Array.isArray(value)) return value.map(normalize);
   if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).filter(([key]) => key !== 'internalType').map(([key, entry]) => [key, normalize(entry)]));

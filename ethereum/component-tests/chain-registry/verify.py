@@ -15,11 +15,11 @@ EVIDENCE = ROOT / 'evidence'
 REVISION = 'a22a275b4d88f1d415b53cdffc5bed41231b77a0'
 FRAME = 'ethereum/contracts/chain-registry/RegistryFraming.sol'
 INTERFACE = 'ethereum/contracts/chain-registry/IChainRegistry.sol'
-HARNESS = 'ethereum/test/chain-registry/FramingHarness.sol'
+HARNESS = 'ethereum/component-tests/chain-registry/FramingHarness.sol'
 COMPILER = '5c509f760dc110a695c8b39bbc21e08c17dee431aa14d606f59e623d7c3cc657'
 SOURCES = [INTERFACE, FRAME, 'ethereum/contracts/chain-registry/README.md',
            '.github/workflows/registry-chain-framing.yml'] + [
-    'ethereum/test/chain-registry/' + name for name in [
+    'ethereum/component-tests/chain-registry/' + name for name in [
         '.gitignore', 'FramingHarness.sol', 'compile.mjs', 'normal-abi.mjs',
         'unit.mjs', 'prepare.py', 'python_units.py', 'test_prepare.py', 'verify.py',
         'package.json', 'package-lock.json', 'fixtures/binding.json',
