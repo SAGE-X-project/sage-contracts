@@ -1,0 +1,98 @@
+name: Registry ABI and bounded framing
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  components:
+    name: Registry interface and framing components
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: ethereum/component-tests/chain-registry
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: SAGE-X-project/sage-spec
+          ref: a22a275b4d88f1d415b53cdffc5bed41231b77a0
+          path: normative-spec
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ethereum/component-tests/chain-registry/package-lock.json
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+      - name: Install exact test dependencies without lifecycle scripts
+        run: |
+          mkdir -p evidence
+          node --version
+          python3 --version
+          npm ci --ignore-scripts --no-audit --no-fund > evidence/npm-ci.log 2>&1
+          npm ls --all --json > evidence/npm-tree.json
+      - name: Verify compiler input and finite cache controls
+        run: |
+          python3 prepare.py
+          python3 -B python_units.py > evidence/python-unit.log 2>&1
+          cat evidence/python-unit.log
+          python3 -B -m unittest -v test_expected_cases > evidence/oracle-unit.log 2>&1
+          cat evidence/oracle-unit.log
+      - name: Compile and check fixed component calls with measured coverage
+        run: >-
+          node --max-old-space-size=512 --test --test-concurrency=1
+          --experimental-test-coverage --test-coverage-lines=90
+          --test-coverage-include='**/chain-registry/*.mjs'
+          --test-coverage-exclude='**/unit.mjs'
+          --test-reporter=spec --test-reporter-destination=stdout
+          --test-reporter=lcov --test-reporter-destination=evidence/js-coverage.lcov
+          unit.mjs > evidence/execution.log 2>&1
+      - name: Independently recount source observations and seal the actual receipt
+        run: |
+          python3 -B - <<'PY'
+          import hashlib, json, pathlib, sys, trace
+          source = pathlib.Path('verify.py').resolve()
+          sys.argv = [str(source), str(pathlib.Path('../../../normative-spec').resolve())]
+          tracker = trace.Trace(count=True, trace=False)
+          namespace = {'__name__': '__main__', '__file__': str(source)}
+          tracker.runctx(compile(source.read_bytes(), str(source), 'exec'), namespace, namespace)
+          for filename, output in [('verify.py', 'verifier-coverage.json'), ('expected_cases.py', 'oracle-coverage.json')]:
+              measured = pathlib.Path(filename).resolve()
+              executable = set(trace._find_executable_linenos(str(measured)))
+              covered = {line for (name, line), count in tracker.results().counts.items()
+                         if name == str(measured) and count and line in executable}
+              percent = 100 * len(covered) / len(executable) if executable else 0
+              assert percent >= 90
+              value = {'scope': 'Executed artifact-checker lines only; not protocol or branch coverage',
+                       'source_sha256': hashlib.sha256(measured.read_bytes()).hexdigest(),
+                       'python': sys.version, 'executable_lines': sorted(executable), 'covered_lines': sorted(covered),
+                       'total': len(executable), 'covered': len(covered), 'percent': percent}
+              pathlib.Path('evidence/' + output).write_text(json.dumps(value, indent=2) + '\n')
+              print(json.dumps(value))
+          PY
+      - name: Preserve actual source and component observations
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: registry-chain-framing
+          if-no-files-found: error
+          include-hidden-files: true
+          path: |
+            .github/workflows/registry-chain-framing.yml
+            ethereum/contracts/chain-registry/
+            ethereum/component-tests/chain-registry/
+            !ethereum/component-tests/chain-registry/node_modules/
+            !ethereum/component-tests/chain-registry/__pycache__/
+            !ethereum/component-tests/chain-registry/evidence/soljson.cjs
