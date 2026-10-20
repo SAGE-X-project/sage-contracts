@@ -1,0 +1,19 @@
+{
+  "scope": "Frozen public Go ABI observations for finite component unit expectations only; no new conformance",
+  "repository": "SAGE-X-project/sage-spec",
+  "revision": "a22a275b4d88f1d415b53cdffc5bed41231b77a0",
+  "run_id": 39393138454,
+  "run_attempt": 1,
+  "artifact_id": 12250601396,
+  "artifact_zip_sha256": "3956d3b46d8d1b8e2f7bf2524a818c6827f6811575e929ff02039750f4b32c1c",
+  "files": {
+    "abi-selector-reference.json": {
+      "artifact_path": "candidate-abi-result.json",
+      "sha256": "14a125e9e6e66222c877fc3905edc671dd8f11a5f33c9bd4de0c9e37fe22bb22"
+    },
+    "error-selector-reference.json": {
+      "artifact_path": "candidate-outcomes-result.json",
+      "sha256": "c61175afcc8f5557915964d48d516aeb23cddcf76b90a4cee16cd881374e21c9"
+    }
+  }
+}

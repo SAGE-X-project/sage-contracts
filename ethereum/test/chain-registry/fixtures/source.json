@@ -1,0 +1,19 @@
+{
+  "scope": "Pinned public normative inputs only; not operating qualification",
+  "repository": "SAGE-X-project/sage-spec",
+  "revision": "a22a275b4d88f1d415b53cdffc5bed41231b77a0",
+  "files": {
+    "functions.json": {
+      "path": "proposals/management-security-binding/contract-abi.json",
+      "sha256": "0f31f995b0169b27c2ce4797b967a754b4c0b2b0a733e4c21da1b54089380f5f"
+    },
+    "outcomes.json": {
+      "path": "proposals/management-security-binding/outcomes/abi.json",
+      "sha256": "7d2c1fd84fcc83e3718512c36089b42779fe999f295d4185c0e229b8cf2038c8"
+    },
+    "binding.json": {
+      "path": "profiles/sage-0.11.0/registry-management.json",
+      "sha256": "b3573f6d0b553bb697bdfc8e81ca170cf927b53c44f6b25caa8770eac77ded5f"
+    }
+  }
+}
