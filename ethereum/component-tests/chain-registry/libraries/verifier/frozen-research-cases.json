@@ -1,0 +1,462 @@
+{
+  "scope": "44 existing immutable public research controls; only1024byte positive changes tofalse under candidate292bound; all refusal data fixed, no attack generator",
+  "origin_sha256": "129ebac0133b0e13f5adb56a99ac54821b12173aeda2208add6af9e9043cd346",
+  "cases": [
+    {
+      "name": "RFC8032-1",
+      "group": "ordinary-runtime",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": true,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "RFC8032-2",
+      "group": "ordinary-runtime",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": true,
+      "key": "3d4017c3e843895a92b70aa74d1b7ebc9c982ccf2ec4968cc0cd55f12af4660c",
+      "message": "72",
+      "signature": "92a009a9f0d4cab8720e820b5f642540a2b27b5416503f8fb3762223ebdb69da085ac1e43e15996e458f3613d0f11d8c387b2eaeb4302aeeb00d291612bb0c00"
+    },
+    {
+      "name": "RFC8032-3",
+      "group": "ordinary-runtime",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": true,
+      "key": "fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "message": "af82",
+      "signature": "6291d657deec24024827e69c3abe01a30ce548a284743a445e3680d7db5ac3ac18ff9b538d16f290ae67f760984dc6594a7c15e9716ed28dc027beceea1ec40a"
+    },
+    {
+      "name": "normal-binary-47",
+      "group": "ordinary-runtime",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": true,
+      "key": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+      "message": "00112233445566778899aabbccddeeff102132435465768798a9bacbdcedfe0f2031425364758697a8b9cadbecfd0e",
+      "signature": "12399651fef4e0d64c837bd2708c3c21f0db3f4c6df584bf5e6598ea9c2a921166563ac939d76fb2a23237cf6f7d27fe3153968604755c027b9d4ec158c94609"
+    },
+    {
+      "name": "normal-binary-48",
+      "group": "ordinary-runtime",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": true,
+      "key": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+      "message": "00112233445566778899aabbccddeeff102132435465768798a9bacbdcedfe0f2031425364758697a8b9cadbecfd0e1f",
+      "signature": "cd6efa59b0563b823ee819c60ec23ad235874c90bc275597d85e27c6171f9289276a3e976287fa884ce5906ebb8459a2412ad7f4f9673376b738d906cb00b104"
+    },
+    {
+      "name": "normal-binary-117",
+      "group": "ordinary-runtime",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": true,
+      "key": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+      "message": "00112233445566778899aabbccddeeff102132435465768798a9bacbdcedfe0f2031425364758697a8b9cadbecfd0e1f30415263748596a7b8c9daebfc0d1e2f405162738495a6b7c8d9eafb0c1d2e3f5061728394a5b6c7d8e9fa0b1c2d3e4f60718293a4b5c6d7e8f90a1b2c3d4e5f708192a3b4",
+      "signature": "7ad921604e75e5afe15d2b2d0800c7fc3043376ed31b690c702af83a727a7e4eecc10f1818faba7ed24cefeab677d5e134d68a52800c8b6147da8b839464e00c"
+    },
+    {
+      "name": "normal-binary-175",
+      "group": "ordinary-runtime",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": true,
+      "key": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+      "message": "00112233445566778899aabbccddeeff102132435465768798a9bacbdcedfe0f2031425364758697a8b9cadbecfd0e1f30415263748596a7b8c9daebfc0d1e2f405162738495a6b7c8d9eafb0c1d2e3f5061728394a5b6c7d8e9fa0b1c2d3e4f60718293a4b5c6d7e8f90a1b2c3d4e5f708192a3b4c5d6e7f8091a2b3c4d5e6f8091a2b3c4d5e6f708192a3b4c5d6e7f90a1b2c3d4e5f60718293a4b5c6d7e8fa0b1c2d3e4f5061728394a5b6c7d8e",
+      "signature": "df9b9e28720476f471b94ab0dd5689f0947b38a56891345efaf4298550b3dcb2e1c8b0b8eecec54db6256914e8779142fcbc110749d7eb6baeb85e0dc4a08f0d"
+    },
+    {
+      "name": "normal-binary-176",
+      "group": "ordinary-runtime",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": true,
+      "key": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+      "message": "00112233445566778899aabbccddeeff102132435465768798a9bacbdcedfe0f2031425364758697a8b9cadbecfd0e1f30415263748596a7b8c9daebfc0d1e2f405162738495a6b7c8d9eafb0c1d2e3f5061728394a5b6c7d8e9fa0b1c2d3e4f60718293a4b5c6d7e8f90a1b2c3d4e5f708192a3b4c5d6e7f8091a2b3c4d5e6f8091a2b3c4d5e6f708192a3b4c5d6e7f90a1b2c3d4e5f60718293a4b5c6d7e8fa0b1c2d3e4f5061728394a5b6c7d8e9f",
+      "signature": "8e5ac1992241f560489b2abe6a8913bc89ac4d22f334132aebfaa48e82c6a1bb9864d5013cc5658a6910b2b1fd69380eb236856d5c7b38aa16898018a8d7450e"
+    },
+    {
+      "name": "normal-binary-241",
+      "group": "ordinary-runtime",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": true,
+      "key": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+      "message": "00112233445566778899aabbccddeeff102132435465768798a9bacbdcedfe0f2031425364758697a8b9cadbecfd0e1f30415263748596a7b8c9daebfc0d1e2f405162738495a6b7c8d9eafb0c1d2e3f5061728394a5b6c7d8e9fa0b1c2d3e4f60718293a4b5c6d7e8f90a1b2c3d4e5f708192a3b4c5d6e7f8091a2b3c4d5e6f8091a2b3c4d5e6f708192a3b4c5d6e7f90a1b2c3d4e5f60718293a4b5c6d7e8fa0b1c2d3e4f5061728394a5b6c7d8e9fb0c1d2e3f405162738495a6b7c8d9eafc0d1e2f30415263748596a7b8c9daebfd0e1f2031425364758697a8b9cadbecfe0f102132435465768798a9bacbdcedff0",
+      "signature": "251af116c9d8d0b54e33a08ad5125391aaa3618d904050adc932c2d80ca77c16bc0ee45e85deb0c774b13fd800dc885a82edb984bdea084f22ec57e1138f1906"
+    },
+    {
+      "name": "normal-binary-242",
+      "group": "ordinary-runtime",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": true,
+      "key": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+      "message": "00112233445566778899aabbccddeeff102132435465768798a9bacbdcedfe0f2031425364758697a8b9cadbecfd0e1f30415263748596a7b8c9daebfc0d1e2f405162738495a6b7c8d9eafb0c1d2e3f5061728394a5b6c7d8e9fa0b1c2d3e4f60718293a4b5c6d7e8f90a1b2c3d4e5f708192a3b4c5d6e7f8091a2b3c4d5e6f8091a2b3c4d5e6f708192a3b4c5d6e7f90a1b2c3d4e5f60718293a4b5c6d7e8fa0b1c2d3e4f5061728394a5b6c7d8e9fb0c1d2e3f405162738495a6b7c8d9eafc0d1e2f30415263748596a7b8c9daebfd0e1f2031425364758697a8b9cadbecfe0f102132435465768798a9bacbdcedff001",
+      "signature": "36281e5d3b040082e4a98e0407e4922b30d6b453a2081c21a2c5881ccc826a2d1c10befb733534d648ab4f6e289f98e0bc59569114790a6a78d3cde0441ef800"
+    },
+    {
+      "name": "normal-binary-1024",
+      "group": "fixed-new-292-byte-bound",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+      "message": "00112233445566778899aabbccddeeff102132435465768798a9bacbdcedfe0f2031425364758697a8b9cadbecfd0e1f30415263748596a7b8c9daebfc0d1e2f405162738495a6b7c8d9eafb0c1d2e3f5061728394a5b6c7d8e9fa0b1c2d3e4f60718293a4b5c6d7e8f90a1b2c3d4e5f708192a3b4c5d6e7f8091a2b3c4d5e6f8091a2b3c4d5e6f708192a3b4c5d6e7f90a1b2c3d4e5f60718293a4b5c6d7e8fa0b1c2d3e4f5061728394a5b6c7d8e9fb0c1d2e3f405162738495a6b7c8d9eafc0d1e2f30415263748596a7b8c9daebfd0e1f2031425364758697a8b9cadbecfe0f102132435465768798a9bacbdcedff00112233445566778899aabbccddeef00112233445566778899aabbccddeeff102132435465768798a9bacbdcedfe0f2031425364758697a8b9cadbecfd0e1f30415263748596a7b8c9daebfc0d1e2f405162738495a6b7c8d9eafb0c1d2e3f5061728394a5b6c7d8e9fa0b1c2d3e4f60718293a4b5c6d7e8f90a1b2c3d4e5f708192a3b4c5d6e7f8091a2b3c4d5e6f8091a2b3c4d5e6f708192a3b4c5d6e7f90a1b2c3d4e5f60718293a4b5c6d7e8fa0b1c2d3e4f5061728394a5b6c7d8e9fb0c1d2e3f405162738495a6b7c8d9eafc0d1e2f30415263748596a7b8c9daebfd0e1f2031425364758697a8b9cadbecfe0f102132435465768798a9bacbdcedff00112233445566778899aabbccddeef00112233445566778899aabbccddeeff102132435465768798a9bacbdcedfe0f2031425364758697a8b9cadbecfd0e1f30415263748596a7b8c9daebfc0d1e2f405162738495a6b7c8d9eafb0c1d2e3f5061728394a5b6c7d8e9fa0b1c2d3e4f60718293a4b5c6d7e8f90a1b2c3d4e5f708192a3b4c5d6e7f8091a2b3c4d5e6f8091a2b3c4d5e6f708192a3b4c5d6e7f90a1b2c3d4e5f60718293a4b5c6d7e8fa0b1c2d3e4f5061728394a5b6c7d8e9fb0c1d2e3f405162738495a6b7c8d9eafc0d1e2f30415263748596a7b8c9daebfd0e1f2031425364758697a8b9cadbecfe0f102132435465768798a9bacbdcedff00112233445566778899aabbccddeef00112233445566778899aabbccddeeff102132435465768798a9bacbdcedfe0f2031425364758697a8b9cadbecfd0e1f30415263748596a7b8c9daebfc0d1e2f405162738495a6b7c8d9eafb0c1d2e3f5061728394a5b6c7d8e9fa0b1c2d3e4f60718293a4b5c6d7e8f90a1b2c3d4e5f708192a3b4c5d6e7f8091a2b3c4d5e6f8091a2b3c4d5e6f708192a3b4c5d6e7f90a1b2c3d4e5f60718293a4b5c6d7e8fa0b1c2d3e4f5061728394a5b6c7d8e9fb0c1d2e3f405162738495a6b7c8d9eafc0d1e2f30415263748596a7b8c9daebfd0e1f2031425364758697a8b9cadbecfe0f102132435465768798a9bacbdcedff00112233445566778899aabbccddeef",
+      "signature": "b3994bf671f176af81971be74641d0346d9418a9cff12193394314d2232dbb5daf523252998c0368aeede5ef6ae22417b7a015a77d9441927b9f8d6b02a44908"
+    },
+    {
+      "name": "short-key",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "00000000000000000000000000000000000000000000000000000000000000",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "long-key",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "000000000000000000000000000000000000000000000000000000000000000000",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "short-signature",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "",
+      "signature": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "long-signature",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "",
+      "signature": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "bounded-message",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "identity-A",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "0100000000000000000000000000000000000000000000000000000000000000",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "order-four-A",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "0000000000000000000000000000000000000000000000000000000000000000",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "field-range-A",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "noncanonical-zero-sign-A",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "0100000000000000000000000000000000000000000000000000000000000080",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "unrecoverable-A",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "0200000000000000000000000000000000000000000000000000000000000000",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "mixed-order-A",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "cdb267ce40c5cd45306fa5d2f29731459387dbf9eb933b7bd5aed9a765b88d4d",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "mixed-order-R",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "",
+      "signature": "9046a64750444938de19f227bb80485e92b83fdb4b6506c160484c016cc1852f5fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "identity-R",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "",
+      "signature": "01000000000000000000000000000000000000000000000000000000000000005fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "order-four-R",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "",
+      "signature": "00000000000000000000000000000000000000000000000000000000000000005fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "field-range-R",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "",
+      "signature": "edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f5fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "noncanonical-zero-sign-R",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "",
+      "signature": "01000000000000000000000000000000000000000000000000000000000000805fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "scalar-L",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e06522490155edd3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010"
+    },
+    {
+      "name": "scalar-L-minus-one",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e06522490155ecd3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010"
+    },
+    {
+      "name": "zero-scalar-equation",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901550000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "different-message",
+      "group": "fixed-unit-data",
+      "contract": "RegistryEd25519",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "01",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "MissingBackendControl",
+      "group": "fixed-unit-backend",
+      "contract": "MissingBackendControl",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "InvalidBackendControl",
+      "group": "fixed-unit-backend",
+      "contract": "InvalidBackendControl",
+      "method": "verify(bytes,bytes,bytes)",
+      "expected": false,
+      "key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "message": "",
+      "signature": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "name": "zeroScalarIdentity",
+      "group": "fixed-unit-arithmetic",
+      "contract": "ArithmeticControls",
+      "method": "zeroScalarIdentity()",
+      "expected": true
+    },
+    {
+      "name": "baseOrderIdentity",
+      "group": "fixed-unit-arithmetic",
+      "contract": "ArithmeticControls",
+      "method": "baseOrderIdentity()",
+      "expected": true
+    },
+    {
+      "name": "neutralAddition",
+      "group": "fixed-unit-arithmetic",
+      "contract": "ArithmeticControls",
+      "method": "neutralAddition()",
+      "expected": true
+    },
+    {
+      "name": "invalidProjectiveRefused",
+      "group": "fixed-unit-arithmetic",
+      "contract": "ArithmeticControls",
+      "method": "invalidProjectiveRefused()",
+      "expected": true
+    },
+    {
+      "name": "prime-A",
+      "group": "fixed-unit-membership",
+      "contract": "ArithmeticControls",
+      "method": "inspectPoint(bytes)",
+      "expectedWords": [
+        true,
+        false,
+        true
+      ],
+      "args": [
+        "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
+      ]
+    },
+    {
+      "name": "prime-R",
+      "group": "fixed-unit-membership",
+      "contract": "ArithmeticControls",
+      "method": "inspectPoint(bytes)",
+      "expectedWords": [
+        true,
+        false,
+        true
+      ],
+      "args": [
+        "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e06522490155"
+      ]
+    },
+    {
+      "name": "mixed-A",
+      "group": "fixed-unit-membership",
+      "contract": "ArithmeticControls",
+      "method": "inspectPoint(bytes)",
+      "expectedWords": [
+        true,
+        false,
+        false
+      ],
+      "args": [
+        "cdb267ce40c5cd45306fa5d2f29731459387dbf9eb933b7bd5aed9a765b88d4d"
+      ]
+    },
+    {
+      "name": "mixed-R",
+      "group": "fixed-unit-membership",
+      "contract": "ArithmeticControls",
+      "method": "inspectPoint(bytes)",
+      "expectedWords": [
+        true,
+        false,
+        false
+      ],
+      "args": [
+        "9046a64750444938de19f227bb80485e92b83fdb4b6506c160484c016cc1852f"
+      ]
+    },
+    {
+      "name": "identity-point",
+      "group": "fixed-unit-membership",
+      "contract": "ArithmeticControls",
+      "method": "inspectPoint(bytes)",
+      "expectedWords": [
+        true,
+        true,
+        true
+      ],
+      "args": [
+        "0100000000000000000000000000000000000000000000000000000000000000"
+      ]
+    },
+    {
+      "name": "order-four-point",
+      "group": "fixed-unit-membership",
+      "contract": "ArithmeticControls",
+      "method": "inspectPoint(bytes)",
+      "expectedWords": [
+        true,
+        false,
+        false
+      ],
+      "args": [
+        "0000000000000000000000000000000000000000000000000000000000000000"
+      ]
+    },
+    {
+      "name": "non-point",
+      "group": "fixed-unit-membership",
+      "contract": "ArithmeticControls",
+      "method": "inspectPoint(bytes)",
+      "expectedWords": [
+        false,
+        false,
+        false
+      ],
+      "args": [
+        "0200000000000000000000000000000000000000000000000000000000000000"
+      ]
+    }
+  ]
+}
