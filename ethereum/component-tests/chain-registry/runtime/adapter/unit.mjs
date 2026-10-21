@@ -31,8 +31,8 @@ const goldenPath = new URL('goldens.json',root);
 const goldens = load(goldenPath);
 const pcPolicy = {max_input_bytes: 1024, max_expected_output_bytes: 1024, max_steps: 2048, max_memory_bytes: 4096};
 
-assert.equal(goldens.executed,false);assert.equal(goldens.cases.length,255);assert.equal(goldens.skipped.length,137);
-assert.equal(new Set(goldens.cases.map(value=>value.name)).size,255);
+assert.equal(goldens.executed,false);assert.equal(goldens.cases.length,407);assert.equal(goldens.skipped.length,0);
+assert.equal(new Set(goldens.cases.map(value=>value.name)).size,407);
 for(const [path,digest]of Object.entries(goldens.fixtures_sha256)) assert.equal(sha(fs.readFileSync(new URL(path,repo))),digest);
 const baselines=load(new URL('fixtures/expected-modules.json',runtime));
 const evidence = new URL('evidence/adapter/', runtime);
@@ -102,10 +102,10 @@ for (const target of ['paris', 'shanghai']) test(target + ': fixed stateless ada
     (pcEligible ? traced : untraced).push({index:row.index,name:row.name});
     fs.writeFileSync(new URL(target+'-pc-prefix.json',evidence),JSON.stringify({cases_completed:count,policy:pcPolicy,traced,untraced,visited:Object.fromEntries(Object.entries(visited).map(([name,pcs])=>[name,[...pcs].sort((a,b)=>a-b)]))})+'\n');
   }
-  assert.equal(count, 255);
+  assert.equal(count, 407);
   const result = {scope: 'Fixed stateless product adapter UNIT observations only; no full Registry admission/runtime/coverage/Source verdict',
     complete: true, cases: count, source_manifest_sha256: sha(manifestBytes), compiler_check_sha256:sha(checkBytes), goldens_sha256: sha(fs.readFileSync(goldenPath)),
     rows_sha256: sha(fs.readFileSync(rowsPath)), pc_prefix_sha256:sha(fs.readFileSync(new URL(target+'-pc-prefix.json',evidence))), pc_policy:pcPolicy, runtime_sha256: Object.fromEntries(Object.entries(artifacts).map(([name, value]) => [name, sha(bin(value.evm.deployedBytecode.object))])),
-    skipped_data_cases: 137, PC_observations_recorded: true, coverage_percent: null, fixed5_complete: false};
+    skipped_data_cases: 0, PC_observations_recorded: true, coverage_percent: null, fixed5_complete: false};
   fs.writeFileSync(new URL(target + '-result.json', evidence), JSON.stringify(result, null, 2) + '\n', {flag: 'wx'});
 });

@@ -46,8 +46,8 @@ class SyntheticInputs:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text('// Synthetic checker unit data, source %d.\n' % index)
         self.goldens = {'cases': [], 'skipped': [{'name': 'synthetic-skip-%d' % n}
-                                              for n in range(137)]}
-        for index in range(255):
+                                              for n in range(0)]}
+        for index in range(407):
             self.goldens['cases'].append({
                 'name': 'synthetic-case-%03d' % index,
                 'contract': 'RegistryRules' if index % 2 == 0 else 'RegistryRenderer',
@@ -104,12 +104,12 @@ class SyntheticInputs:
                 (traced if eligible else untraced).append({'index': index, 'name': row['name']})
             self.rows[target] = rows
             self.prefixes[target] = {
-                'cases_completed': 255, 'policy': deepcopy(POLICY),
+                'cases_completed': 407, 'policy': deepcopy(POLICY),
                 'visited': {'RegistryRules': [0, 2, 3, 4], 'RegistryRenderer': [0, 2, 3, 4]},
                 'traced': traced, 'untraced': untraced}
             self.results[target] = {
-                'complete': True, 'cases': 255, 'pc_policy': deepcopy(POLICY),
-                'skipped_data_cases': 137, 'PC_observations_recorded': True,
+                'complete': True, 'cases': 407, 'pc_policy': deepcopy(POLICY),
+                'skipped_data_cases': 0, 'PC_observations_recorded': True,
                 'coverage_percent': None, 'runtime_sha256': runtime_hashes}
         self.seal()
 
@@ -166,7 +166,7 @@ class CheckerDataTests(unittest.TestCase):
             result = fixture.run()
             self.assertFalse(result['fixed5_complete'])
             self.assertFalse(result['operating_ready'])
-            self.assertEqual(result['skipped_data_cases'], 137)
+            self.assertEqual(result['skipped_data_cases'], 0)
             for target in ['paris', 'shanghai']:
                 observed = result['targets'][target]
                 self.assertEqual(len(observed['sources']), 29)
@@ -182,10 +182,10 @@ class CheckerDataTests(unittest.TestCase):
         self.__class__.completed_invalid_data = []
         mutations = {
             'missing_row': lambda f: f.rows['paris'].pop(),
-            'unfinished_prefix': lambda f: f.prefixes['paris'].update(cases_completed=254),
+            'unfinished_prefix': lambda f: f.prefixes['paris'].update(cases_completed=406),
             'unfinished_result': lambda f: f.results['paris'].update(complete=False),
-            'wrong_case_count': lambda f: f.results['paris'].update(cases=254),
-            'wrong_skip_count': lambda f: f.results['paris'].update(skipped_data_cases=136),
+            'wrong_case_count': lambda f: f.results['paris'].update(cases=406),
+            'wrong_skip_count': lambda f: f.results['paris'].update(skipped_data_cases=1),
             'unexpected_claim': lambda f: f.results['paris'].update(coverage_percent=90),
             'missing_pc_flag': lambda f: f.results['paris'].update(PC_observations_recorded=False),
             'policy_changed': lambda f: f.prefixes['paris']['policy'].update(max_steps=2049),

@@ -33,20 +33,20 @@ assert manifest['tool_files_sha256'][str(Path(__file__).resolve().relative_to(re
 check=read(runtime/'evidence/compiler-check.json');assert check['verified'] is True and check['source_manifest_sha256']==sha(runtime/'source-identities.json')
 compiler=runtime/'evidence/compiler'
 for name,digest in check['evidence_files_sha256'].items():assert '/' not in name and sha(compiler/name)==digest
-fixed=read(root/'goldens.json');assert len(fixed['cases'])==255 and len(fixed['skipped'])==137
+fixed=read(root/'goldens.json');assert len(fixed['cases'])==407 and len(fixed['skipped'])==0
 policy={'max_input_bytes':1024,'max_expected_output_bytes':1024,'max_steps':2048,'max_memory_bytes':4096}
 baseline=read(runtime/'fixtures/expected-modules.json');results={}
 for target in ['paris','shanghai']:
  compiled=read(compiler/(target+'-output.json'));evidence=runtime/'evidence/adapter'
  observed=read(evidence/(target+'-result.json'));prefix=read(evidence/(target+'-pc-prefix.json'))
  rows=[json.loads(line)for line in (evidence/(target+'-rows.jsonl')).read_text().splitlines()]
- assert observed['complete'] is True and observed['cases']==255 and len(rows)==255 and prefix['cases_completed']==255
+ assert observed['complete'] is True and observed['cases']==407 and len(rows)==407 and prefix['cases_completed']==407
  assert observed['source_manifest_sha256']==sha(runtime/'source-identities.json') and observed['compiler_check_sha256']==sha(runtime/'evidence/compiler-check.json')
  assert observed['goldens_sha256']==sha(root/'goldens.json') and observed['rows_sha256']==sha(evidence/(target+'-rows.jsonl'))
  assert observed['pc_prefix_sha256']==sha(evidence/(target+'-pc-prefix.json'))
  assert observed['pc_policy']==prefix['policy']==policy
  traced=[];untraced=[]
- assert observed['skipped_data_cases']==137 and observed['PC_observations_recorded'] is True and observed['coverage_percent'] is None
+ assert observed['skipped_data_cases']==0 and observed['PC_observations_recorded'] is True and observed['coverage_percent'] is None
  assert set(prefix['visited'])=={'RegistryRules','RegistryRenderer'}
  for index,(row,golden)in enumerate(zip(rows,fixed['cases'])):
   assert row['index']==index and all(row[name]==golden[name]for name in ['name','contract','method'])
@@ -65,7 +65,7 @@ for target in ['paris','shanghai']:
    elif info['stop']=='steps':assert info['steps']==policy['max_steps'] and info['max_memory_bytes']<=policy['max_memory_bytes']
    else:assert info['stop']=='complete' and info['steps']<policy['max_steps'] and info['max_memory_bytes']<=policy['max_memory_bytes']
   (traced if eligible else untraced).append({'index':index,'name':row['name']})
- assert prefix['traced']==traced and prefix['untraced']==untraced and len(traced)+len(untraced)==255
+ assert prefix['traced']==traced and prefix['untraced']==untraced and len(traced)+len(untraced)==407
  assert traced,'No PC observations were eligible'
  hits=[];subjects={}
  for contract,role in [('RegistryRules','RULES'),('RegistryRenderer','RENDERER')]:
@@ -91,4 +91,4 @@ for target in ['paris','shanghai']:
   sources[name]={'source_id':source['id'],'source_sha256':manifest['source_files_sha256'][name],'statements':records,'covered':n,'total':len(records),'percent':100*n/len(records)if records else None}
  assert len(sources)==29 and total>0
  results[target]={'subjects':subjects,'sources':sources,'covered':covered,'total':total,'percent':100*covered/total,'required_percent':90,'whole_registry_coverage_qualified':False,'scope':'Conservative contained AST statement observations for only two pure module runtimes; all29 source denominators retained, no Registry admission/operating verdict'}
-print(json.dumps({'scope':'Fixed stateless unit PC observations only; independent semantic ABI/expected-value validation remains a separate review','targets':results,'skipped_data_cases':137,'fixed5_complete':False,'operating_ready':False},separators=(',',':')))
+print(json.dumps({'scope':'Fixed stateless unit PC observations only; independent semantic ABI/expected-value validation remains a separate review','targets':results,'skipped_data_cases':0,'fixed5_complete':False,'operating_ready':False},separators=(',',':')))

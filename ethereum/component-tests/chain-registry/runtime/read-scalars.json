@@ -1,0 +1,226 @@
+{
+  "scope": "Fixed read-only name-content and public-reader expectations. Bad-content history requests use positive1 so InvalidEntry differs from missing-identity WrongRecordState. The65-byte-name/history0 case is framing-first BoundsExceeded (canonical196 > method164), not independent proof of Grammar length priority. Canonical ABI only, no malformed-call generator/live endpoint. All valid admitted record/history/claim remain unchanged; invalid/absent target raw observation checks presence0 only. Data not executed.",
+  "sender_index": 1,
+  "cases": [
+    {
+      "label": "empty-record",
+      "method": "record",
+      "agent": "",
+      "version": null,
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "empty-activeGrants",
+      "method": "activeGrants",
+      "agent": "",
+      "version": null,
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "empty-historyItem",
+      "method": "historyItem",
+      "agent": "",
+      "version": "1",
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "dot-record",
+      "method": "record",
+      "agent": ".",
+      "version": null,
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "dot-activeGrants",
+      "method": "activeGrants",
+      "agent": ".",
+      "version": null,
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "dot-historyItem",
+      "method": "historyItem",
+      "agent": ".",
+      "version": "1",
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "dotdot-record",
+      "method": "record",
+      "agent": "..",
+      "version": null,
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "dotdot-activeGrants",
+      "method": "activeGrants",
+      "agent": "..",
+      "version": null,
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "dotdot-historyItem",
+      "method": "historyItem",
+      "agent": "..",
+      "version": "1",
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "punctuation-record",
+      "method": "record",
+      "agent": "bad!",
+      "version": null,
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "punctuation-activeGrants",
+      "method": "activeGrants",
+      "agent": "bad!",
+      "version": null,
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "punctuation-historyItem",
+      "method": "historyItem",
+      "agent": "bad!",
+      "version": "1",
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "nonascii-record",
+      "method": "record",
+      "agent": "\u00e9",
+      "version": null,
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "nonascii-activeGrants",
+      "method": "activeGrants",
+      "agent": "\u00e9",
+      "version": null,
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "nonascii-historyItem",
+      "method": "historyItem",
+      "agent": "\u00e9",
+      "version": "1",
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "too-long-record",
+      "method": "record",
+      "agent": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "version": null,
+      "error": "BoundsExceeded",
+      "expected": null
+    },
+    {
+      "label": "too-long-activeGrants",
+      "method": "activeGrants",
+      "agent": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "version": null,
+      "error": "BoundsExceeded",
+      "expected": null
+    },
+    {
+      "label": "too-long-historyItem",
+      "method": "historyItem",
+      "agent": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "version": "0",
+      "error": "BoundsExceeded",
+      "expected": null
+    },
+    {
+      "label": "max-name-record",
+      "method": "record",
+      "agent": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "version": null,
+      "error": null,
+      "expected": "absent-record"
+    },
+    {
+      "label": "max-name-grants",
+      "method": "activeGrants",
+      "agent": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "version": null,
+      "error": "WrongRecordState",
+      "expected": null
+    },
+    {
+      "label": "max-name-history",
+      "method": "historyItem",
+      "agent": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "version": "1",
+      "error": "WrongRecordState",
+      "expected": null
+    },
+    {
+      "label": "max-name-zero-history",
+      "method": "historyItem",
+      "agent": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "version": "0",
+      "error": "InvalidEntry",
+      "expected": null
+    },
+    {
+      "label": "max-name-max-history",
+      "method": "historyItem",
+      "agent": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "version": "18446744073709551615",
+      "error": "WrongRecordState",
+      "expected": null
+    },
+    {
+      "label": "ungranted-terminal-record",
+      "method": "record",
+      "agent": "$terminal",
+      "version": null,
+      "error": null,
+      "expected": "terminal-record"
+    },
+    {
+      "label": "ungranted-terminal-activeGrants",
+      "method": "activeGrants",
+      "agent": "$terminal",
+      "version": null,
+      "error": null,
+      "expected": "terminal-activeGrants"
+    },
+    {
+      "label": "ungranted-terminal-historyItem",
+      "method": "historyItem",
+      "agent": "$terminal",
+      "version": "13",
+      "error": null,
+      "expected": "terminal-historyItem"
+    },
+    {
+      "label": "terminal-max-history",
+      "method": "historyItem",
+      "agent": "$terminal",
+      "version": "18446744073709551615",
+      "error": "HistoryUnavailable",
+      "expected": null
+    }
+  ],
+  "baseline_rows_per_fork": 189,
+  "planned_rows_per_fork": 216,
+  "planned_total_rows_two_forks": 432,
+  "execution_ready": false
+}

@@ -105,7 +105,7 @@ jobs:
       - name: Check complete PC receipts and retain the full source denominator
         run: |
           python3 -B runtime/adapter/verify-pc.py > runtime/evidence/adapter-pc.json 2> runtime/evidence/adapter-pc.log
-      - name: Check wallet authority, read guards and retained state
+      - name: Check wallet authority, read and claim guards and retained state
         run: |
           node --max-old-space-size=512 --test --test-concurrency=1 --experimental-test-coverage \
             --test-coverage-lines=90 --test-coverage-include='**/authorization-unit.mjs' \

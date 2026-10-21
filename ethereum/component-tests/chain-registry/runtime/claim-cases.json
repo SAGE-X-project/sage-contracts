@@ -1,0 +1,187 @@
+{
+  "scope": "SOURCE and fixed expected unit data only for owned claim namespace/window subset; no external transmission, attack/replay/forgery producer, no state/code injection, no operating Source. Seven new commits and15 fixed refusals per fork; no successful reveal/new record. Baseline216 rows/13mutations/model clocks preserved. Same-blockdelta0 and forward257 are explicit unit block schedules; block0 and accepted delta1/256 plus headroom/proof-failure and successful consume retry remain unobserved here. Same-block unit header is200M for appended22calls only, eachtransaction100M unchanged; require exactsame rawheader and declared-limit sum<=header, not a claim of full blockchain/consensus validation.",
+  "execution_ready": false,
+  "baseline_rows_per_fork": 216,
+  "planned_rows_per_fork": 238,
+  "cases": [
+    {
+      "label": "zero-owner-commit",
+      "method": "commitClaim",
+      "fixture": "zero",
+      "sender": 0,
+      "error": null,
+      "block_delta": null
+    },
+    {
+      "label": "zero-owner-duplicate",
+      "method": "commitClaim",
+      "fixture": "zero",
+      "sender": 0,
+      "error": "ClaimUnavailable",
+      "block_delta": null
+    },
+    {
+      "label": "zero-second-owner-commit",
+      "method": "commitClaim",
+      "fixture": "zero",
+      "sender": 1,
+      "error": null,
+      "block_delta": null
+    },
+    {
+      "label": "zero-second-owner-duplicate",
+      "method": "commitClaim",
+      "fixture": "zero",
+      "sender": 1,
+      "error": "ClaimUnavailable",
+      "block_delta": null
+    },
+    {
+      "label": "consumed-commit-duplicate",
+      "method": "commitClaim",
+      "fixture": "terminal",
+      "sender": 0,
+      "error": "ClaimUnavailable",
+      "block_delta": null
+    },
+    {
+      "label": "terminal-before-consumed-claim",
+      "method": "revealClaim",
+      "fixture": "terminal",
+      "sender": 0,
+      "error": "IdentifierUnavailable",
+      "block_delta": null
+    },
+    {
+      "label": "terminal-before-other-owner-claim",
+      "method": "revealClaim",
+      "fixture": "terminal",
+      "sender": 1,
+      "error": "IdentifierUnavailable",
+      "block_delta": null
+    },
+    {
+      "label": "missing-claim",
+      "method": "revealClaim",
+      "fixture": "pending",
+      "sender": 0,
+      "error": "ClaimUnavailable",
+      "block_delta": null
+    },
+    {
+      "label": "pending-owner-commit",
+      "method": "commitClaim",
+      "fixture": "pending",
+      "sender": 0,
+      "error": null,
+      "block_delta": null
+    },
+    {
+      "label": "pending-other-namespace-before-principal",
+      "method": "revealClaim",
+      "fixture": "pending",
+      "sender": 1,
+      "error": "ClaimUnavailable",
+      "block_delta": null
+    },
+    {
+      "label": "pending-duplicate",
+      "method": "commitClaim",
+      "fixture": "pending",
+      "sender": 0,
+      "error": "ClaimUnavailable",
+      "block_delta": null
+    },
+    {
+      "label": "other-controller-owner-commit",
+      "method": "commitClaim",
+      "fixture": "otherController",
+      "sender": 0,
+      "error": null,
+      "block_delta": null
+    },
+    {
+      "label": "present-claim-before-controller",
+      "method": "revealClaim",
+      "fixture": "otherController",
+      "sender": 0,
+      "error": "UnauthorizedCaller",
+      "block_delta": null
+    },
+    {
+      "label": "controller-without-own-claim",
+      "method": "revealClaim",
+      "fixture": "otherController",
+      "sender": 1,
+      "error": "ClaimUnavailable",
+      "block_delta": null
+    },
+    {
+      "label": "same-block-owner-commit",
+      "method": "commitClaim",
+      "fixture": "sameBlock",
+      "sender": 0,
+      "error": null,
+      "block_delta": null
+    },
+    {
+      "label": "same-block-refusal",
+      "method": "revealClaim",
+      "fixture": "sameBlock",
+      "sender": 0,
+      "error": "ClaimWindowInvalid",
+      "block_delta": 0
+    },
+    {
+      "label": "late-owner-commit",
+      "method": "commitClaim",
+      "fixture": "late",
+      "sender": 0,
+      "error": null,
+      "block_delta": null
+    },
+    {
+      "label": "expired-window-refusal",
+      "method": "revealClaim",
+      "fixture": "late",
+      "sender": 0,
+      "error": "ClaimWindowInvalid",
+      "block_delta": 257
+    },
+    {
+      "label": "expired-present-claim-cannot-refresh",
+      "method": "commitClaim",
+      "fixture": "late",
+      "sender": 0,
+      "error": "ClaimUnavailable",
+      "block_delta": null
+    },
+    {
+      "label": "duplicate-key-owner-commit",
+      "method": "commitClaim",
+      "fixture": "duplicateName",
+      "sender": 0,
+      "error": null,
+      "block_delta": null
+    },
+    {
+      "label": "late-target-refusal-leaves-claim",
+      "method": "revealClaim",
+      "fixture": "duplicateName",
+      "sender": 0,
+      "error": "KeyNameReused",
+      "block_delta": null
+    },
+    {
+      "label": "expired-zero-claim-cannot-refresh",
+      "method": "commitClaim",
+      "fixture": "zero",
+      "sender": 0,
+      "error": "ClaimUnavailable",
+      "block_delta": null
+    }
+  ],
+  "unit_block_gas_limit": "200000000",
+  "transaction_gas_limit": "100000000",
+  "max_transactions_same_block": 2
+}

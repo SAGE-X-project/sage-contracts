@@ -13,7 +13,7 @@ import {createFeeMarket1559Tx} from '@ethereumjs/tx';
 import {createAddressFromPrivateKey, createContractAddress, createAccount} from '@ethereumjs/util';
 import {keccak_256} from '@noble/hashes/sha3.js';
 import {call, word, sequence} from './normal-abi.mjs';
-import {senderTestSeed, initialFixture, ownedKey, publicKey, publicServices} from './owned-fixtures.mjs';
+import {senderTestSeed, initialFixture, ownedKey, publicKey, publicServices, jcs} from './owned-fixtures.mjs';
 import {assertStoreLayout, observeClaim, observeRecord} from './observe.mjs';
 
 const root = new URL('./', import.meta.url), repo = new URL('../../../../', root), prefix = 'ethereum/contracts/chain-registry/';
@@ -75,6 +75,8 @@ for (const target of ['paris', 'shanghai']) test(target + ': normal wallet opera
   assert.equal(vm.evm.events.listenerCount('step'), 0);
   for (const sender of senders) await vm.stateManager.putAccount(sender, createAccount({balance: 10n ** 30n}));
   const rows = []; let height = 1n;
+  let claimUnitSchedule = false;
+  const claimBlockReservations = new Map();
   const storageReadLog = new URL(target + '-storage-reads.jsonl', evidence);
   fs.writeFileSync(storageReadLog, '', {flag:'wx'});
   let storageReadIndex = 0;
@@ -87,7 +89,21 @@ for (const target of ['paris', 'shanghai']) test(target + ': normal wallet opera
     const tx = createFeeMarket1559Tx({chainId: 1n, nonce, ...(to ? {to} : {}), data, gasLimit: 100_000_000n,
       maxFeePerGas: 2n, maxPriorityFeePerGas: 1n, value: 0n, accessList: []}, {common}).sign(senderTestSeed(sender));
     const number = height++, timestamp = 10000n + number;
-    const block = createBlock({header: {number, timestamp, gasLimit: 100_000_000n, baseFeePerGas: 1n}}, {common});
+    // The original216-row schedule keeps100M per block. Only the appended
+    // claim unit has a same-block pair: both100M declarations fit a common200M
+    // header. The transaction execution ceiling itself stays100M.
+    const unitBlockGasLimit = claimUnitSchedule ? 200_000_000n : 100_000_000n;
+    const block = createBlock({header: {number, timestamp, gasLimit: unitBlockGasLimit, baseFeePerGas: 1n}}, {common});
+    let claimBlock;
+    if (claimUnitSchedule) {
+      const headerHex = Buffer.from(block.header.serialize()).toString('hex');
+      const prior = claimBlockReservations.get(number.toString());
+      if (prior) assert.equal(prior.headerHex, headerHex, 'Same block must use the identical header');
+      claimBlock = {headerHex, transactions:(prior?.transactions ?? 0) + 1,
+        declaredGas:(prior?.declaredGas ?? 0n) + 100_000_000n};
+      assert(claimBlock.transactions <= 2 && claimBlock.declaredGas <= unitBlockGasLimit);
+      claimBlockReservations.set(number.toString(), claimBlock);
+    }
     const result = await runTx(vm, {tx, block});
     const row = {index: rows.length, label, sender: senders[sender].toString(), to: to?.toString() ?? null,
       block: number.toString(), timestamp: timestamp.toString(), transaction_hash: Buffer.from(tx.hash()).toString('hex'),
@@ -95,6 +111,9 @@ for (const target of ['paris', 'shanghai']) test(target + ': normal wallet opera
       return_hex: Buffer.from(result.execResult.returnValue).toString('hex'), execution_gas: result.execResult.executionGasUsed.toString(), total_gas: result.totalGasSpent.toString(),
       created_address: result.createdAddress?.toString() ?? null,
       logs: (result.execResult.logs ?? []).map(([address, topics, bytes]) => ({address: Buffer.from(address).toString('hex'), topics: topics.map(value => Buffer.from(value).toString('hex')), data: Buffer.from(bytes).toString('hex')}))};
+    if (claimUnitSchedule) Object.assign(row, {unit_block_gas_limit:unitBlockGasLimit.toString(),
+      unit_block_header_hex:claimBlock.headerHex, unit_block_transactions:claimBlock.transactions,
+      unit_block_declared_gas:claimBlock.declaredGas.toString()});
     rows.push(row); write(target + '-partial.json', {complete: false, rows});
     assert.equal(row.exception, expectedException, JSON.stringify(row));
     return row;
@@ -315,7 +334,133 @@ for (const target of ['paris', 'shanghai']) test(target + ': normal wallet opera
     const absentRead = await api('record', [missingAgent], [false, Buffer.alloc(0)], {sender:1});
     assert.deepEqual(absentRead.logs, []);
     storageObservations.push(await observedRecord(vm, children.RegistryStore, identity, missingAgent, null));
+    // Canonical, fixed read-only scalar cases; all inputs remain parser data.
+    // The actual ungranted owner EOA1 is a legitimate public reader.
+    const scalarPlan = JSON.parse(fs.readFileSync(new URL('read-scalars.json', root), 'utf8'));
+    assert.equal(scalarPlan.execution_ready, false);
+    assert.equal(scalarPlan.sender_index, 1);
+    assert.equal(scalarPlan.cases.length, 27);
+    assert.equal(rows.length, scalarPlan.baseline_rows_per_fork);
+    for (const fixed of scalarPlan.cases) {
+      const targetAgent = fixed.agent === '$terminal' ? agent : fixed.agent;
+      const values = fixed.method === 'historyItem' ? [targetAgent, BigInt(fixed.version)] : [targetAgent];
+      let result;
+      if (fixed.error !== null) {
+        assert(Object.hasOwn(errorReference, fixed.error));
+        result = await transact('read-scalar:' + fixed.label, registry,
+          call(registryArtifact.abi, fixed.method, values), 1, 'revert');
+        assert.equal(result.return_hex, errorReference[fixed.error].replace(/^0x/, ''));
+      } else {
+        let expectedValues;
+        if (fixed.expected === 'absent-record') expectedValues = [false, Buffer.alloc(0)];
+        else if (fixed.expected === 'terminal-record') expectedValues = [true, bin(expected.at(-1).record_hex)];
+        else if (fixed.expected === 'terminal-activeGrants') expectedValues = [bin(expected.at(-1).grants_hex)];
+        else {
+          assert.equal(fixed.expected, 'terminal-historyItem');
+          expectedValues = [bin(expected.at(-1).history_hex), bin(expected.at(-1).command_hex)];
+        }
+        result = await api(fixed.method, values, expectedValues, {sender:1});
+      }
+      assert.deepEqual(result.logs, []);
+      storageObservations.push(await observedRecord(vm, children.RegistryStore, identity, agent,
+        {record:bin(expected.at(-1).record_hex), grants:bin(expected.at(-1).grants_hex),
+          admitted:BigInt(JSON.parse(bin(expected.at(-1).history_hex)).admitted),
+          history:expected.map((item,n)=>({version:BigInt(n+1),history:bin(item.history_hex),command:bin(item.command_hex)}))}));
+      storageObservations.push(await observedClaim(vm, children.RegistryStore, principal, fixture.commitment,
+        {present:true,consumed:true,committed:BigInt(commit.block)}));
+      // Raw storage observation only, not a public snapshot call or admission.
+      if (targetAgent !== agent) storageObservations.push(await observedRecord(vm,
+        children.RegistryStore, identity, targetAgent, null));
+    }
+    assert.equal(rows.length, scalarPlan.planned_rows_per_fork);
+    // Finite local unit requests using only the two disclosed owned EOAs.
+    // No network client, arbitrary input surface, forged proof or state writes.
+    const claimPlan = JSON.parse(fs.readFileSync(new URL('claim-cases.json', root), 'utf8'));
+    assert.equal(claimPlan.execution_ready, false);
+    assert.equal(rows.length, claimPlan.baseline_rows_per_fork);
+    const make = (name, controllerIndex = 0) => ({name, controllerIndex,
+      ...initialFixture(identity, name, senders[controllerIndex].toString())});
+    const pending = make('owned-claim-pending');
+    const otherController = make('owned-claim-controller', 1);
+    const sameBlock = make('owned-claim-same-block');
+    const late = make('owned-claim-late');
+    const duplicateName = make('owned-claim-duplicate-name');
+    duplicateName.keys = [...duplicateName.keys, duplicateName.keys[1]];
+    duplicateName.claim = {...duplicateName.claim, keys: duplicateName.keys.map(key => publicKey(key))};
+    duplicateName.commitment = bin(sha(Buffer.concat([Buffer.from('sage-claim-0.11.0'),
+      Buffer.from([0]), Buffer.from(jcs(duplicateName.claim))])));
+    const fixtures = {pending, otherController, sameBlock, late, duplicateName};
+    const revealValues = fixed => [fixed.name, senders[fixed.controllerIndex].toString(),
+      fixed.keys, fixed.services, fixed.salt];
+    const zero = Buffer.alloc(32);
+    const digests = [zero, fixture.commitment, ...Object.values(fixtures).map(value => value.commitment)];
+    assert.equal(new Set(digests.map(value => value.toString('hex'))).size, 7);
+    const claims = digests.flatMap(digest => senders.map((actor, senderIndex) => ({digest, senderIndex,
+      actor: actor.toString(), present: digest.equals(fixture.commitment) && senderIndex === 0,
+      consumed: digest.equals(fixture.commitment) && senderIndex === 0,
+      committed: digest.equals(fixture.commitment) && senderIndex === 0 ? BigInt(commit.block) : 0n})));
+    const references = {zero, terminal: fixture, ...fixtures};
+    write(target + '-claim-fixtures.json', {scope: claimPlan.scope,
+      fixtures: Object.fromEntries(Object.entries(fixtures).map(([name, fixed]) => [name,
+        {agent:fixed.name, controller:senders[fixed.controllerIndex].toString(), claim:fixed.claim,
+          claim_jcs_hex:Buffer.from(jcs(fixed.claim)).toString('hex'), commitment_hex:fixed.commitment.toString('hex'),
+          reveal_calldata_hex:call(registryArtifact.abi, 'revealClaim', revealValues(fixed)).toString('hex')}])),
+      zero_commitment_hex: zero.toString('hex'), baseline_rows: rows.length});
+    const invariant = async () => {
+      storageObservations.push(await observedRecord(vm, children.RegistryStore, identity, agent,
+        {record:bin(expected.at(-1).record_hex), grants:bin(expected.at(-1).grants_hex),
+          admitted:BigInt(JSON.parse(bin(expected.at(-1).history_hex)).admitted),
+          history:expected.map((item,n)=>({version:BigInt(n+1),history:bin(item.history_hex),command:bin(item.command_hex)}))}));
+      for (const fixed of Object.values(fixtures)) storageObservations.push(await observedRecord(vm,
+        children.RegistryStore, identity, fixed.name, null));
+      for (const entry of claims) storageObservations.push(await observedClaim(vm,
+        children.RegistryStore, entry.actor, entry.digest,
+        {present:entry.present,consumed:entry.consumed,committed:entry.committed}));
+    };
+    await invariant();
+    assert.equal(claimPlan.unit_block_gas_limit, '200000000');
+    assert.equal(claimPlan.transaction_gas_limit, '100000000');
+    claimUnitSchedule = true;
+    const commitRows = {};
+    for (const fixed of claimPlan.cases) {
+      const value = references[fixed.fixture];
+      assert(value !== undefined && [0,1].includes(fixed.sender));
+      const digest = fixed.fixture === 'zero' ? zero : value.commitment;
+      if (fixed.block_delta !== null) {
+        assert(fixed.method === 'revealClaim' && [0,257].includes(fixed.block_delta));
+        assert(Object.hasOwn(commitRows, fixed.fixture));
+        // Same-block consecutive transactions and a finite forward block gap
+        // are ordinary isolated unit block schedules, not storage injection.
+        height = BigInt(commitRows[fixed.fixture].block) + BigInt(fixed.block_delta);
+      }
+      const values = fixed.method === 'commitClaim' ? [digest] :
+        fixed.fixture === 'terminal' ? [agent, principal, fixture.keys, fixture.services, fixture.salt] : revealValues(value);
+      const row = await transact('claim-guard:' + fixed.label, registry,
+        call(registryArtifact.abi, fixed.method, values), fixed.sender, fixed.error === null ? null : 'revert');
+      if (fixed.error !== null) {
+        assert(Object.hasOwn(errorReference, fixed.error));
+        assert.equal(row.return_hex, errorReference[fixed.error].replace(/^0x/, ''));
+        assert.deepEqual(row.logs, []);
+      } else {
+        assert.equal(fixed.method, 'commitClaim');
+        assert.equal(row.return_hex, '');
+        const entry = claims.find(entry => entry.senderIndex === fixed.sender && entry.digest.equals(digest));
+        assert(entry && !entry.present && !entry.consumed && entry.committed === 0n);
+        entry.present = true; entry.committed = BigInt(row.block);
+        assert.deepEqual(row.logs, [{address:registry.toString().slice(2),
+          topics:[Buffer.from(keccak_256(Buffer.from('ClaimCommitted(address,bytes32,uint256)'))).toString('hex'),
+            word(BigInt(entry.actor)).toString('hex'), digest.toString('hex')], data:word(entry.committed).toString('hex')}]);
+        commitRows[fixed.fixture] = row;
+      }
+      await invariant();
+    }
+    const repeated = [...claimBlockReservations.values()].filter(value => value.transactions === 2);
+    assert.equal(repeated.length, 1);
+    assert.equal(repeated[0].declaredGas, 200_000_000n);
+    assert.equal(claimPlan.cases.length, 22);
+    assert.equal(rows.length, claimPlan.planned_rows_per_fork);
+
   }
   write(target + '-store-observations.json', {scope:'Read-only local owned fullStore packing/mapping/claim/retained-state observations only; not Source',storageLayout,storageObservations});
-  write(target + '-rows.json', {scope: 'Owned wallet-operator13-mutation trace with14fixed authority refusals plus controller terminal refusal and5fixed read refusals/one absent-record read, raw Store/history observations; no maximumcost/coverage/operating/finality claim', complete: true, rows});
+  write(target + '-rows.json', {scope: 'Owned wallet-operator13-mutation trace with14fixed authority refusals plus controller terminal refusal and5fixed read refusals/one absent-record read plus27fixed scalar/public-reader queries and22fixed owned claim-namespace/window requests, raw Store/history observations; no maximumcost/coverage/operating/finality claim', complete: true, rows});
 });
