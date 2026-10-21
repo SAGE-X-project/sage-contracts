@@ -292,7 +292,30 @@ for (const target of ['paris', 'shanghai']) test(target + ': normal wallet opera
     storageObservations.push(await observedRecord(vm, children.RegistryStore, identity, agent, {record:bin(expected.at(-1).record_hex),grants:bin(expected.at(-1).grants_hex),admitted:BigInt(JSON.parse(bin(expected.at(-1).history_hex)).admitted),
       history:expected.map((item,n)=>({version:BigInt(n+1),history:bin(item.history_hex),command:bin(item.command_hex)}))}));
     storageObservations.push(await observedClaim(vm, children.RegistryStore, principal, fixture.commitment, {present:true,consumed:true,committed:BigInt(commit.block)}));
+    // Fixed read-only requests exercise public missing/zero/future semantics.
+    // They never prepare a write, replace a proof or contact a live endpoint.
+    const missingAgent = 'owned-missing';
+    storageObservations.push(await observedRecord(vm, children.RegistryStore, identity, missingAgent, null));
+    const readRefusals = [
+      ['zero-existing', 'historyItem', [agent, 0n], 'InvalidEntry'],
+      ['zero-missing', 'historyItem', [missingAgent, 0n], 'InvalidEntry'],
+      ['future-terminal', 'historyItem', [agent, 14n], 'HistoryUnavailable'],
+      ['positive-missing', 'historyItem', [missingAgent, 1n], 'WrongRecordState'],
+      ['grants-missing', 'activeGrants', [missingAgent], 'WrongRecordState']
+    ];
+    for (const [label, name, values, error] of readRefusals) {
+      const row = await transact('read-guard:' + label, registry, call(registryArtifact.abi, name, values), 1, 'revert');
+      assert.equal(row.return_hex, errorReference[error].replace(/^0x/, ''));
+      assert.deepEqual(row.logs, []);
+      storageObservations.push(await observedRecord(vm, children.RegistryStore, identity, agent, {record:bin(expected.at(-1).record_hex),grants:bin(expected.at(-1).grants_hex),admitted:BigInt(JSON.parse(bin(expected.at(-1).history_hex)).admitted),
+        history:expected.map((item,n)=>({version:BigInt(n+1),history:bin(item.history_hex),command:bin(item.command_hex)}))}));
+      storageObservations.push(await observedClaim(vm, children.RegistryStore, principal, fixture.commitment, {present:true,consumed:true,committed:BigInt(commit.block)}));
+      storageObservations.push(await observedRecord(vm, children.RegistryStore, identity, missingAgent, null));
+    }
+    const absentRead = await api('record', [missingAgent], [false, Buffer.alloc(0)], {sender:1});
+    assert.deepEqual(absentRead.logs, []);
+    storageObservations.push(await observedRecord(vm, children.RegistryStore, identity, missingAgent, null));
   }
   write(target + '-store-observations.json', {scope:'Read-only local owned fullStore packing/mapping/claim/retained-state observations only; not Source',storageLayout,storageObservations});
-  write(target + '-rows.json', {scope: 'Owned wallet-operator13-mutation trace with14fixed authority refusals plus controller terminal refusal, raw Store/history observations; no maximumcost/coverage/operating/finality claim', complete: true, rows});
+  write(target + '-rows.json', {scope: 'Owned wallet-operator13-mutation trace with14fixed authority refusals plus controller terminal refusal and5fixed read refusals/one absent-record read, raw Store/history observations; no maximumcost/coverage/operating/finality claim', complete: true, rows});
 });
