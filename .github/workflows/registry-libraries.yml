@@ -1,0 +1,99 @@
+name: Registry library controls
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ethereum/contracts/chain-registry/**'
+      - 'ethereum/component-tests/chain-registry/**'
+      - '.github/workflows/registry-libraries.yml'
+  pull_request:
+    paths:
+      - 'ethereum/contracts/chain-registry/**'
+      - 'ethereum/component-tests/chain-registry/**'
+      - '.github/workflows/registry-libraries.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  library:
+    name: Registry library ${{ matrix.group }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        group: [text, buffer, json, domain, grammar, state, sha512, verifier, entries]
+    defaults:
+      run:
+        working-directory: ethereum/component-tests/chain-registry
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ethereum/component-tests/chain-registry/package-lock.json
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+      - name: Install fixed dependencies without lifecycle scripts
+        run: |
+          mkdir -p evidence
+          node --version
+          python3 --version
+          npm ci --ignore-scripts --no-audit --no-fund > evidence/npm-ci.log 2>&1
+          npm ls --all --json > evidence/npm-tree.json
+      - name: Preserve the actual checkout and job context
+        env:
+          REGISTRY_LIBRARY_GROUP: ${{ matrix.group }}
+        run: |
+          python3 -B - <<'PYTHON'
+          import json, os, pathlib, subprocess, sys
+          event = json.loads(pathlib.Path(os.environ['GITHUB_EVENT_PATH']).read_text())
+          git = lambda *args: subprocess.check_output(['git', *args], text=True).strip()
+          selected = ['GITHUB_REPOSITORY', 'GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT',
+                      'GITHUB_EVENT_NAME', 'GITHUB_SHA', 'GITHUB_REF', 'GITHUB_JOB',
+                      'GITHUB_WORKFLOW_REF', 'GITHUB_WORKFLOW_SHA', 'RUNNER_OS', 'RUNNER_ARCH']
+          value = {'scope': 'Unsigned CI checkout/job observation; not a runtime or operating verdict',
+                   'environment': {key: os.environ[key] for key in selected},
+                   'group': os.environ['REGISTRY_LIBRARY_GROUP'],
+                   'checkout': git('rev-parse', 'HEAD'), 'tree': git('rev-parse', 'HEAD^{tree}'),
+                   'parents': [line.split()[1] for line in
+                               git('cat-file', '-p', 'HEAD').split('\n\n', 1)[0].splitlines()
+                               if line.startswith('parent ')],
+                   'node': subprocess.check_output(['node', '--version'], text=True).strip(),
+                   'python': sys.version}
+          if os.environ['GITHUB_EVENT_NAME'] == 'pull_request':
+              pull = event['pull_request']
+              value['pull_request'] = {'number': event['number'],
+                                       'base': pull['base']['sha'], 'head': pull['head']['sha']}
+          with pathlib.Path('evidence/ci-context.json').open('x') as stream:
+              json.dump(value, stream, indent=2)
+              stream.write('\n')
+          print(json.dumps(value))
+          PYTHON
+      - name: Prepare the pinned compiler
+        run: python3 -B prepare.py
+      - name: Run the fixed group and seal fresh observations
+        run: python3 -B libraries/run.py ${{ matrix.group }}
+      - name: Preserve source and actual library observations
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: registry-library-${{ matrix.group }}
+          if-no-files-found: error
+          include-hidden-files: true
+          path: |
+            .github/workflows/registry-libraries.yml
+            ethereum/contracts/chain-registry/
+            ethereum/component-tests/chain-registry/
+            !ethereum/component-tests/chain-registry/node_modules/
+            !ethereum/component-tests/chain-registry/__pycache__/
+            !ethereum/component-tests/chain-registry/evidence/soljson.cjs

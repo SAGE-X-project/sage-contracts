@@ -1,0 +1,11 @@
+{
+  "source": {
+    "repo": "novifinancial/ed25519-speccheck",
+    "revision": "65519336fda78a3d016e947df6d82848aca0c9da",
+    "cases_sha256": "08e47a36d9aead288664930505584f353fff113ab854f2800db1e4f5b3540450",
+    "index": 3,
+    "scope": "only encoded mixed-order point components, not the original message/signature pair"
+  },
+  "mixed_A": "cdb267ce40c5cd45306fa5d2f29731459387dbf9eb933b7bd5aed9a765b88d4d",
+  "mixed_R": "9046a64750444938de19f227bb80485e92b83fdb4b6506c160484c016cc1852f"
+}

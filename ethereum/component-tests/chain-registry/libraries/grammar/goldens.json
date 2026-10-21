@@ -1,0 +1,1049 @@
+{
+  "scope": "Finite scalar syntax unit controls only; no fetch, authentication, authority, RPC or Registry admission",
+  "references": [
+    "https://www.rfc-editor.org/rfc/rfc3986.html#appendix-A"
+  ],
+  "cases": [
+    {
+      "name": "agent-0",
+      "method": "name",
+      "arguments": [
+        "a",
+        true
+      ],
+      "expected_hex": "61",
+      "exception": null
+    },
+    {
+      "name": "agent-1",
+      "method": "name",
+      "arguments": [
+        "A0_z-.unit",
+        true
+      ],
+      "expected_hex": "41305f7a2d2e756e6974",
+      "exception": null
+    },
+    {
+      "name": "agent-2",
+      "method": "name",
+      "arguments": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        true
+      ],
+      "expected_hex": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
+      "exception": null
+    },
+    {
+      "name": "agent-3",
+      "method": "name",
+      "arguments": [
+        ".x",
+        true
+      ],
+      "expected_hex": "2e78",
+      "exception": null
+    },
+    {
+      "name": "agent-4",
+      "method": "name",
+      "arguments": [
+        "...",
+        true
+      ],
+      "expected_hex": "2e2e2e",
+      "exception": null
+    },
+    {
+      "name": "agent-5",
+      "method": "name",
+      "arguments": [
+        "0",
+        true
+      ],
+      "expected_hex": "30",
+      "exception": null
+    },
+    {
+      "name": "bad-agent-6",
+      "method": "name",
+      "arguments": [
+        "",
+        true
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "bad-agent-7",
+      "method": "name",
+      "arguments": [
+        ".",
+        true
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "bad-agent-8",
+      "method": "name",
+      "arguments": [
+        "..",
+        true
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "bad-agent-9",
+      "method": "name",
+      "arguments": [
+        "a/b",
+        true
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "bad-agent-10",
+      "method": "name",
+      "arguments": [
+        "a@b",
+        true
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "bad-agent-11",
+      "method": "name",
+      "arguments": [
+        "x~y",
+        true
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "bad-agent-12",
+      "method": "name",
+      "arguments": [
+        "\u00e9",
+        true
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "long-agent",
+      "method": "name",
+      "arguments": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        true
+      ],
+      "expected_hex": "8b54271a",
+      "exception": "revert"
+    },
+    {
+      "name": "key-14",
+      "method": "name",
+      "arguments": [
+        "a",
+        false
+      ],
+      "expected_hex": "61",
+      "exception": null
+    },
+    {
+      "name": "key-15",
+      "method": "name",
+      "arguments": [
+        "Key_0-name",
+        false
+      ],
+      "expected_hex": "4b65795f302d6e616d65",
+      "exception": null
+    },
+    {
+      "name": "key-16",
+      "method": "name",
+      "arguments": [
+        "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
+        false
+      ],
+      "expected_hex": "6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b",
+      "exception": null
+    },
+    {
+      "name": "bad-key-17",
+      "method": "name",
+      "arguments": [
+        "",
+        false
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "bad-key-18",
+      "method": "name",
+      "arguments": [
+        ".",
+        false
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "bad-key-19",
+      "method": "name",
+      "arguments": [
+        "..",
+        false
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "bad-key-20",
+      "method": "name",
+      "arguments": [
+        "key.name",
+        false
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "bad-key-21",
+      "method": "name",
+      "arguments": [
+        "x~y",
+        false
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "bad-key-22",
+      "method": "name",
+      "arguments": [
+        "\u00e9",
+        false
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "long-key",
+      "method": "name",
+      "arguments": [
+        "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
+        false
+      ],
+      "expected_hex": "8b54271a",
+      "exception": "revert"
+    },
+    {
+      "name": "type-24",
+      "method": "serviceType",
+      "arguments": [
+        "https"
+      ],
+      "expected_hex": "6874747073",
+      "exception": null
+    },
+    {
+      "name": "type-25",
+      "method": "serviceType",
+      "arguments": [
+        "\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?"
+      ],
+      "expected_hex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f",
+      "exception": null
+    },
+    {
+      "name": "type-26",
+      "method": "serviceType",
+      "arguments": [
+        "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007f"
+      ],
+      "expected_hex": "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f",
+      "exception": null
+    },
+    {
+      "name": "empty-type",
+      "method": "serviceType",
+      "arguments": [
+        ""
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "long-type",
+      "method": "serviceType",
+      "arguments": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "expected_hex": "8b54271a",
+      "exception": "revert"
+    },
+    {
+      "name": "nonascii-type",
+      "method": "serviceType",
+      "arguments": [
+        "\u00e9"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-allow-0",
+      "method": "httpsUri",
+      "arguments": [
+        "https://x"
+      ],
+      "expected_hex": "68747470733a2f2f78",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-1",
+      "method": "httpsUri",
+      "arguments": [
+        "HtTpS://Example.TEST"
+      ],
+      "expected_hex": "48745470533a2f2f4578616d706c652e54455354",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-2",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/"
+      ],
+      "expected_hex": "68747470733a2f2f6578616d706c652e746573742f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-3",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test:"
+      ],
+      "expected_hex": "68747470733a2f2f6578616d706c652e746573743a",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-4",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test:443/"
+      ],
+      "expected_hex": "68747470733a2f2f6578616d706c652e746573743a3434332f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-5",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test:65536/"
+      ],
+      "expected_hex": "68747470733a2f2f6578616d706c652e746573743a36353533362f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-6",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test:000000000000000000000000000000000000000000/"
+      ],
+      "expected_hex": "68747470733a2f2f6578616d706c652e746573743a3030303030303030303030303030303030303030303030303030303030303030303030303030303030302f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-7",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/a@b?user=x@y"
+      ],
+      "expected_hex": "68747470733a2f2f6578616d706c652e746573742f6140623f757365723d784079",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-8",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/a:b//c/./../x"
+      ],
+      "expected_hex": "68747470733a2f2f6578616d706c652e746573742f613a622f2f632f2e2f2e2e2f78",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-9",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test?"
+      ],
+      "expected_hex": "68747470733a2f2f6578616d706c652e746573743f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-10",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/a??x/?@b"
+      ],
+      "expected_hex": "68747470733a2f2f6578616d706c652e746573742f613f3f782f3f4062",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-11",
+      "method": "httpsUri",
+      "arguments": [
+        "https://%41.example.test/%00/%23/%ff?x=%40"
+      ],
+      "expected_hex": "68747470733a2f2f2534312e6578616d706c652e746573742f2530302f2532332f2566663f783d253430",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-12",
+      "method": "httpsUri",
+      "arguments": [
+        "https://a!$&'()*+,;=.test/"
+      ],
+      "expected_hex": "68747470733a2f2f612124262728292a2b2c3b3d2e746573742f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-13",
+      "method": "httpsUri",
+      "arguments": [
+        "https://192.0.2.1/"
+      ],
+      "expected_hex": "68747470733a2f2f3139322e302e322e312f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-14",
+      "method": "httpsUri",
+      "arguments": [
+        "https://999.0.0.0/"
+      ],
+      "expected_hex": "68747470733a2f2f3939392e302e302e302f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-15",
+      "method": "httpsUri",
+      "arguments": [
+        "https://./"
+      ],
+      "expected_hex": "68747470733a2f2f2e2f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-16",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::]/"
+      ],
+      "expected_hex": "68747470733a2f2f5b3a3a5d2f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-17",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::1]/"
+      ],
+      "expected_hex": "68747470733a2f2f5b3a3a315d2f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-18",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[2001:db8::1]:443/path"
+      ],
+      "expected_hex": "68747470733a2f2f5b323030313a6462383a3a315d3a3434332f70617468",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-19",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[1:2:3:4:5:6:7:8]/"
+      ],
+      "expected_hex": "68747470733a2f2f5b313a323a333a343a353a363a373a385d2f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-20",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[1:2:3:4:5:6:7::]/"
+      ],
+      "expected_hex": "68747470733a2f2f5b313a323a333a343a353a363a373a3a5d2f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-21",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::1:2:3:4:5:6:7]/"
+      ],
+      "expected_hex": "68747470733a2f2f5b3a3a313a323a333a343a353a363a375d2f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-22",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[1:2::3:4:5:6:7]/"
+      ],
+      "expected_hex": "68747470733a2f2f5b313a323a3a333a343a353a363a375d2f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-23",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::ffff:192.0.2.128]/"
+      ],
+      "expected_hex": "68747470733a2f2f5b3a3a666666663a3139322e302e322e3132385d2f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-24",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[1:2:3:4:5:6:192.0.2.1]/"
+      ],
+      "expected_hex": "68747470733a2f2f5b313a323a333a343a353a363a3139322e302e322e315d2f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-25",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::192.0.2.1]:/?x=@y"
+      ],
+      "expected_hex": "68747470733a2f2f5b3a3a3139322e302e322e315d3a2f3f783d4079",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-26",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[v1.a:b!]/"
+      ],
+      "expected_hex": "68747470733a2f2f5b76312e613a62215d2f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-27",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[VF.alpha._~$]/"
+      ],
+      "expected_hex": "68747470733a2f2f5b56462e616c7068612e5f7e245d2f",
+      "exception": null
+    },
+    {
+      "name": "uri-allow-28",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "expected_hex": "68747470733a2f2f6578616d706c652e746573742f6161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
+      "exception": null
+    },
+    {
+      "name": "uri-refuse-0",
+      "method": "httpsUri",
+      "arguments": [
+        ""
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-1",
+      "method": "httpsUri",
+      "arguments": [
+        "https://"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-2",
+      "method": "httpsUri",
+      "arguments": [
+        "http\u017f://x"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-3",
+      "method": "httpsUri",
+      "arguments": [
+        "http://example.test"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-4",
+      "method": "httpsUri",
+      "arguments": [
+        "https:example.test"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-5",
+      "method": "httpsUri",
+      "arguments": [
+        "https:/example.test"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-6",
+      "method": "httpsUri",
+      "arguments": [
+        "https:///a"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-7",
+      "method": "httpsUri",
+      "arguments": [
+        "https://?x=y"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-8",
+      "method": "httpsUri",
+      "arguments": [
+        "https://user@example.test/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-9",
+      "method": "httpsUri",
+      "arguments": [
+        "https://user:password@example.test/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-10",
+      "method": "httpsUri",
+      "arguments": [
+        "https://:443/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-11",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test#"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-12",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/a#fragment"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-13",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/a b"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-14",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/\n"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-15",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/\u007f"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-16",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/\u00e9"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-17",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/%"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-18",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/%0"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-19",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/%0g"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-20",
+      "method": "httpsUri",
+      "arguments": [
+        "https://%zz.example.test/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-21",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test:port/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-22",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test:1:2/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-23",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/path[bad]"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-24",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test?x=[bad]"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-25",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/\\path"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-26",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-27",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::1/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-28",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::1]suffix/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-29",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::1]:x/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-30",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[v.a]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-31",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[v1.]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-32",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[vG.foo]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-33",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[v1.a%20]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-34",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[v1.a@b]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-35",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::%25zone]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-36",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[1:2:3:4:5:6:7]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-37",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[1:2:3:4:5:6:7:8:9]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-38",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[1:2:3:4:5:6:7:8::]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-39",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[:1]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-40",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[1:]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-41",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[:::]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-42",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[1::2::3]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-43",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[12345::]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-44",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[gggg::]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-45",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[1:2:3:4:5:192.0.2.1]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-46",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::192.0.2]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-47",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::192.0.2.256]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-48",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::192.0.02.1]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-49",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::192.0.2.1:2]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-50",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::192.0.x.1]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-51",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::192.0.2.1.4]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-52",
+      "method": "httpsUri",
+      "arguments": [
+        "https://[::1.2.3.4444]/"
+      ],
+      "expected_hex": "887efaa5",
+      "exception": "revert"
+    },
+    {
+      "name": "uri-refuse-53",
+      "method": "httpsUri",
+      "arguments": [
+        "https://example.test/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "expected_hex": "8b54271a",
+      "exception": "revert"
+    }
+  ]
+}
