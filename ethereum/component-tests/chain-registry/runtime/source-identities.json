@@ -36,7 +36,7 @@
     "ethereum/contracts/chain-registry/vendor/Sha2Ext.upstream.sol.txt": "6805690675019ff8e343da59d4cabfc6cc364b733a80cae7829caffdd0ceb19a"
   },
   "tool_files_sha256": {
-    ".github/workflows/registry-runtime.yml": "1bf6c8ba197309e121fcb2232e1e7363c40af4ccee4f325b54bc1d971c74b5c1",
+    ".github/workflows/registry-runtime.yml": "bb417fa656adf19db5a0ea0a1c13792bd1882c48204c16a5c276559402771212",
     "ethereum/component-tests/chain-registry/fixtures/abi-selector-reference.json": "14a125e9e6e66222c877fc3905edc671dd8f11a5f33c9bd4de0c9e37fe22bb22",
     "ethereum/component-tests/chain-registry/fixtures/error-selector-reference.json": "c61175afcc8f5557915964d48d516aeb23cddcf76b90a4cee16cd881374e21c9",
     "ethereum/component-tests/chain-registry/fixtures/functions.json": "0f31f995b0169b27c2ce4797b967a754b4c0b2b0a733e4c21da1b54089380f5f",
@@ -46,6 +46,11 @@
     "ethereum/component-tests/chain-registry/package.json": "6cb3bfc7d4bab4b650e647590464fe4e83243a4e47ecda26cf0dc93e2becb8c8",
     "ethereum/component-tests/chain-registry/prepare.py": "14d1c30c9e132003b05f30defcf4a4fb76388c856d54a754653aa99e10c84b45",
     "ethereum/component-tests/chain-registry/runtime/OwnedWallet.sol": "f247757f20db204d164fea7b55a61adf631644264b6d4fb7844c7c9e0b704a2b",
+    "ethereum/component-tests/chain-registry/runtime/adapter/execution-plan.json": "cc699188142ef45bfd24d3bfe0bf6e2aecf1392bd41beb0bccd1cb87614c5bcb",
+    "ethereum/component-tests/chain-registry/runtime/adapter/goldens.json": "c4e311aea4d8de010d2f2a9365628277294b9056aa44b222631a692f86577084",
+    "ethereum/component-tests/chain-registry/runtime/adapter/test_verify_pc.py": "f7a33cbd5ad0e11348676944e2195266ab73c50bd3e886b2ce4e36a4243f00ac",
+    "ethereum/component-tests/chain-registry/runtime/adapter/unit.mjs": "6fe894e14ead51083468aa91ac59c91909a8c8b2926efd48c16019ff2e5337d1",
+    "ethereum/component-tests/chain-registry/runtime/adapter/verify-pc.py": "d519dded63bb9cb98e1e840744b25169ff006d488f5359a45658a165dcaea9da",
     "ethereum/component-tests/chain-registry/runtime/ci-context.py": "e63143e233446f529cb3a1c357d70d138fdde9bb7fe133f0d3b2281e9675becd",
     "ethereum/component-tests/chain-registry/runtime/compile.mjs": "c54c5d9878ae599cf259fc3518dd840babce0ca27dbf0ad6c7ce1ecc53093a32",
     "ethereum/component-tests/chain-registry/runtime/constructor-unit.mjs": "9b5cbff7eac288bb5ec5dca25596c5cb831795f92df67b4733a04bf9da3c9105",

@@ -1,0 +1,23 @@
+{
+  "status": "STATIC_CI_INTEGRATION_DRAFT/NOT_RUN/REQUIRES_NEW_SOURCE_REVIEW",
+  "placement": "ethereum/component-tests/chain-registry/runtime/adapter",
+  "scope": "Same255fixed pure production module cases per fork, with passive exact-PC observations; not Registry caller/admission/storage or coverage qualification",
+  "changes": [
+    "Public relative paths/manifest and fresh compiler receipt",
+    "255case semantics and137skippeddata unchanged",
+    "Fullcompiledruntime hashes and each full ABI input/output schema checked",
+    "Passive depth0 PCsets, listener cleanup, failed-prefix retention; no mutation producer",
+    "Static-only corrections before first review: define goldenPath once and record complete prefix after each matched row (last255), preserve never-executed draft preimages",
+    "Preserve SOURCE1aea/REVISEadec originals; final result binds exact PC-prefix SHA256 and fixed policy/traced+untraced index/name sets",
+    "All255 semantic cases unchanged; install PC listener only when actual canonical input and expected output <=1024 bytes, stop after2048 pre-step events or first >4096-byte snapshot; retain per-row eligibility/steps/max-memory/stop and complete29 denominator",
+    "Upstream has already copied the first oversize snapshot; this is a finite observation budget, not a hard RSS/heap or elapsed bound",
+    "Dependency provenance is @ethereumjs/evm10.1.3 from unchanged lock; VM package version distinct",
+    "Synthetic checker unit port uses canonical compile filename for raw line-count aggregation while __file__ retains each isolated fixture; completed invalid-data labels recorded after rejection assertions."
+  ],
+  "remaining": [
+    "Independent review of the complete workflow, manifest and five adapter files before publication/execution",
+    "Fresh remote units, raw line counts and lcov plus actual evidence review; no local execution while capacity29960 active",
+    "Separate whole Registry guards/capacity/operating Source qualification"
+  ],
+  "operating_ready": false
+}
