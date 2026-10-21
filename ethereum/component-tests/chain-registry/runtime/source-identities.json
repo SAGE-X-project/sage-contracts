@@ -36,7 +36,7 @@
     "ethereum/contracts/chain-registry/vendor/Sha2Ext.upstream.sol.txt": "6805690675019ff8e343da59d4cabfc6cc364b733a80cae7829caffdd0ceb19a"
   },
   "tool_files_sha256": {
-    ".github/workflows/registry-runtime.yml": "f00a1cc763f8e927cb073b0860a47b538cd0f850bde93e4c393031e70b0550ed",
+    ".github/workflows/registry-runtime.yml": "a8f93f0431969a1a1fd87ab78775089e315deb6e03997367dde49254832d59dd",
     "ethereum/component-tests/chain-registry/fixtures/abi-selector-reference.json": "14a125e9e6e66222c877fc3905edc671dd8f11a5f33c9bd4de0c9e37fe22bb22",
     "ethereum/component-tests/chain-registry/fixtures/error-selector-reference.json": "c61175afcc8f5557915964d48d516aeb23cddcf76b90a4cee16cd881374e21c9",
     "ethereum/component-tests/chain-registry/fixtures/functions.json": "0f31f995b0169b27c2ce4797b967a754b4c0b2b0a733e4c21da1b54089380f5f",
@@ -51,8 +51,8 @@
     "ethereum/component-tests/chain-registry/runtime/adapter/test_verify_pc.py": "335ff2e401d2cb9716524ea4b58f332afecb818fc7105bcffaa1100e21ce582b",
     "ethereum/component-tests/chain-registry/runtime/adapter/unit.mjs": "423ee080460dd212ef428700f8460e63f3e3a416a1b578804e4abb075bc56d5c",
     "ethereum/component-tests/chain-registry/runtime/adapter/verify-pc.py": "bc52d0bd28d218e02aab304ed2c1f380eb7de6f0f1042129b3ddca73ccfa43b8",
-    "ethereum/component-tests/chain-registry/runtime/authorization-plan.json": "253a5c4f9c5ab0448abf265a12a34b37ed36287c060c6ccbc1fd88a2ad24bb39",
-    "ethereum/component-tests/chain-registry/runtime/authorization-unit.mjs": "f2fff127f2d8344dfa6d053d1da5f4963543e75a43a738b566753156c18b2980",
+    "ethereum/component-tests/chain-registry/runtime/authorization-plan.json": "ae4e9d96b5f0cd2c389f4c4f4d11e6a3b5b1a8c869d3c8016041b35ffd483c3d",
+    "ethereum/component-tests/chain-registry/runtime/authorization-unit.mjs": "52fb8d2c82252e963db03f66803e7edb356495f2feb4e409bd7083089c5a8cc9",
     "ethereum/component-tests/chain-registry/runtime/ci-context.py": "e63143e233446f529cb3a1c357d70d138fdde9bb7fe133f0d3b2281e9675becd",
     "ethereum/component-tests/chain-registry/runtime/compile.mjs": "c54c5d9878ae599cf259fc3518dd840babce0ca27dbf0ad6c7ce1ecc53093a32",
     "ethereum/component-tests/chain-registry/runtime/constructor-unit.mjs": "9b5cbff7eac288bb5ec5dca25596c5cb831795f92df67b4733a04bf9da3c9105",
@@ -67,6 +67,13 @@
     "ethereum/component-tests/chain-registry/runtime/run.py": "11866badb49dbcd56d42c8b394752c8f4a9d08ec52d235e32d804eaf1e2fc1c9",
     "ethereum/component-tests/chain-registry/runtime/verify-compiler.py": "aef5801889b053777814981106e77b9bbe8ac0e9625dab2038b9cd81f92eeb7d",
     "ethereum/component-tests/chain-registry/runtime/read-scalars.json": "c3123f8843c8ce0d51cca09eee14a0cba8840594c9dfb545ded3f6bc97f452a6",
-    "ethereum/component-tests/chain-registry/runtime/claim-cases.json": "26f9256ca7b18f2d10e95a983326dc03523bfb44fcacbbc40fe1d2f672bbc666"
+    "ethereum/component-tests/chain-registry/runtime/claim-cases.json": "26f9256ca7b18f2d10e95a983326dc03523bfb44fcacbbc40fe1d2f672bbc666",
+    "ethereum/component-tests/chain-registry/runtime/lifecycle-cases.json": "2b62d52b9f1ecade0a1e247384cb3b0234b825758f144eb49c060a365e0ae78c",
+    "ethereum/component-tests/chain-registry/runtime/expected-lifecycle.py": "70f35dabff84369bc4728fe5fb26c4b7294c737987aec1d3e496970036831038",
+    "ethereum/component-tests/chain-registry/runtime/validator-unit.mjs": "562910b3f24fecf484d816d7c3c67798f19be10b50c0c06ab3f783fd64531c5d",
+    "ethereum/component-tests/chain-registry/runtime/validator-cases.json": "0e888f7fea12c6ce9ad72a4d6720a5e6d58b2f4b37b25c482457c63b32ee54d9",
+    "ethereum/component-tests/chain-registry/runtime/entry-fixtures.mjs": "53946bb5e59598b4fb5510a4cbf01cbbd0f5162e5a74757ae8825d66cbb70fbd",
+    "ethereum/component-tests/chain-registry/runtime/expected-entry.py": "6e1a01ddf0f28f4d84c9f858c500dd0fcca7e82f99af709b91b86542ec983189",
+    "ethereum/component-tests/chain-registry/runtime/entry-cases.json": "906b750baf917839ede890a6e72cbfb8585d8a49780c27453caae241b127d6af"
   }
 }

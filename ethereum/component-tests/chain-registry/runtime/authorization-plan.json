@@ -1,5 +1,5 @@
 {
-  "scope": "Composed fixed unit expectations only: prior189 authority+READ,27scalar publicreads,22ownedclaimrequests; no actual execution or operating/fullRegistry qualification; R2 same-block unitgas reservations/identicalheader observed, not fullconsensus validation",
+  "scope": "Composed fixed expected unit data: prior302 plus43 owned entry/service requests; SOURCE draft, no runtime/CI/wholeG4 or operating verdict",
   "baseline": {
     "head": "03bb76e5793858231804453a77a7550a0abd580d",
     "source_sha256": "fb0aa5df05c13c30a061a0c238d0c25241604a7155bed1931bca32dc49d1eb2c",
@@ -68,8 +68,8 @@
     "execution_ready": false,
     "diagnostic_specificity": "Five bad-content history cases use positive1; scalar InvalidEntry is distinguishable from absent WrongRecordState.65byte+0 is framing first, not Grammar-only priority. Other prior cases unchanged."
   },
-  "planned_rows_per_fork": 238,
-  "planned_rows_total": 476,
+  "planned_rows_per_fork": 345,
+  "planned_rows_total": 690,
   "assertions": "Original13mutations/modelclocks/14authorityrefusals/READ6 unchanged. New27readcalls:23fixedrefusals4successes; canonical input/ungrantedEOA1, exact public22error/noEvents, allterminalrecord/grants/admitted/13retainedhistory/claim preserved; absenttarget rawpresence0 only. 65bytehistory0 is framing-first; five bad-content positivehistory1 distinguish grammar InvalidEntry from missing WrongRecordState.",
   "coverage": "Raw fresh harness>=90 required; no new PC observer or product90 result",
   "execution_ready": false,
@@ -111,5 +111,34 @@
     "original_source_review_sha256": "7b5f93358ad64b9373de83efb4106bed2d29aac7fcde758ba0dbb03a74a7e1d0",
     "correction": "The originalunit instantiated each100M transaction against anindependent100M header; it did not demonstrate cumulative blockgas feasibility for the same-blockpair. Thatunexecuted SOURCE assessment is superseded onlyfor this schedulequalification. No oldactual verdict or publicsource changes. New200Munitheader permits sumofbothdeclared100Mgaslimits, recordsidenticalrawheader, andretains txgas100M/512heap/currentcapacitylimits. No chain,operatingbudget,consensusblockvalidation selected.",
     "source_input_sha256": "5537b6410222517c6edea1f1015db60c5cea49a72bf0fc1a11b1726ff03dbec4"
+  },
+  "lifecycle_extension": {
+    "source_input_sha256": "8fb49a74d45507aa12383732201e2759bd72946ab11e4db891ebfbca40094211",
+    "base_head": "291deca39b4a533ae94e95e87351a7e8c37e23cf",
+    "baseline_rows_per_fork": 238,
+    "new_rows_per_fork": 64,
+    "new_success_per_fork": 34,
+    "new_refusals_per_fork": 30,
+    "new_mutations_per_fork": 30,
+    "planned_rows_per_fork": 302,
+    "data_sha256": "2b62d52b9f1ecade0a1e247384cb3b0234b825758f144eb49c060a365e0ae78c",
+    "model_sha256": "70f35dabff84369bc4728fe5fb26c4b7294c737987aec1d3e496970036831038",
+    "scope": "Four fixed owned schedules, complete prior13history andactor/digest namespaces preserved; allnew success JCS/events/current/fullhistory/claim joins andrefusalatomicity. Eachnewrequest own100Munitblock afteroldR2 onlyonepair200M; honestfutureexpiryheightjumps, no rollback orzero sender. Source/composition only, not executed. Correct grantedoperatoradd/revoke, createdcontrollerrevoke/deactivate, sortedmultipleactivatecleanup+terminalcleanup, explicitfirst/middle/lastpairremoval, expiry equalityactivationrefusal andcontrollerrecovery. Remainingclock/claim-window/proof/headroom/wholeproductcoverage/operating Source gates remain.",
+    "execution_ready": false,
+    "executed": false
+  },
+  "entry_extension": {
+    "plan_sha256": "65526b4b6c18a87ac2168fc42ae8aef93c64d4354448fbdab1e69b396488ffd2",
+    "base_rows_per_fork": 302,
+    "new_requests_per_fork": 43,
+    "new_success_per_fork": 12,
+    "new_mutations_per_fork": 11,
+    "new_refusals_per_fork": 31,
+    "data_sha256": "906b750baf917839ede890a6e72cbfb8585d8a49780c27453caae241b127d6af",
+    "model_sha256": "6e1a01ddf0f28f4d84c9f858c500dd0fcca7e82f99af709b91b86542ec983189",
+    "fixtures_sha256": "53946bb5e59598b4fb5510a4cbf01cbbd0f5162e5a74757ae8825d66cbb70fbd",
+    "scope": "Fixed owned entry/service priorities, namespace retention, expired/revoked/KEM-role eligibility, normal four separately indexed KEM endorsements; exactJCS/events/allStore/history/claims andprior302invariants. No new PoP corruption/attackgenerator, no external client, no proofcallorder/wholeG4/PC90/Source/operating closure. All earliermodel/clocks/claimheaders unchanged.",
+    "execution_ready": false,
+    "executed": false
   }
 }

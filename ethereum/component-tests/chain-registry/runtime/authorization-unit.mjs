@@ -15,6 +15,7 @@ import {keccak_256} from '@noble/hashes/sha3.js';
 import {call, word, sequence} from './normal-abi.mjs';
 import {senderTestSeed, initialFixture, ownedKey, publicKey, publicServices, jcs} from './owned-fixtures.mjs';
 import {assertStoreLayout, observeClaim, observeRecord} from './observe.mjs';
+import {entryFixtures} from './entry-fixtures.mjs';
 
 const root = new URL('./', import.meta.url), repo = new URL('../../../../', root), prefix = 'ethereum/contracts/chain-registry/';
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
@@ -459,8 +460,237 @@ for (const target of ['paris', 'shanghai']) test(target + ': normal wallet opera
     assert.equal(repeated[0].declaredGas, 200_000_000n);
     assert.equal(claimPlan.cases.length, 22);
     assert.equal(rows.length, claimPlan.planned_rows_per_fork);
+    // Four fixed owned lifecycle schedules. Prior238 rows and R2 claim headers
+    // stay unchanged; each new request occupies its own100M unit block context.
+    claimUnitSchedule = false;
+    const lifecyclePlan = load(new URL('lifecycle-cases.json', root));
+    assert.equal(lifecyclePlan.execution_ready, false);
+    assert.equal(lifecyclePlan.baseline_rows_per_fork, 238);
+    assert.equal(rows.length, lifecyclePlan.baseline_rows_per_fork);
+    assert.deepEqual(lifecyclePlan.traces.map(value => value.mode),
+      ['created', 'active', 'expiry-recovery', 'expiry-created']);
+    const completedLifecycle = [];
+    const observeLifecycle = async (value, steps, committed) => {
+      const last = steps.at(-1);
+      storageObservations.push(await observedRecord(vm, children.RegistryStore, identity, value.agent,
+        last ? {record:bin(last.record_hex),grants:bin(last.grants_hex),
+          admitted:BigInt(JSON.parse(bin(last.history_hex)).admitted),
+          history:steps.map((step,index)=>({version:BigInt(index+1),history:bin(step.history_hex),command:bin(step.command_hex)}))} : null));
+      storageObservations.push(await observedClaim(vm, children.RegistryStore, principal,
+        value.fixture.commitment,{present:committed!==null,consumed:steps.length>0,committed:committed??0n}));
+    };
+    const preservedLifecycle = async () => {
+      await invariant();
+      for (const value of completedLifecycle) await observeLifecycle(value,value.steps,value.committed);
+    };
+    let lifecycleSuccesses = 0, lifecycleRefusals = 0, lifecycleMutations = 0;
+    for (const fixedTrace of lifecyclePlan.traces) {
+      const nextAgent = fixedTrace.agent;
+      const nextFixture = initialFixture(identity,nextAgent,principal);
+      const expiry = fixedTrace.expiry_offset===null ? null : Number(10000n+height+BigInt(fixedTrace.expiry_offset));
+      if (expiry!==null) {
+        nextFixture.keys[1] = ownedKey(identity,nextAgent,'z-sign',{expires:expiry}).input;
+        nextFixture.record.keys = nextFixture.keys.map(value=>publicKey(value));
+        nextFixture.claim.keys = nextFixture.record.keys;
+        nextFixture.commitment = bin(sha(Buffer.concat([Buffer.from('sage-claim-0.11.0'),
+          Buffer.from([0]),Buffer.from(jcs(nextFixture.claim))])));
+      }
+      const nextAdded = ownedKey(identity,nextAgent,'m-add',{index:1}).input;
+      const value = {agent:nextAgent,fixture:nextFixture};
+      let nextHeight = height+2n;
+      const times = [Number(10000n+height+1n)];
+      for (const fixed of fixedTrace.cases) {
+        if (fixed.at_expiry) {
+          assert(expiry!==null);
+          nextHeight = nextHeight>BigInt(expiry)-10000n?nextHeight:BigInt(expiry)-10000n;
+        }
+        if (fixed.error===null) times.push(Number(10000n+nextHeight));
+        ++nextHeight;
+      }
+      assert.equal(times.length,fixedTrace.successful_mutations);
+      const inputs = {mode:fixedTrace.mode,registry:identity,initial:nextFixture.record,
+        added:publicKey(nextAdded),operator:senders[1].toString(),wallet:operatorWallet.toString(),
+        admitted:times,salt:nextFixture.salt.toString('base64url')};
+      const modeled = spawnSync('python3',['-B',new URL('expected-lifecycle.py',root).pathname],
+        {input:JSON.stringify(inputs),encoding:'utf8'});
+      assert.equal(modeled.status,0,modeled.stderr);
+      const steps = JSON.parse(modeled.stdout).steps;
+      assert.equal(steps.length,fixedTrace.successful_mutations);
+      write(target+'-'+nextAgent+'-model.json',{inputs,expected:steps});
+      await observeLifecycle(value,[],null);
+      const committed = await api('commitClaim',[nextFixture.commitment],[]);
+      assert.deepEqual(committed.logs,[{address:registry.toString().slice(2),
+        topics:[Buffer.from(keccak_256(Buffer.from('ClaimCommitted(address,bytes32,uint256)'))).toString('hex'),
+          word(BigInt(principal)).toString('hex'),nextFixture.commitment.toString('hex')],
+        data:word(BigInt(committed.block)).toString('hex')}]);
+      ++lifecycleSuccesses;
+      await observeLifecycle(value,[],BigInt(committed.block));
+      await preservedLifecycle();
+      let applied = 0;
+      const accept = async (row,golden) => {
+        assert.equal(Number(row.timestamp),times[applied]);
+        assert.equal(row.sender,golden.actor);
+        assert.equal(row.return_hex,sequence([{type:'uint64'}],[BigInt(applied+1)]).toString('hex'));
+        const history = JSON.parse(bin(golden.history_hex));
+        const eventData = sequence([{type:'string'},{type:'uint64'},{type:'uint64'},{type:'string'},
+          {type:'bytes32'},{type:'bytes32'},{type:'bytes32'},{type:'uint64'}],
+          [nextFixture.record.id,BigInt(applied),BigInt(applied+1),golden.operation,
+            bin(golden.command_digest_hex),bin(golden.record_digest_hex),bin(golden.grants_digest_hex),BigInt(history.admitted)]);
+        assert.deepEqual(row.logs,[{address:registry.toString().slice(2),
+          topics:[Buffer.from(keccak_256(Buffer.from('RecordChanged(bytes32,address,string,uint64,uint64,string,bytes32,bytes32,bytes32,uint64)'))).toString('hex'),golden.did_hash_hex,word(BigInt(golden.actor)).toString('hex')],
+          data:eventData.toString('hex')}]);
+        ++applied; ++lifecycleSuccesses; ++lifecycleMutations;
+      };
+      const revealed = await transact('lifecycle:'+fixedTrace.mode+':create',registry,
+        call(registryArtifact.abi,'revealClaim',[nextAgent,principal,nextFixture.keys,nextFixture.services,nextFixture.salt]));
+      await accept(revealed,steps[applied]);
+      await observeLifecycle(value,steps.slice(0,applied),BigInt(committed.block));
+      await preservedLifecycle();
+      const symbols = {'$agent':nextAgent,'$controller':principal,'$operator':senders[1].toString(),
+        '$wallet':operatorWallet.toString(),'$zero':'0x'+'0'.repeat(40),'$added':nextAdded};
+      for (const fixed of fixedTrace.cases) {
+        if (fixed.at_expiry) {
+          assert(expiry!==null);
+          height = height>BigInt(expiry)-10000n?height:BigInt(expiry)-10000n;
+        }
+        const args = fixed.args.map(item=>typeof item==='string'&&Object.hasOwn(symbols,item)?symbols[item]:item);
+        assert([0,1].includes(fixed.sender));
+        if (fixed.error!==null) assert(Object.hasOwn(errorReference,fixed.error));
+        const row = await transact('lifecycle:'+fixedTrace.mode+':'+fixed.label,registry,
+          call(registryArtifact.abi,fixed.method,args),fixed.sender,fixed.error===null?null:'revert');
+        if (fixed.error===null) await accept(row,steps[applied]);
+        else {
+          assert.equal(row.return_hex,errorReference[fixed.error].replace(/^0x/,''));
+          assert.deepEqual(row.logs,[]); ++lifecycleRefusals;
+        }
+        await observeLifecycle(value,steps.slice(0,applied),BigInt(committed.block));
+        await preservedLifecycle();
+      }
+      assert.equal(height,nextHeight);
+      assert.equal(applied,steps.length);
+      completedLifecycle.push({...value,steps,committed:BigInt(committed.block)});
+    }
+    assert.equal(completedLifecycle.length,4);
+    assert.equal(lifecycleSuccesses,lifecyclePlan.expected_new_successful_transactions);
+    assert.equal(lifecycleRefusals,lifecyclePlan.expected_new_refusals);
+    assert.equal(lifecycleMutations,lifecyclePlan.expected_new_mutations);
+    assert.equal(rows.length,lifecyclePlan.planned_rows_per_fork);
+
+    // Fixed owned entry and service targets, appended after the original302.
+    // Pre-proof refusals use fixed inert fields; no corrupted signatures run.
+    const entryPlan = load(new URL('entry-cases.json', root));
+    assert.equal(entryPlan.execution_ready, false);
+    assert.equal(rows.length, entryPlan.baseline_rows_per_fork);
+    const entryAgent = entryPlan.agent;
+    const entryInitial = initialFixture(identity, entryAgent, principal);
+    const entries = entryFixtures(identity, entryAgent);
+    const serviceValue = name => ({name, serviceType:'fixture', uri:'https://example.invalid/entry/'});
+    const freshServices = [serviceValue('fresh-service')];
+    const entryValue = {agent:entryAgent, fixture:entryInitial};
+    const fullDid = entryInitial.record.id;
+    const symbols = {'$agent':entryAgent, '$controller':principal,
+      '$initialKeys':entryInitial.keys, '$initialServices':entryInitial.services, '$salt':entryInitial.salt,
+      '$expired':entries.expired.input, '$added':entries.added.input,
+      '$kemAdded':entries.kemAdded.input, '$service':entries.service.input,
+      '$freshServices':freshServices};
+    const times = entryPlan.cases.flatMap((fixed,index) => fixed.error===null
+      ? [Number(10000n+height+1n+BigInt(index))] : []);
+    const inputs = {registry:identity, initial:entryInitial.record,
+      keys:['expired','added','kemAdded','service'].map(name=>publicKey(entries[name].input)),
+      services:publicServices(freshServices), admitted:times, salt:entryInitial.salt.toString('base64url')};
+    const modeled = spawnSync('python3',['-B',new URL('expected-entry.py',root).pathname],
+      {input:JSON.stringify(inputs),encoding:'utf8'});
+    assert.equal(modeled.status,0,modeled.stderr);
+    const steps = JSON.parse(modeled.stdout).steps;
+    assert.equal(steps.length,11);
+    write(target+'-'+entryAgent+'-model.json',{inputs,expected:steps});
+    let entryApplied=0, entryRefusals=0;
+    const diagnostic = label => {
+      const key = {...entries.guard.input};
+      const add = (value=key,version=entryApplied) => ['addKey',[entryAgent,version,value]];
+      const services = (values,version=entryApplied) => ['updateServices',[entryAgent,version,values]];
+      switch (label) {
+        case 'empty-key-name-before-caller': return add({...key,name:''});
+        case 'absent-expiry-nonzero-before-caller': return add({...key,hasExpiry:false,expires:1n});
+        case 'unsafe-expiry-before-caller': return add({...key,hasExpiry:true,expires:9007199254740992n});
+        case 'algorithm-width-before-caller': return add({...key,alg:'a'.repeat(25)});
+        case 'key-width-before-caller': return add({...key,key:Buffer.alloc(66,4)});
+        case 'proof-width-before-caller': return add({...key,proof:Buffer.alloc(66,2)});
+        case 'signer-width-before-caller': return add({...key,signer:'a'.repeat(190)});
+        case 'fragment-uri-before-caller': return services([{...serviceValue('ab-service'),uri:'https://example.invalid/entry/#fixed'}]);
+        case 'service-target-after-caller': return services([serviceValue('z-sign')]);
+        case 'predecessor-before-algorithm': return add({...key,alg:'p256'},0);
+        case 'unsupported-before-width': return add({...key,alg:'p256',key:Buffer.alloc(65,4),proof:Buffer.alloc(65,2)});
+        case 'ed-key-width': return add({...key,key:Buffer.alloc(31,4)});
+        case 'ed-proof-width': return add({...key,proof:Buffer.alloc(63,2)});
+        case 'ed-self-signer': return add({...key,signer:fullDid+'#z-sign'});
+        case 'accepted-name-before-material': return add(entries.initial.input);
+        case 'accepted-material-after-name': return add(entries.reusedInitial.input);
+        case 'live-service-name-blocks-key': return add(entries.service.input);
+        case 'service-inversion': return services([serviceValue('za-service'),serviceValue('ab-service')]);
+        case 'service-duplicate': return services([serviceValue('ab-service'),serviceValue('ab-service')]);
+        case 'kem-role-signer': return add({...entries.kemGuard.input,signer:fullDid+'#a-kem'});
+        case 'kem-absent-signer': return add({...entries.kemGuard.input,signer:fullDid+'#absent'});
+        case 'kem-cross-record-signer': return add({...entries.kemGuard.input,
+          signer:'did:sage:'+identity+':owned-other-entry#z-sign'});
+        case 'kem-expired-signer': return add(entries.kemExpired.input);
+        case 'revoked-name-retained': return add(entries.added.input);
+        case 'revoked-material-retained': return add(entries.reusedAdded.input);
+        case 'kem-revoked-m-add-signer': return add(entries.kemRevokedAdded.input);
+        case 'revoked-key-blocks-service': return services([serviceValue('m-add')]);
+        case 'accepted-key-blocks-service': return services([serviceValue('svc')]);
+        case 'kem-revoked-z-sign-signer': return add(entries.kemRevokedInitial.input);
+        case 'terminal-before-predecessor-target': return services([serviceValue('svc')],0);
+        case 'uri-width-before-caller': return services([{...serviceValue('ab-service'),
+          uri:'https://example.invalid/'+ 'a'.repeat(2049-'https://example.invalid/'.length)}]);
+        default: assert.fail('Unrecognized fixed entry diagnostic '+label);
+      }
+    };
+    await observeLifecycle(entryValue,[],null);
+    const entryCommitted = await api('commitClaim',[entryInitial.commitment],[]);
+    assert.deepEqual(entryCommitted.logs,[{address:registry.toString().slice(2),
+      topics:[Buffer.from(keccak_256(Buffer.from('ClaimCommitted(address,bytes32,uint256)'))).toString('hex'),
+        word(BigInt(principal)).toString('hex'),entryInitial.commitment.toString('hex')],
+      data:word(BigInt(entryCommitted.block)).toString('hex')}]);
+    await observeLifecycle(entryValue,[],BigInt(entryCommitted.block));
+    await preservedLifecycle();
+    for (const fixed of entryPlan.cases) {
+      const [method,args] = fixed.error===null
+        ? [fixed.method,fixed.args.map(value=>typeof value==='string'&&Object.hasOwn(symbols,value)?symbols[value]:value)]
+        : diagnostic(fixed.diagnostic);
+      assert([0,1].includes(fixed.sender));
+      const row = await transact('entries:'+fixed.label,registry,
+        call(registryArtifact.abi,method,args),fixed.sender,fixed.error===null?null:'revert');
+      if (fixed.error===null) {
+        const golden = steps[entryApplied], version=BigInt(entryApplied+1);
+        assert.equal(Number(row.timestamp),times[entryApplied]);
+        assert.equal(row.sender,golden.actor);
+        assert.equal(row.return_hex,sequence([{type:'uint64'}],[version]).toString('hex'));
+        const history = JSON.parse(bin(golden.history_hex));
+        const eventData = sequence([{type:'string'},{type:'uint64'},{type:'uint64'},{type:'string'},
+          {type:'bytes32'},{type:'bytes32'},{type:'bytes32'},{type:'uint64'}],
+          [fullDid,BigInt(entryApplied),version,golden.operation,
+            bin(golden.command_digest_hex),bin(golden.record_digest_hex),bin(golden.grants_digest_hex),BigInt(history.admitted)]);
+        assert.deepEqual(row.logs,[{address:registry.toString().slice(2),
+          topics:[Buffer.from(keccak_256(Buffer.from('RecordChanged(bytes32,address,string,uint64,uint64,string,bytes32,bytes32,bytes32,uint64)'))).toString('hex'),
+            golden.did_hash_hex,word(BigInt(golden.actor)).toString('hex')],data:eventData.toString('hex')}]);
+        ++entryApplied;
+      } else {
+        assert(Object.hasOwn(errorReference,fixed.error));
+        assert.equal(row.return_hex,errorReference[fixed.error].replace(/^0x/,''));
+        assert.deepEqual(row.logs,[]);
+        ++entryRefusals;
+      }
+      await observeLifecycle(entryValue,steps.slice(0,entryApplied),BigInt(entryCommitted.block));
+      await preservedLifecycle();
+    }
+    assert.equal(entryApplied,entryPlan.new_mutations);
+    assert.equal(entryApplied+1,entryPlan.new_successful_transactions);
+    assert.equal(entryRefusals,entryPlan.new_refusals);
+    assert.equal(rows.length,entryPlan.planned_rows_per_fork);
+
 
   }
   write(target + '-store-observations.json', {scope:'Read-only local owned fullStore packing/mapping/claim/retained-state observations only; not Source',storageLayout,storageObservations});
-  write(target + '-rows.json', {scope: 'Owned wallet-operator13-mutation trace with14fixed authority refusals plus controller terminal refusal and5fixed read refusals/one absent-record read plus27fixed scalar/public-reader queries and22fixed owned claim-namespace/window requests, raw Store/history observations; no maximumcost/coverage/operating/finality claim', complete: true, rows});
+  write(target + '-rows.json', {scope: 'Owned wallet-operator13-mutation trace with14fixed authority refusals plus controller terminal refusal and5fixed read refusals/one absent-record read plus27fixed scalar/public-reader queries,22fixed owned claim-namespace/window requests and64fixed lifecycle/grant/expiry requests plus43fixed owned entry/service requests, raw Store/history observations; no maximumcost/coverage/operating/finality claim', complete: true, rows});
 });

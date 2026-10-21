@@ -1,0 +1,734 @@
+{
+  "scope": "Future fixed owned local unit lifecycle/principal/predecessor/grant/expiry scenarios only; no attack producer, network, operating Source, consensus or runtime acceptance",
+  "execution_ready": false,
+  "baseline_rows_per_fork": 238,
+  "new_rows_per_fork": 64,
+  "planned_rows_per_fork": 302,
+  "expected_new_successful_transactions": 34,
+  "expected_new_refusals": 30,
+  "expected_new_mutations": 30,
+  "unit_transaction_gas_limit": "100000000",
+  "traces": [
+    {
+      "mode": "created",
+      "agent": "owned-lifecycle-created",
+      "expiry_offset": null,
+      "successful_mutations": 3,
+      "cases": [
+        {
+          "label": "principal-before-created-state",
+          "method": "activate",
+          "args": [
+            "$agent",
+            "0"
+          ],
+          "sender": 1,
+          "error": "UnauthorizedCaller",
+          "at_expiry": false
+        },
+        {
+          "label": "created-before-add-predecessor",
+          "method": "addKey",
+          "args": [
+            "$agent",
+            "0",
+            "$added"
+          ],
+          "sender": 0,
+          "error": "WrongRecordState",
+          "at_expiry": false
+        },
+        {
+          "label": "created-before-service-predecessor",
+          "method": "updateServices",
+          "args": [
+            "$agent",
+            "0",
+            []
+          ],
+          "sender": 0,
+          "error": "WrongRecordState",
+          "at_expiry": false
+        },
+        {
+          "label": "created-activate-predecessor",
+          "method": "activate",
+          "args": [
+            "$agent",
+            "0"
+          ],
+          "sender": 0,
+          "error": "PreviousVersionMismatch",
+          "at_expiry": false
+        },
+        {
+          "label": "created-self-grant",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "1",
+            "$controller",
+            "activate"
+          ],
+          "sender": 0,
+          "error": "InvalidEntry",
+          "at_expiry": false
+        },
+        {
+          "label": "created-invalid-scope",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "1",
+            "$operator",
+            "add-key"
+          ],
+          "sender": 0,
+          "error": "InvalidEntry",
+          "at_expiry": false
+        },
+        {
+          "label": "created-self-revoke-before-absence",
+          "method": "revokeOperator",
+          "args": [
+            "$agent",
+            "1",
+            "$controller",
+            "deactivate"
+          ],
+          "sender": 0,
+          "error": "InvalidEntry",
+          "at_expiry": false
+        },
+        {
+          "label": "created-missing-grant",
+          "method": "revokeOperator",
+          "args": [
+            "$agent",
+            "1",
+            "$operator",
+            "deactivate"
+          ],
+          "sender": 0,
+          "error": "GrantUnavailable",
+          "at_expiry": false
+        },
+        {
+          "label": "controller-created-revoke-kem",
+          "method": "revokeKey",
+          "args": [
+            "$agent",
+            "1",
+            "a-kem"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "created-already-revoked-key",
+          "method": "revokeKey",
+          "args": [
+            "$agent",
+            "2",
+            "a-kem"
+          ],
+          "sender": 0,
+          "error": "KeyUnavailable",
+          "at_expiry": false
+        },
+        {
+          "label": "controller-created-deactivation",
+          "method": "deactivate",
+          "args": [
+            "$agent",
+            "2"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "terminal-before-predecessor-activate",
+          "method": "activate",
+          "args": [
+            "$agent",
+            "0"
+          ],
+          "sender": 0,
+          "error": "WrongRecordState",
+          "at_expiry": false
+        },
+        {
+          "label": "terminal-before-predecessor-addKey",
+          "method": "addKey",
+          "args": [
+            "$agent",
+            "0",
+            "$added"
+          ],
+          "sender": 0,
+          "error": "WrongRecordState",
+          "at_expiry": false
+        },
+        {
+          "label": "terminal-before-predecessor-revokeKey",
+          "method": "revokeKey",
+          "args": [
+            "$agent",
+            "0",
+            "z-sign"
+          ],
+          "sender": 0,
+          "error": "WrongRecordState",
+          "at_expiry": false
+        },
+        {
+          "label": "terminal-before-predecessor-updateServices",
+          "method": "updateServices",
+          "args": [
+            "$agent",
+            "0",
+            []
+          ],
+          "sender": 0,
+          "error": "WrongRecordState",
+          "at_expiry": false
+        },
+        {
+          "label": "terminal-before-predecessor-authorizeOperator",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "0",
+            "$operator",
+            "deactivate"
+          ],
+          "sender": 0,
+          "error": "WrongRecordState",
+          "at_expiry": false
+        },
+        {
+          "label": "terminal-before-predecessor-revokeOperator",
+          "method": "revokeOperator",
+          "args": [
+            "$agent",
+            "0",
+            "$operator",
+            "deactivate"
+          ],
+          "sender": 0,
+          "error": "WrongRecordState",
+          "at_expiry": false
+        },
+        {
+          "label": "terminal-before-predecessor-deactivate",
+          "method": "deactivate",
+          "args": [
+            "$agent",
+            "0"
+          ],
+          "sender": 0,
+          "error": "WrongRecordState",
+          "at_expiry": false
+        }
+      ]
+    },
+    {
+      "mode": "active",
+      "agent": "owned-lifecycle-active",
+      "expiry_offset": null,
+      "successful_mutations": 15,
+      "cases": [
+        {
+          "label": "first-activate-grant",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "1",
+            "$operator",
+            "activate"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "zero-address-is-target-only",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "2",
+            "$zero",
+            "deactivate"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "second-activate-grant",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "3",
+            "$wallet",
+            "activate"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "retained-deactivate-grant",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "4",
+            "$operator",
+            "deactivate"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "duplicate-pair",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "5",
+            "$operator",
+            "activate"
+          ],
+          "sender": 0,
+          "error": "GrantAlreadyPresent",
+          "at_expiry": false
+        },
+        {
+          "label": "missing-pair-same-operator",
+          "method": "revokeOperator",
+          "args": [
+            "$agent",
+            "5",
+            "$wallet",
+            "deactivate"
+          ],
+          "sender": 0,
+          "error": "GrantUnavailable",
+          "at_expiry": false
+        },
+        {
+          "label": "authorized-predecessor-mismatch",
+          "method": "activate",
+          "args": [
+            "$agent",
+            "0"
+          ],
+          "sender": 0,
+          "error": "PreviousVersionMismatch",
+          "at_expiry": false
+        },
+        {
+          "label": "activation-clears-both-activate-pairs",
+          "method": "activate",
+          "args": [
+            "$agent",
+            "5"
+          ],
+          "sender": 1,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "active-state-before-predecessor",
+          "method": "activate",
+          "args": [
+            "$agent",
+            "0"
+          ],
+          "sender": 0,
+          "error": "WrongRecordState",
+          "at_expiry": false
+        },
+        {
+          "label": "active-invalid-activate-scope",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "6",
+            "$operator",
+            "activate"
+          ],
+          "sender": 0,
+          "error": "InvalidEntry",
+          "at_expiry": false
+        },
+        {
+          "label": "grant-add",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "6",
+            "$operator",
+            "add-key"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "grant-revoke",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "7",
+            "$operator",
+            "revoke-key"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "granted-operator-add",
+          "method": "addKey",
+          "args": [
+            "$agent",
+            "8",
+            "$added"
+          ],
+          "sender": 1,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "granted-operator-revoke",
+          "method": "revokeKey",
+          "args": [
+            "$agent",
+            "9",
+            "m-add"
+          ],
+          "sender": 1,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "operator-cannot-delegate",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "10",
+            "$wallet",
+            "deactivate"
+          ],
+          "sender": 1,
+          "error": "UnauthorizedCaller",
+          "at_expiry": false
+        },
+        {
+          "label": "operator-cannot-revoke-grant",
+          "method": "revokeOperator",
+          "args": [
+            "$agent",
+            "10",
+            "$zero",
+            "deactivate"
+          ],
+          "sender": 1,
+          "error": "UnauthorizedCaller",
+          "at_expiry": false
+        },
+        {
+          "label": "granted-operator-revoked-key",
+          "method": "revokeKey",
+          "args": [
+            "$agent",
+            "10",
+            "m-add"
+          ],
+          "sender": 1,
+          "error": "KeyUnavailable",
+          "at_expiry": false
+        },
+        {
+          "label": "retained-key-name",
+          "method": "addKey",
+          "args": [
+            "$agent",
+            "10",
+            "$added"
+          ],
+          "sender": 1,
+          "error": "KeyNameReused",
+          "at_expiry": false
+        },
+        {
+          "label": "service-predecessor",
+          "method": "updateServices",
+          "args": [
+            "$agent",
+            "0",
+            []
+          ],
+          "sender": 0,
+          "error": "PreviousVersionMismatch",
+          "at_expiry": false
+        },
+        {
+          "label": "controller-empty-services",
+          "method": "updateServices",
+          "args": [
+            "$agent",
+            "10",
+            []
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "explicit-middle-pair-removal",
+          "method": "revokeOperator",
+          "args": [
+            "$agent",
+            "11",
+            "$operator",
+            "add-key"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "removed-scope-before-target",
+          "method": "addKey",
+          "args": [
+            "$agent",
+            "12",
+            "$added"
+          ],
+          "sender": 1,
+          "error": "UnauthorizedCaller",
+          "at_expiry": false
+        },
+        {
+          "label": "explicit-first-zero-target-removal",
+          "method": "revokeOperator",
+          "args": [
+            "$agent",
+            "12",
+            "$zero",
+            "deactivate"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "explicit-last-pair-removal",
+          "method": "revokeOperator",
+          "args": [
+            "$agent",
+            "13",
+            "$operator",
+            "revoke-key"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "operator-terminal-cleans-all",
+          "method": "deactivate",
+          "args": [
+            "$agent",
+            "14"
+          ],
+          "sender": 1,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "terminal-controller-before-predecessor",
+          "method": "deactivate",
+          "args": [
+            "$agent",
+            "0"
+          ],
+          "sender": 0,
+          "error": "WrongRecordState",
+          "at_expiry": false
+        }
+      ]
+    },
+    {
+      "mode": "expiry-recovery",
+      "agent": "owned-lifecycle-recovery",
+      "expiry_offset": 50,
+      "successful_mutations": 9,
+      "cases": [
+        {
+          "label": "expiry-activation-grant",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "1",
+            "$operator",
+            "activate"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "expiry-activate",
+          "method": "activate",
+          "args": [
+            "$agent",
+            "2"
+          ],
+          "sender": 1,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "expiry-service-grant",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "3",
+            "$operator",
+            "update-services"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "expired-signer-does-not-block-services",
+          "method": "updateServices",
+          "args": [
+            "$agent",
+            "4",
+            []
+          ],
+          "sender": 1,
+          "error": null,
+          "at_expiry": true
+        },
+        {
+          "label": "controller-add-restores-usable-key",
+          "method": "addKey",
+          "args": [
+            "$agent",
+            "5",
+            "$added"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "controller-revokes-expired-old-signer",
+          "method": "revokeKey",
+          "args": [
+            "$agent",
+            "6",
+            "z-sign"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "expiry-deactivation-grant",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "7",
+            "$operator",
+            "deactivate"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "expiry-recovery-terminal",
+          "method": "deactivate",
+          "args": [
+            "$agent",
+            "8"
+          ],
+          "sender": 1,
+          "error": null,
+          "at_expiry": false
+        }
+      ]
+    },
+    {
+      "mode": "expiry-created",
+      "agent": "owned-lifecycle-expired",
+      "expiry_offset": 50,
+      "successful_mutations": 3,
+      "cases": [
+        {
+          "label": "created-expiry-activate-grant",
+          "method": "authorizeOperator",
+          "args": [
+            "$agent",
+            "1",
+            "$operator",
+            "activate"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        },
+        {
+          "label": "expiry-equality-controller-activate",
+          "method": "activate",
+          "args": [
+            "$agent",
+            "2"
+          ],
+          "sender": 0,
+          "error": "InvalidEntry",
+          "at_expiry": true
+        },
+        {
+          "label": "expired-operator-activate",
+          "method": "activate",
+          "args": [
+            "$agent",
+            "2"
+          ],
+          "sender": 1,
+          "error": "InvalidEntry",
+          "at_expiry": false
+        },
+        {
+          "label": "controller-can-deactivate-expired-created",
+          "method": "deactivate",
+          "args": [
+            "$agent",
+            "2"
+          ],
+          "sender": 0,
+          "error": null,
+          "at_expiry": false
+        }
+      ]
+    }
+  ],
+  "still_not_qualified": [
+    "same-admitted-time equality and unsafe/backward time integration",
+    "version exhaustion stored reachability",
+    "128-grant boundary full capacity separate",
+    "claim delta1/256 successful boundary",
+    "wholeG1-G6 and product90",
+    "operatingSource/fixed5/7-8"
+  ]
+}
