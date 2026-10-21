@@ -38,7 +38,7 @@ jobs:
           sys.path.insert(0,'scripts')
           from registry_triage import commit_parents
           git=lambda *args:subprocess.check_output(['git',*args],text=True).strip()
-          names=['contracts/chain-registry/ChainRegistry.sol','slither.db.json','.slither.config.json','scripts/registry_triage.py','scripts/test_registry_triage.py','../.github/workflows/security.yml']
+          names=['contracts/chain-registry/ChainRegistry.sol','slither.db.json','.slither.config.json','scripts/registry_triage.py','scripts/test_registry_triage.py','scripts/registry_slither.py','scripts/test_registry_slither.py','../.github/workflows/security.yml']
           selected=['GITHUB_REPOSITORY','GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','GITHUB_EVENT_NAME','GITHUB_SHA','GITHUB_REF','GITHUB_JOB','GITHUB_WORKFLOW_REF','GITHUB_WORKFLOW_SHA','RUNNER_OS','RUNNER_ARCH']
           value={'scope':'Unsigned CI checkout/source observation; not Registry runtime or operating qualification','environment':{name:os.environ[name]for name in selected},'checkout':git('rev-parse','HEAD'),'tree':git('rev-parse','HEAD^{tree}'),'parents':commit_parents(git('cat-file','-p','HEAD')),'python':sys.version,'files_sha256':{name:hashlib.sha256(Path(name).read_bytes()).hexdigest()for name in names}}
           with Path('../registry-triage-context.json').open('x')as stream:json.dump(value,stream,indent=2);stream.write('\n')
@@ -50,11 +50,14 @@ jobs:
           python3 -B -m trace --count --missing --summary --coverdir triage-coverage scripts/test_registry_triage.py > triage-unit.log 2>&1 || registry_unit_status=$?
           cat triage-unit.log
           test "$registry_unit_status" -eq 0
+          python3 -B -m trace --count --missing --summary --coverdir triage-coverage scripts/test_registry_slither.py >> triage-unit.log 2>&1 || registry_unit_status=$?
+          cat triage-unit.log
+          test "$registry_unit_status" -eq 0
           python3 -B - <<'PYTHON'
           from pathlib import Path
           import re, json
           observations={}
-          for name in ['registry_triage', 'test_registry_triage']:
+          for name in ['registry_triage', 'test_registry_triage', 'registry_slither', 'test_registry_slither']:
               paths=[p for p in Path('triage-coverage').glob('*.cover') if p.stem.rsplit('.',1)[-1]==name]
               assert len(paths)==1, (name, paths)
               lines=paths[0].read_text().splitlines()
@@ -72,7 +75,7 @@ jobs:
         run: |
           python3 -B -c "from pathlib import Path; Path('../registry-triage-empty.json').open('x').write('[]\n')"
           registry_raw_status=0
-          slither . --config-file .slither.config.json --compile-force-framework hardhat --fail-high --triage-database ../registry-triage-empty.json --sarif ../slither-raw-results.sarif --json ../slither-raw-results.json > ../slither-raw-run.log 2>&1 || registry_raw_status=$?
+          REGISTRY_SLITHER_ORDER_RECEIPT=../registry-slither-order-raw.json python3 -B scripts/registry_slither.py . --config-file .slither.config.json --compile-force-framework hardhat --fail-high --triage-database ../registry-triage-empty.json --sarif ../slither-raw-results.sarif --json ../slither-raw-results.json > ../slither-raw-run.log 2>&1 || registry_raw_status=$?
           cat ../slither-raw-run.log
           python3 -B scripts/registry_triage.py raw ../slither-raw-results.json "$registry_raw_status" > ../registry-triage-raw-check.json
       - name: Run Slither (blocking on High)
@@ -80,7 +83,7 @@ jobs:
         # crytic-compile >= 0.4 is required to read Hardhat 3 build-info files.
         run: |
           status=0
-          slither . --config-file .slither.config.json --compile-force-framework hardhat --fail-high --sarif ../slither-results.sarif --json ../slither-results.json > ../slither-run.log 2>&1 || status=$?
+          REGISTRY_SLITHER_ORDER_RECEIPT=../registry-slither-order-triaged.json python3 -B scripts/registry_slither.py . --config-file .slither.config.json --compile-force-framework hardhat --fail-high --sarif ../slither-results.sarif --json ../slither-results.json > ../slither-run.log 2>&1 || status=$?
           cat ../slither-run.log
           if [ -f ../slither-results.json ]; then cat ../slither-results.json; fi
           exit "$status"
@@ -101,9 +104,12 @@ jobs:
             ethereum/contracts/chain-registry/ChainRegistry.sol
             ethereum/scripts/registry_triage.py
             ethereum/scripts/test_registry_triage.py
+            ethereum/scripts/registry_slither.py
+            ethereum/scripts/test_registry_slither.py
             ethereum/triage-unit.log
             ethereum/triage-coverage/
             registry-triage-*.json
+            registry-slither-order-*.json
             slither-raw-run.log
             slither-run.log
             slither-raw-results.json
