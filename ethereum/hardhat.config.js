@@ -271,6 +271,56 @@ const solidityConfig = {
   ]
 };
 
+// The chain Registry is validated with standard viaIR optimization. Keep the
+// existing compiler settings for unrelated contracts and their regression tests.
+const chainRegistryCompiler = {
+  version: "0.8.20",
+  settings: {
+    optimizer: { enabled: true, runs: 200 },
+    viaIR: true,
+    evmVersion: "shanghai",
+    metadata: { bytecodeHash: "ipfs", appendCBOR: true },
+    outputSelection: solidityConfig.settings.outputSelection
+  }
+};
+
+const chainRegistrySources = [
+  "contracts/chain-registry/ChainRegistry.sol",
+  "contracts/chain-registry/IChainRegistry.sol",
+  "contracts/chain-registry/RegistryBuffer.sol",
+  "contracts/chain-registry/RegistryCallValidator.sol",
+  "contracts/chain-registry/RegistryClaimProcessor.sol",
+  "contracts/chain-registry/RegistryClaimProcessorFactory.sol",
+  "contracts/chain-registry/RegistryDomain.sol",
+  "contracts/chain-registry/RegistryEd25519.sol",
+  "contracts/chain-registry/RegistryEntries.sol",
+  "contracts/chain-registry/RegistryFraming.sol",
+  "contracts/chain-registry/RegistryGrammar.sol",
+  "contracts/chain-registry/RegistryHashBytes.sol",
+  "contracts/chain-registry/RegistryJson.sol",
+  "contracts/chain-registry/RegistryKeyServiceProcessor.sol",
+  "contracts/chain-registry/RegistryKeyServiceProcessorFactory.sol",
+  "contracts/chain-registry/RegistryLifecycleProcessor.sol",
+  "contracts/chain-registry/RegistryLifecycleProcessorFactory.sol",
+  "contracts/chain-registry/RegistryProcessor.sol",
+  "contracts/chain-registry/RegistryRenderer.sol",
+  "contracts/chain-registry/RegistryRoleHashes.sol",
+  "contracts/chain-registry/RegistryRules.sol",
+  "contracts/chain-registry/RegistrySha512.sol",
+  "contracts/chain-registry/RegistryState.sol",
+  "contracts/chain-registry/RegistryStore.sol",
+  "contracts/chain-registry/RegistryStoreFactory.sol",
+  "contracts/chain-registry/RegistryText.sol",
+  "contracts/chain-registry/RegistryTransition.sol",
+  "contracts/chain-registry/RegistryTransport.sol",
+  "contracts/chain-registry/vendor/Sha2Ext.sol"
+];
+const compilerProfiles = {
+  compilers: [{ version: solidityConfig.version, settings: solidityConfig.settings }],
+  overrides: Object.fromEntries(chainRegistrySources.map(path => [path, chainRegistryCompiler])),
+  exclude: solidityConfig.exclude
+};
+
 // ============================================
 // ETHERSCAN/EXPLORER CONFIGURATION
 // ============================================
@@ -383,7 +433,7 @@ const config = {
 
   defaultNetwork: "hardhat",
 
-  solidity: solidityConfig,
+  solidity: compilerProfiles,
 
   networks: networks,
 
