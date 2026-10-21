@@ -1,5 +1,5 @@
 {
-  "scope": "Composed fixed expected unit data: prior302 plus43 owned entry/service requests; SOURCE draft, no runtime/CI/wholeG4 or operating verdict",
+  "scope": "Fixed expected unit data prior345 plus10owned claim-window/clock requests, SOURCE proposal only",
   "baseline": {
     "head": "03bb76e5793858231804453a77a7550a0abd580d",
     "source_sha256": "fb0aa5df05c13c30a061a0c238d0c25241604a7155bed1931bca32dc49d1eb2c",
@@ -68,8 +68,8 @@
     "execution_ready": false,
     "diagnostic_specificity": "Five bad-content history cases use positive1; scalar InvalidEntry is distinguishable from absent WrongRecordState.65byte+0 is framing first, not Grammar-only priority. Other prior cases unchanged."
   },
-  "planned_rows_per_fork": 345,
-  "planned_rows_total": 690,
+  "planned_rows_per_fork": 355,
+  "planned_rows_total": 710,
   "assertions": "Original13mutations/modelclocks/14authorityrefusals/READ6 unchanged. New27readcalls:23fixedrefusals4successes; canonical input/ungrantedEOA1, exact public22error/noEvents, allterminalrecord/grants/admitted/13retainedhistory/claim preserved; absenttarget rawpresence0 only. 65bytehistory0 is framing-first; five bad-content positivehistory1 distinguish grammar InvalidEntry from missing WrongRecordState.",
   "coverage": "Raw fresh harness>=90 required; no new PC observer or product90 result",
   "execution_ready": false,
@@ -138,6 +138,17 @@
     "model_sha256": "6e1a01ddf0f28f4d84c9f858c500dd0fcca7e82f99af709b91b86542ec983189",
     "fixtures_sha256": "53946bb5e59598b4fb5510a4cbf01cbbd0f5162e5a74757ae8825d66cbb70fbd",
     "scope": "Fixed owned entry/service priorities, namespace retention, expired/revoked/KEM-role eligibility, normal four separately indexed KEM endorsements; exactJCS/events/allStore/history/claims andprior302invariants. No new PoP corruption/attackgenerator, no external client, no proofcallorder/wholeG4/PC90/Source/operating closure. All earliermodel/clocks/claimheaders unchanged.",
+    "execution_ready": false,
+    "executed": false
+  },
+  "claim_clock_extension": {
+    "base_rows_per_fork": 345,
+    "new_requests_per_fork": 10,
+    "successes": 8,
+    "refusals": 2,
+    "mutations": 4,
+    "data_sha256": "c836a74f27cd40cdbd58a7091ea171f46a17d092da9563f87678e156fa1b105c",
+    "model_sha256": "f82c49376724df30c351e3ceb5d82ac44f42c9b6b6a4a311c47d508b1c2f1afe",
     "execution_ready": false,
     "executed": false
   }

@@ -119,6 +119,34 @@ jobs:
             --test-reporter=spec --test-reporter-destination=stdout \
             --test-reporter=lcov --test-reporter-destination=runtime/evidence/validator-unit-coverage.lcov \
             runtime/validator-unit.mjs > runtime/evidence/validator-unit.log 2>&1
+      - name: Check fixed message observer cleanup and failure bookkeeping
+        run: |
+          node --max-old-space-size=512 --test --test-concurrency=1 --experimental-test-coverage \
+            --test-coverage-lines=90 --test-coverage-include='**/message-observer*.mjs' \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=lcov --test-reporter-destination=runtime/evidence/message-observer-unit-coverage.lcov \
+            runtime/message-observer-unit.mjs > runtime/evidence/message-observer-unit.log 2>&1
+      - name: Check normal proof-call order and retained state
+        run: |
+          node --max-old-space-size=512 --test --test-concurrency=1 --experimental-test-coverage \
+            --test-coverage-lines=90 --test-coverage-include='**/proof-order-unit.mjs' \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=lcov --test-reporter-destination=runtime/evidence/proof-order-unit-coverage.lcov \
+            runtime/proof-order-unit.mjs > runtime/evidence/proof-order-unit.log 2>&1
+      - name: Check separate fixed-size observation bookkeeping
+        run: |
+          node --max-old-space-size=512 --test --test-concurrency=1 --experimental-test-coverage \
+            --test-coverage-lines=90 --test-coverage-include='**/late-headroom-message-observer*.mjs' \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=lcov --test-reporter-destination=runtime/evidence/late-headroom-message-observer-unit-coverage.lcov \
+            runtime/late-headroom-message-observer-unit.mjs > runtime/evidence/late-headroom-message-observer-unit.log 2>&1
+      - name: Check fixed owned admission headroom and retained state
+        run: |
+          node --max-old-space-size=512 --test --test-concurrency=1 --experimental-test-coverage \
+            --test-coverage-lines=90 --test-coverage-include='**/late-headroom-unit.mjs' \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=lcov --test-reporter-destination=runtime/evidence/late-headroom-unit-coverage.lcov \
+            runtime/late-headroom-unit.mjs > runtime/evidence/late-headroom-unit.log 2>&1
       - name: Preserve source and actual observations
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9

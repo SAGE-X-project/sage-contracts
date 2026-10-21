@@ -689,8 +689,110 @@ for (const target of ['paris', 'shanghai']) test(target + ': normal wallet opera
     assert.equal(entryRefusals,entryPlan.new_refusals);
     assert.equal(rows.length,entryPlan.planned_rows_per_fork);
 
+    // Appended normal owned claim-window/clock units; no old row/header changes.
+    const clockPlan = load(new URL('claim-clock-cases.json',root));
+    assert.equal(clockPlan.execution_ready,false);
+    assert.equal(rows.length,clockPlan.baseline_rows_per_fork);
+    assert.equal(clockPlan.unit_block_gas_limit,'200000000');
+    assert.equal(clockPlan.transaction_execution_gas_limit,'100000000');
+    const clockBase=height;
+    const upper=make('owned-claim-upper'), retry=make('owned-claim-retry');
+    const corrected=make('owned-claim-collision');
+    const collision=make('owned-claim-collision');
+    collision.services=[{name:'z-sign',serviceType:'fixture',uri:'https://example.invalid/collision/'}];
+    collision.record.services=publicServices(collision.services);
+    collision.claim.services=collision.record.services;
+    collision.commitment=bin(sha(Buffer.concat([Buffer.from('sage-claim-0.11.0'),
+      Buffer.from([0]),Buffer.from(jcs(collision.claim))])));
+    const clockFixtures={upper,retry,collision,corrected};
+    assert.equal(new Set(Object.values(clockFixtures).map(value=>value.commitment.toString('hex'))).size,4);
+    const modelInputs={registry:identity,base_height:Number(clockBase),
+      collision:{claim:collision.claim,commitment_hex:collision.commitment.toString('hex')},
+      fixtures:[upper,retry,corrected].map(value=>({record:value.record,claim:value.claim,
+        commitment_hex:value.commitment.toString('hex')}))};
+    const clockModeled=spawnSync('python3',['-B',new URL('expected-claim-clock.py',root).pathname],
+      {input:JSON.stringify(modelInputs),encoding:'utf8'});
+    assert.equal(clockModeled.status,0,clockModeled.stderr);
+    const clockSteps=JSON.parse(clockModeled.stdout).traces;
+    assert.deepEqual(clockSteps.map(value=>value.length),[1,2,1]);
+    write(target+'-claim-clock-model.json',{inputs:modelInputs,expected:clockSteps,
+      collision_claim:collision.claim,collision_commitment_hex:collision.commitment.toString('hex')});
+    const clockStates=Object.fromEntries(Object.keys(clockFixtures).map(name=>[name,{committed:null,consumed:false}]));
+    const appliedClock={upper:0,retry:0,corrected:0};
+    const clockTrace={upper:clockSteps[0],retry:clockSteps[1],corrected:clockSteps[2]};
+    const preservedClock=async()=>{
+      await preservedLifecycle();
+      await observeLifecycle(entryValue,steps,BigInt(entryCommitted.block));
+      for (const name of ['upper','retry','corrected']) {
+        const value=clockFixtures[name], state=clockStates[name];
+        await observeLifecycle({agent:value.name,fixture:value},clockTrace[name].slice(0,appliedClock[name]),state.committed);
+      }
+      for (const value of Object.values(clockFixtures)) storageObservations.push(await observedClaim(vm,
+        children.RegistryStore,senders[1].toString(),value.commitment,{present:false,consumed:false,committed:0n}));
+      const state=clockStates.collision;
+      storageObservations.push(await observedClaim(vm,children.RegistryStore,principal,collision.commitment,
+        {present:state.committed!==null,consumed:state.consumed,committed:state.committed??0n}));
+    };
+    await preservedClock();
+    claimUnitSchedule=true;
+    let clockSuccesses=0,clockRefusals=0,clockMutations=0;
+    const scheduledRows=[];
+    for (const fixed of clockPlan.cases) {
+      const value=clockFixtures[fixed.fixture],state=clockStates[fixed.fixture];
+      height=clockBase+BigInt(fixed.block_offset);
+      const args=fixed.method==='commitClaim'?[value.commitment]:fixed.method==='activate'?
+        [value.name,1n]:revealValues(value);
+      const row=await transact('claim-clock:'+fixed.label,registry,
+        call(registryArtifact.abi,fixed.method,args),0,fixed.error===null?null:'revert');
+      scheduledRows.push(row);
+      assert.equal(BigInt(row.block),clockBase+BigInt(fixed.block_offset));
+      if (fixed.error!==null) {
+        assert.equal(row.return_hex,errorReference[fixed.error].replace(/^0x/,''));
+        assert.deepEqual(row.logs,[]);++clockRefusals;
+      } else if (fixed.method==='commitClaim') {
+        assert.equal(state.committed,null);
+        assert.equal(row.return_hex,'');state.committed=BigInt(row.block);
+        assert.deepEqual(row.logs,[{address:registry.toString().slice(2),
+          topics:[Buffer.from(keccak_256(Buffer.from('ClaimCommitted(address,bytes32,uint256)'))).toString('hex'),
+            word(BigInt(principal)).toString('hex'),value.commitment.toString('hex')],data:word(state.committed).toString('hex')}]);
+        ++clockSuccesses;
+      } else {
+        const index=appliedClock[fixed.fixture],golden=clockTrace[fixed.fixture][index];
+        const history=JSON.parse(bin(golden.history_hex));
+        assert.equal(row.sender,golden.actor);
+        assert.equal(BigInt(row.timestamp),BigInt(history.admitted));
+        assert.equal(row.return_hex,sequence([{type:'uint64'}],[BigInt(index+1)]).toString('hex'));
+        const eventData=sequence([{type:'string'},{type:'uint64'},{type:'uint64'},{type:'string'},
+          {type:'bytes32'},{type:'bytes32'},{type:'bytes32'},{type:'uint64'}],
+          [value.record.id,BigInt(index),BigInt(index+1),golden.operation,bin(golden.command_digest_hex),
+            bin(golden.record_digest_hex),bin(golden.grants_digest_hex),BigInt(history.admitted)]);
+        assert.deepEqual(row.logs,[{address:registry.toString().slice(2),
+          topics:[Buffer.from(keccak_256(Buffer.from('RecordChanged(bytes32,address,string,uint64,uint64,string,bytes32,bytes32,bytes32,uint64)'))).toString('hex'),
+            golden.did_hash_hex,word(BigInt(golden.actor)).toString('hex')],data:eventData.toString('hex')}]);
+        ++appliedClock[fixed.fixture];state.consumed=true;++clockSuccesses;++clockMutations;
+      }
+      await preservedClock();
+    }
+    assert.equal(height,clockBase+263n);
+    for (const [left,right] of [[2,3],[4,5]]) {
+      assert.equal(scheduledRows[left].unit_block_header_hex,scheduledRows[right].unit_block_header_hex);
+      assert.equal(scheduledRows[left].unit_block_transactions,1);
+      assert.equal(scheduledRows[right].unit_block_transactions,2);
+      assert.equal(scheduledRows[right].unit_block_declared_gas,'200000000');
+    }
+    assert.equal(scheduledRows[4].timestamp,scheduledRows[5].timestamp);
+    assert.equal(BigInt(scheduledRows[1].block)-clockStates.upper.committed,256n);
+    assert.equal(BigInt(scheduledRows[4].block)-clockStates.retry.committed,1n);
+    assert.deepEqual(appliedClock,{upper:1,retry:2,corrected:1});
+    assert.equal(clockStates.collision.consumed,false);
+    assert.equal(clockSuccesses,clockPlan.new_successful_transactions);
+    assert.equal(clockRefusals,clockPlan.new_refusals);
+    assert.equal(clockMutations,clockPlan.new_mutations);
+    assert.equal(rows.length,clockPlan.planned_rows_per_fork);
+    claimUnitSchedule=false;
+
 
   }
   write(target + '-store-observations.json', {scope:'Read-only local owned fullStore packing/mapping/claim/retained-state observations only; not Source',storageLayout,storageObservations});
-  write(target + '-rows.json', {scope: 'Owned wallet-operator13-mutation trace with14fixed authority refusals plus controller terminal refusal and5fixed read refusals/one absent-record read plus27fixed scalar/public-reader queries,22fixed owned claim-namespace/window requests and64fixed lifecycle/grant/expiry requests plus43fixed owned entry/service requests, raw Store/history observations; no maximumcost/coverage/operating/finality claim', complete: true, rows});
+  write(target + '-rows.json', {scope: 'Owned wallet-operator13-mutation trace with14fixed authority refusals plus controller terminal refusal and5fixed read refusals/one absent-record read plus27fixed scalar/public-reader queries,22fixed owned claim-namespace/window requests and64fixed lifecycle/grant/expiry requests plus43fixed owned entry/service requests and10fixed owned claim-window/clock requests, raw Store/history observations; no maximumcost/coverage/operating/finality claim', complete: true, rows});
 });
