@@ -1,0 +1,26 @@
+{
+  "status": "UNREVIEWED_PREPARATION/NOT_RUN",
+  "placement": "ethereum/component-tests/chain-registry/runtime/authorization-unit.mjs",
+  "scope": "Ordinary owned wallet-operator authority trace, not an attack/forgery/hostilecallback/storage/code injection producer",
+  "trace": "13acceptedmutations/14fixedauthorityrefusals+1controllerterminalrefusal per fork",
+  "assertions": [
+    "Wallet created by EOA1 has exact actualowner+fixedRegistryimmutuables; product/allroles actualCREATE no injection",
+    "Controller EOA0 grants to wallet1, ownerEOA1 directcall cannot inheritgrant",
+    "Matching wallet scope succeeds and records the wallet as actor; wrong scope, revoked or automatically removed grants and controller-only delegation refuse. This profile has no grant-expiry field and no expiration verdict is claimed.",
+    "Everyfixedrefusal has exact public UnauthorizedCaller selector/noEvents and unchangedfullStore/claim/history bytes",
+    "IndependentPython13trace model useswalletoperatorprincipal and actualplannedtimes includingeachfiniteguardcall"
+  ],
+  "remaining": [
+    "Independent source review before any execution",
+    "Parser/runtime verification of new port, no original351PASStransfer",
+    "Update publicmanifest/CI as one reviewed group",
+    "Fresh actualexpectedbytes/gas/Store/history/CIindependentreview",
+    "Separate PCcoverage and remainingguardfamilies/Sourcequalification"
+  ],
+  "product_coverage_percent": null,
+  "operating_ready": false,
+  "review_corrections": [
+    "R1: At version3 after successful activation consumed activate scope, the same owned wallet activate request must receive UnauthorizedCaller before WrongRecordState. Replace only one prior updateServices refusal;14refusals and all13admitted times remain unchanged.",
+    "The proposed version12 updateServices refusal was withdrawn and never applied: update-services grant persists and that call must remain allowed. No new expiration or permission rule."
+  ]
+}
