@@ -1,0 +1,506 @@
+{
+  "kind": "sage-chain-management-binding",
+  "status": "ADOPTED_CHAIN_MANAGEMENT_BINDING",
+  "adoption": "EXPLICITLY_ADOPTED",
+  "revision": 2,
+  "protocol_version": "0.11.0",
+  "source_revision": "040436d0239330e3f5fc760489cf2a63729fa4a4",
+  "source_sha256": {
+    "profiles/a2a-1.0-binding.md": "c4c7f263ea3e9ff122277976f0bebf4357c418956256c33fbbb28570b8a67b4d",
+    "profiles/agent-mcp-security.md": "0538acbdcfc143d93fb7d99a2a2c09c068fc354388c4e37c7489204305b1913f",
+    "profiles/non-http-mcp-security.md": "9c7851d095208c975792565266e481c120ef754ae8eb9529c62b53bf12a1d4fa",
+    "profiles/non-http-mcp-tool.json": "c3edd622a7c90baa028118f63af42a91f354fe7202070ef91a4bd349e4048204",
+    "proposals/management-security-binding/README.md": "1cd14a8572027a2db1d78a6f5ccaddc7dec497c56a0dfcb07e3d479d2ababba2",
+    "proposals/management-security-binding/account-binding.md": "29468b7fd95009d162ed1d5b65578f7ea8689ecbbe241951c23a3482031d0b14",
+    "proposals/management-security-binding/chain-command-map.json": "00f674f1bcc9905323d6665372bc2b6950b06d1384cf5cee704e569fdc6ececa",
+    "proposals/management-security-binding/contract-abi.json": "0f31f995b0169b27c2ce4797b967a754b4c0b2b0a733e4c21da1b54089380f5f",
+    "proposals/management-security-binding/contract-design.md": "ef5e871296ce7a790f04a461a6527c6f482ef40027f0e5355e8c42238e7739a5",
+    "proposals/management-security-binding/contract-execution-model.md": "704eb43092a6480954fac47ed8cabadc15fdc3f933e2dbb321b702779bf966e4",
+    "proposals/management-security-binding/contract-signatures.json": "f46bd082c7b3a3f93dc4b6f37228aff135f78bf3dcd709c25ea696849e8da09a",
+    "proposals/management-security-binding/contract-state-and-history.md": "1ce10a0b279f514ef2b96e4fc158c3892d8b678ee4980a7860c8de613ac2aa42",
+    "proposals/management-security-binding/lifecycle-and-schemas.md": "d766f8dba25621883a136e988cc3db63c820cc82e886697517766490e4863258",
+    "proposals/management-security-binding/outcomes/abi.json": "7d2c1fd84fcc83e3718512c36089b42779fe999f295d4185c0e229b8cf2038c8",
+    "proposals/management-security-binding/outcomes/schemas.json": "179659de20dbac1f12250b3d711a4ea37edcf1b2be4e190e61f38d4d4ca3a745",
+    "proposals/management-security-binding/verification-plan.md": "2164114cb68cde5eee2673dd683f2d407eecef9092f854452b80500fc9196b76",
+    "proposals/management-security-binding/web-history.md": "f1ff6bd18ea95b3a6b51921745ad7749c1d37f04ea3061e8bb5a3aebbfdf558c",
+    "spec/00-overview.md": "8655cddfa23979cb12432f83831e58ee2b6e240b5f1f92b84594d7084eaeb3f0",
+    "spec/01-crypto.md": "35463137986ae692593cb12a3654085270f3337acea3aa3d7efcdde8cea78a0a",
+    "spec/02-jcs.md": "4d4b202c8ddb5eb00c47a8e8056813a589834526e2174c023fb005a484eb3d94",
+    "spec/03-rfc9421.md": "b28d567cbf3f7a6a256c73fd35696865b5c0ebdc814de57624b90df082d49407",
+    "spec/04-hpke.md": "1420818451ce8363a16e391647dbaca8ec2f06efa56b6507027a4e17f399fdd6",
+    "spec/05-session.md": "8a45b8bdd3b6bfc399a94c420b2161b8f16db5c6b29ed2e85584a6282b17cce5",
+    "spec/06-did-sage.md": "995f99299abc0ebd02651bfda75a5d30145968add464e1f93b2e9d656ea8184b",
+    "spec/07-a2a.md": "5ded622fdaf67342d5c6b4327da0f5787bfe9df2dc58b233cdfb500ffc96b042",
+    "spec/08-transport.md": "e11e8200d67ee913fcd1a47781c6d31a353556c9dfd4e4ce0a88dbe97e10bba6",
+    "spec/09-registry.md": "e8572cc037fd0fc84e678be436cc47854c5fd700aacbc141937d79ee03ea6017",
+    "spec/10-resolution.md": "78fdf5fc998b92b0ce262a2509b1595458ff8a083cc4e8570c50efcd2e7270bd",
+    "spec/11-registries.md": "aaf8e68a1af957fd079ff56d89636b792930e8e0202b3d09a084164005589513",
+    "profiles/sage-0.11.0/README.md": "65104242f4fd5f21da146d1db85a0962b7a19a479f5db2849139d244fd949068",
+    "profiles/sage-0.11.0/selection.json": "1f634918db2a14c8ed1db6eba7a8d93cc7b327029e86140d494dc677c82ac919",
+    ".github/workflows/profile-selection.yml": "ed1a39173edcf2d35b4937ba5ef7f259e663a0f26b42e35d515032bfa3a32a3b"
+  },
+  "document": "profiles/sage-0.11.0/registry-management.md",
+  "document_sha256": "e2cfa057f7bf6ea883f85688d55895b69391d76b07f4ae90912ec5e937089185",
+  "requirements": [
+    "CM-01",
+    "CM-02",
+    "CM-03",
+    "CM-04",
+    "CM-05",
+    "CM-06",
+    "CM-07",
+    "CM-08",
+    "CM-09"
+  ],
+  "domains": {
+    "registry_chain_binding": {
+      "value": "sage-registry-chain-0.11.0",
+      "utf8_hex": "736167652d72656769737472792d636861696e2d302e31312e30"
+    },
+    "registry_pop": {
+      "value": "sage-pop-0.11.0",
+      "utf8_hex": "736167652d706f702d302e31312e30"
+    },
+    "registry_claim": {
+      "value": "sage-claim-0.11.0\u0000",
+      "utf8_hex": "736167652d636c61696d2d302e31312e3000"
+    }
+  },
+  "methods": {
+    "commitClaim": {
+      "kind": "claim",
+      "operation": null,
+      "minimum_head_bytes": 36,
+      "maximum_calldata_bytes": 36
+    },
+    "revealClaim": {
+      "kind": "mutation",
+      "operation": "create",
+      "minimum_head_bytes": 164,
+      "maximum_calldata_bytes": 148804
+    },
+    "activate": {
+      "kind": "mutation",
+      "operation": "activate",
+      "minimum_head_bytes": 68,
+      "maximum_calldata_bytes": 164
+    },
+    "addKey": {
+      "kind": "mutation",
+      "operation": "add-key",
+      "minimum_head_bytes": 100,
+      "maximum_calldata_bytes": 1028
+    },
+    "revokeKey": {
+      "kind": "mutation",
+      "operation": "revoke-key",
+      "minimum_head_bytes": 100,
+      "maximum_calldata_bytes": 260
+    },
+    "updateServices": {
+      "kind": "mutation",
+      "operation": "update-services",
+      "minimum_head_bytes": 100,
+      "maximum_calldata_bytes": 38116
+    },
+    "authorizeOperator": {
+      "kind": "mutation",
+      "operation": "authorize-operator",
+      "minimum_head_bytes": 132,
+      "maximum_calldata_bytes": 292
+    },
+    "revokeOperator": {
+      "kind": "mutation",
+      "operation": "revoke-operator",
+      "minimum_head_bytes": 132,
+      "maximum_calldata_bytes": 292
+    },
+    "deactivate": {
+      "kind": "mutation",
+      "operation": "deactivate",
+      "minimum_head_bytes": 68,
+      "maximum_calldata_bytes": 164
+    },
+    "registryId": {
+      "kind": "read",
+      "operation": null,
+      "minimum_head_bytes": 4,
+      "maximum_calldata_bytes": 4
+    },
+    "record": {
+      "kind": "read",
+      "operation": null,
+      "minimum_head_bytes": 36,
+      "maximum_calldata_bytes": 132
+    },
+    "activeGrants": {
+      "kind": "read",
+      "operation": null,
+      "minimum_head_bytes": 36,
+      "maximum_calldata_bytes": 132
+    },
+    "historyItem": {
+      "kind": "read",
+      "operation": null,
+      "minimum_head_bytes": 68,
+      "maximum_calldata_bytes": 164
+    }
+  },
+  "limits": {
+    "record_bytes": 65536,
+    "command_bytes": 262144,
+    "history_bytes": 262144,
+    "lifetime_keys": 128,
+    "services": 16,
+    "active_grants": 128,
+    "whole_calldata_bytes": 148804,
+    "agent_id_bytes": 64,
+    "key_name_bytes": 32,
+    "algorithm_bytes": 24,
+    "raw_key_bytes": 65,
+    "proof_bytes": 65,
+    "signer_url_bytes": 189,
+    "service_type_bytes": 64,
+    "service_uri_bytes": 2048,
+    "claim_window_blocks": 256,
+    "safe_seconds": 9007199254740991,
+    "maximum_version": "18446744073709551615"
+  },
+  "schemas": {
+    "record": [
+      "id",
+      "controller",
+      "keys",
+      "services",
+      "state",
+      "version"
+    ],
+    "key_required": [
+      "name",
+      "alg",
+      "key",
+      "proof",
+      "state"
+    ],
+    "key_optional": [
+      "expires"
+    ],
+    "proof": [
+      "signer",
+      "value"
+    ],
+    "service": [
+      "name",
+      "type",
+      "uri"
+    ],
+    "claim": [
+      "registryId",
+      "agentId",
+      "controller",
+      "keys",
+      "services",
+      "salt"
+    ],
+    "chain_command": [
+      "binding",
+      "registry",
+      "did",
+      "operation",
+      "expectedVersion",
+      "arguments",
+      "actor"
+    ],
+    "history": [
+      "version",
+      "previousVersion",
+      "actor",
+      "operation",
+      "commandDigest",
+      "target",
+      "automaticRemovals",
+      "admitted",
+      "recordDigest",
+      "grantsDigest"
+    ],
+    "grant": [
+      "operator",
+      "scope"
+    ],
+    "arguments": {
+      "create": [
+        "controller",
+        "keys",
+        "services",
+        "salt"
+      ],
+      "activate": [],
+      "add-key": [
+        "key"
+      ],
+      "revoke-key": [
+        "name"
+      ],
+      "update-services": [
+        "services"
+      ],
+      "authorize-operator": [
+        "operator",
+        "scope"
+      ],
+      "revoke-operator": [
+        "operator",
+        "scope"
+      ],
+      "deactivate": []
+    },
+    "unknown_members": "REJECT"
+  },
+  "grammar": {
+    "agent_id": "[A-Za-z0-9._-]{1,64}; exclude . and ..",
+    "key_name": "[A-Za-z0-9_-]{1,32}",
+    "address": "0x[0-9a-f]{40}",
+    "version": "[1-9][0-9]*; uint64",
+    "uri": "RFC3986 HTTPS absolute URI; no userinfo or fragment; preserve bytes; no fetch"
+  },
+  "algorithms": {
+    "mandatory_signing": [
+      "ed25519"
+    ],
+    "optional_signing": [
+      "ecdsa-p256-sha256",
+      "sage-secp256k1-keccak256"
+    ],
+    "kem_only": [
+      "x25519"
+    ],
+    "unknown_or_unsupported": "REJECT_NO_ALTERNATE_KEY_OR_ALGORITHM",
+    "new_kem_admission_narrowing": false,
+    "key_proof_order": "ALL_NEW_SIGNING_PROOFS_THEN_NEW_KEM_ENDORSEMENTS"
+  },
+  "principal": {
+    "source": "Registry.msg.sender",
+    "accounts": [
+      "EOA",
+      "CONTRACT_WALLET"
+    ],
+    "substitutions": "FORBIDDEN",
+    "controller_transfer": false,
+    "forwarder_identity": false,
+    "wallet_signature_callback": false
+  },
+  "lifecycle": {
+    "create": [
+      "absent",
+      "controller",
+      "created",
+      "require-usable-signer"
+    ],
+    "activate": [
+      "created",
+      "controller-or-exact-grant",
+      "active",
+      "require-usable-signer-remove-activate-grants"
+    ],
+    "add-key": [
+      "active",
+      "controller-or-exact-grant",
+      "active",
+      "append-one-immutable-key"
+    ],
+    "revoke-key": [
+      "created-or-active",
+      "controller-or-active-exact-grant",
+      "same-or-deactivated",
+      "retain-target-terminal-if-last-usable-signer"
+    ],
+    "update-services": [
+      "active",
+      "controller-or-exact-grant",
+      "active",
+      "replace-complete-array"
+    ],
+    "authorize-operator": [
+      "created-or-active",
+      "controller",
+      "same",
+      "insert-one-absent-pair"
+    ],
+    "revoke-operator": [
+      "created-or-active",
+      "controller",
+      "same",
+      "remove-one-present-pair"
+    ],
+    "deactivate": [
+      "created-or-active",
+      "controller-or-exact-grant",
+      "deactivated",
+      "remove-all-grants"
+    ]
+  },
+  "grants": {
+    "created": [
+      "activate",
+      "deactivate"
+    ],
+    "active": [
+      "add-key",
+      "revoke-key",
+      "update-services",
+      "deactivate"
+    ],
+    "sort": [
+      "operator_ASCII",
+      "scope_ASCII"
+    ],
+    "controller_may_grant_self": false,
+    "operator_may_delegate": false
+  },
+  "guard_order": [
+    "bounded-canonical-framing",
+    "value-then-registry-context",
+    "scalar-content-grammar",
+    "identity-claim-or-history",
+    "actual-principal",
+    "state-then-predecessor-then-version-capacity",
+    "claim-window-then-admission-time",
+    "operation-targets-entry-structure-prospective-size",
+    "new-proofs-signing-before-kem",
+    "complete-successor-cleanup-serialization-recheck",
+    "atomic-commit-one-event"
+  ],
+  "rank8": {
+    "create": [
+      "key-name-order-equality:KeyNameReused",
+      "key-name-inversion:InvalidEntry",
+      "raw-material-duplicate:KeyMaterialReused",
+      "service-order-or-key-collision:InvalidEntry",
+      "new-entry-structure"
+    ],
+    "activate": [],
+    "add-key": [
+      "lifetime-cap:BoundsExceeded",
+      "used-name:KeyNameReused",
+      "used-material:KeyMaterialReused",
+      "current-service-collision:InvalidEntry",
+      "new-entry-structure"
+    ],
+    "revoke-key": [
+      "missing-or-revoked-key:KeyUnavailable"
+    ],
+    "update-services": [
+      "service-order-or-key-collision:InvalidEntry"
+    ],
+    "authorize-operator": [
+      "controller-target-or-state-scope:InvalidEntry",
+      "active-pair:GrantAlreadyPresent",
+      "grant-cap:BoundsExceeded"
+    ],
+    "revoke-operator": [
+      "controller-target:InvalidEntry",
+      "absent-pair:GrantUnavailable"
+    ],
+    "deactivate": []
+  },
+  "errors": [
+    "BoundsExceeded",
+    "ClaimMismatch",
+    "ClaimUnavailable",
+    "ClaimWindowInvalid",
+    "GrantAlreadyPresent",
+    "GrantUnavailable",
+    "HistoryUnavailable",
+    "IdentifierUnavailable",
+    "InvalidEntry",
+    "InvalidKeyProof",
+    "KeyMaterialReused",
+    "KeyNameReused",
+    "KeyUnavailable",
+    "MalformedCall",
+    "PreviousVersionMismatch",
+    "TimeInvalid",
+    "UnauthorizedCaller",
+    "UnsupportedKeyAlgorithm",
+    "ValueNotAllowed",
+    "VersionExhausted",
+    "WrongRecordState",
+    "WrongRegistryContext"
+  ],
+  "reserved_errors": [
+    "ClaimMismatch"
+  ],
+  "events": {
+    "ClaimCommitted": {
+      "kind": "event",
+      "signature": "ClaimCommitted(address,bytes32,uint256)",
+      "layout": [
+        "caller:address:topic",
+        "commitment:bytes32:topic",
+        "blockNumber:uint256:data"
+      ]
+    },
+    "RecordChanged": {
+      "kind": "event",
+      "signature": "RecordChanged(bytes32,address,string,uint64,uint64,string,bytes32,bytes32,bytes32,uint64)",
+      "layout": [
+        "didHash:bytes32:topic",
+        "actor:address:topic",
+        "did:string:data",
+        "previousVersion:uint64:data",
+        "version:uint64:data",
+        "operation:string:data",
+        "commandDigest:bytes32:data",
+        "recordDigest:bytes32:data",
+        "grantsDigest:bytes32:data",
+        "admitted:uint64:data"
+      ]
+    }
+  },
+  "headroom": {
+    "status": "ADOPTED_EXPLICIT_NEW_ADMISSION_RESTRICTION",
+    "applies": "EVERY_NONTERMINAL_PROSPECTIVE_SUCCESSOR_BEFORE_PROOFS",
+    "size_only_state": "deactivated",
+    "size_only_version": "18446744073709551615",
+    "actual_record_bound_first": true,
+    "fixed_subtraction_equivalent": false,
+    "old_profile_reads_affected": false,
+    "version_exhaustion_bypass": false
+  },
+  "source_evidence": {
+    "one_finalized_block": true,
+    "inner_call_success_required": true,
+    "outer_receipt_sufficient": false,
+    "complete_history_required": true,
+    "durable_monotone_and_terminal_facts": true,
+    "automatic_fork_selection": false,
+    "authenticated_reconfiguration_required": true
+  },
+  "implementation_and_operating": {
+    "status": "NOT_IMPLEMENTED_OR_QUALIFIED",
+    "compiler": null,
+    "verifier": null,
+    "chain_id": null,
+    "rpc": null,
+    "address": null,
+    "code_hash": null,
+    "abi_hash": null,
+    "finality_policy": null,
+    "gas_budget": null,
+    "deployment_authorized": false,
+    "readiness": false,
+    "new_runtime_conformance_verdicts": 0
+  },
+  "excluded": [
+    "optional-web-management",
+    "erc-companion",
+    "erc-payment-wallet",
+    "reputation",
+    "validation",
+    "projection-alg-kid-jsonld",
+    "new-gas-or-key-cap",
+    "controller-transfer-recovery",
+    "public-initializer-test-controls",
+    "implicit-old-record-migration"
+  ]
+}

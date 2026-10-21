@@ -1,0 +1,64 @@
+name: Registry constructor controls
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ethereum/contracts/chain-registry/**'
+      - 'ethereum/component-tests/chain-registry/**'
+      - '.github/workflows/registry-runtime.yml'
+  pull_request:
+    paths:
+      - 'ethereum/contracts/chain-registry/**'
+      - 'ethereum/component-tests/chain-registry/**'
+      - '.github/workflows/registry-runtime.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  constructor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: ethereum/component-tests/chain-registry
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ethereum/component-tests/chain-registry/package-lock.json
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+      - name: Install fixed dependencies without lifecycle scripts
+        run: |
+          mkdir -p runtime/evidence
+          npm ci --ignore-scripts --no-audit --no-fund > runtime/evidence/npm-ci.log 2>&1
+          npm ls --all --json > runtime/evidence/npm-tree.json
+      - name: Preserve actual checkout and job context
+        run: python3 -B runtime/ci-context.py
+      - name: Prepare fixed compiler
+        run: python3 -B prepare.py
+      - name: Check full graph and ordinary owned calls
+        run: python3 -B runtime/run.py
+      - name: Preserve source and actual observations
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: registry-runtime
+          if-no-files-found: error
+          include-hidden-files: true
+          path: |
+            .github/workflows/registry-runtime.yml
+            ethereum/contracts/chain-registry/
+            ethereum/component-tests/chain-registry/
+            !ethereum/component-tests/chain-registry/node_modules/
+            !ethereum/component-tests/chain-registry/__pycache__/
+            !ethereum/component-tests/chain-registry/evidence/soljson.cjs
