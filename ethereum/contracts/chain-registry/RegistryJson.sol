@@ -80,19 +80,19 @@ library RegistryJson {
     function encodeRecord(Record memory value, RecordState state, uint64 version) private pure returns (bytes memory) {
         if (version == 0) revert IChainRegistry.InvalidEntry();
         RegistryBuffer.Sink memory out = RegistryBuffer.create(65536);
-        out.append(bytes('{"controller":'));
+        out.append(bytes("{\"controller\":"));
         addressValue(out, value.controller);
-        out.append(bytes(',"id":'));
+        out.append(bytes(",\"id\":"));
         quoted(out, value.did);
-        out.append(bytes(',"keys":'));
+        out.append(bytes(",\"keys\":"));
         keys(out, value.keys);
-        out.append(bytes(',"services":'));
+        out.append(bytes(",\"services\":"));
         services(out, value.services);
-        out.append(bytes(',"state":'));
+        out.append(bytes(",\"state\":"));
         quoted(out, recordState(state));
-        out.append(bytes(',"version":'));
+        out.append(bytes(",\"version\":"));
         versionValue(out, version);
-        out.append(bytes('}'));
+        out.append(bytes("}"));
         return out.finish();
     }
 
@@ -105,19 +105,19 @@ library RegistryJson {
         bytes32 salt
     ) internal pure returns (bytes memory) {
         RegistryBuffer.Sink memory out = RegistryBuffer.create(262144);
-        out.append(bytes('{"agentId":'));
+        out.append(bytes("{\"agentId\":"));
         quoted(out, agentId);
-        out.append(bytes(',"controller":'));
+        out.append(bytes(",\"controller\":"));
         addressValue(out, controller);
-        out.append(bytes(',"keys":'));
+        out.append(bytes(",\"keys\":"));
         initialKeys(out, entries);
-        out.append(bytes(',"registryId":'));
+        out.append(bytes(",\"registryId\":"));
         quoted(out, registry);
-        out.append(bytes(',"salt":'));
+        out.append(bytes(",\"salt\":"));
         binaryValue(out, abi.encodePacked(salt));
-        out.append(bytes(',"services":'));
+        out.append(bytes(",\"services\":"));
         services(out, endpoints);
-        out.append(bytes('}'));
+        out.append(bytes("}"));
         return out.finish();
     }
 
@@ -132,20 +132,20 @@ library RegistryJson {
             revert IChainRegistry.InvalidEntry();
         }
         RegistryBuffer.Sink memory out = RegistryBuffer.create(262144);
-        out.append(bytes('{"actor":'));
+        out.append(bytes("{\"actor\":"));
         addressValue(out, value.actor);
-        out.append(bytes(',"arguments":'));
+        out.append(bytes(",\"arguments\":"));
         arguments(out, value);
-        out.append(bytes(',"binding":"sage-registry-chain-0.11.0","did":'));
+        out.append(bytes(",\"binding\":\"sage-registry-chain-0.11.0\",\"did\":"));
         quoted(out, value.did);
-        out.append(bytes(',"expectedVersion":'));
-        if (value.expectedVersion == 0) out.append(bytes('""'));
+        out.append(bytes(",\"expectedVersion\":"));
+        if (value.expectedVersion == 0) out.append(bytes("\"\""));
         else versionValue(out, value.expectedVersion);
-        out.append(bytes(',"operation":'));
+        out.append(bytes(",\"operation\":"));
         quoted(out, operation(value.operation));
-        out.append(bytes(',"registry":'));
+        out.append(bytes(",\"registry\":"));
         quoted(out, value.registry);
-        out.append(bytes('}'));
+        out.append(bytes("}"));
         return out.finish();
     }
 
@@ -158,135 +158,135 @@ library RegistryJson {
             revert IChainRegistry.InvalidEntry();
         }
         RegistryBuffer.Sink memory out = RegistryBuffer.create(262144);
-        out.append(bytes('{"actor":'));
+        out.append(bytes("{\"actor\":"));
         addressValue(out, value.actor);
-        out.append(bytes(',"admitted":'));
+        out.append(bytes(",\"admitted\":"));
         out.append(RegistryText.decimal(value.admitted));
-        out.append(bytes(',"automaticRemovals":'));
+        out.append(bytes(",\"automaticRemovals\":"));
         grantArray(out, value.automaticRemovals);
-        out.append(bytes(',"commandDigest":'));
+        out.append(bytes(",\"commandDigest\":"));
         binaryValue(out, abi.encodePacked(value.commandDigest));
-        out.append(bytes(',"grantsDigest":'));
+        out.append(bytes(",\"grantsDigest\":"));
         binaryValue(out, abi.encodePacked(value.grantsDigest));
-        out.append(bytes(',"operation":'));
+        out.append(bytes(",\"operation\":"));
         quoted(out, operation(value.operation));
-        out.append(bytes(',"previousVersion":'));
-        if (value.previousVersion == 0) out.append(bytes('""'));
+        out.append(bytes(",\"previousVersion\":"));
+        if (value.previousVersion == 0) out.append(bytes("\"\""));
         else versionValue(out, value.previousVersion);
-        out.append(bytes(',"recordDigest":'));
+        out.append(bytes(",\"recordDigest\":"));
         binaryValue(out, abi.encodePacked(value.recordDigest));
-        out.append(bytes(',"target":'));
+        out.append(bytes(",\"target\":"));
         if (value.operation == Operation.AuthorizeOperator || value.operation == Operation.RevokeOperator) {
             grant(out, value.target);
-        } else out.append(bytes('null'));
-        out.append(bytes(',"version":'));
+        } else out.append(bytes("null"));
+        out.append(bytes(",\"version\":"));
         versionValue(out, value.version);
-        out.append(bytes('}'));
+        out.append(bytes("}"));
         return out.finish();
     }
 
     function arguments(RegistryBuffer.Sink memory out, Command memory value) private pure {
-        out.append(bytes('{'));
+        out.append(bytes("{"));
         if (value.operation == Operation.Create) {
-            out.append(bytes('"controller":'));
+            out.append(bytes("\"controller\":"));
             addressValue(out, value.controller);
-            out.append(bytes(',"keys":'));
+            out.append(bytes(",\"keys\":"));
             initialKeys(out, value.keys);
-            out.append(bytes(',"salt":'));
+            out.append(bytes(",\"salt\":"));
             binaryValue(out, abi.encodePacked(value.salt));
-            out.append(bytes(',"services":'));
+            out.append(bytes(",\"services\":"));
             services(out, value.services);
         } else if (value.operation == Operation.AddKey) {
-            out.append(bytes('"key":'));
+            out.append(bytes("\"key\":"));
             key(out, value.key, KeyState.Accepted);
         } else if (value.operation == Operation.RevokeKey) {
-            out.append(bytes('"name":'));
+            out.append(bytes("\"name\":"));
             quoted(out, value.name);
         } else if (value.operation == Operation.UpdateServices) {
-            out.append(bytes('"services":'));
+            out.append(bytes("\"services\":"));
             services(out, value.services);
         } else if (value.operation == Operation.AuthorizeOperator || value.operation == Operation.RevokeOperator) {
-            out.append(bytes('"operator":'));
+            out.append(bytes("\"operator\":"));
             addressValue(out, value.operator);
-            out.append(bytes(',"scope":'));
+            out.append(bytes(",\"scope\":"));
             quoted(out, value.scope);
         }
-        out.append(bytes('}'));
+        out.append(bytes("}"));
     }
 
     function keys(RegistryBuffer.Sink memory out, Key[] memory entries) private pure {
         if (entries.length > 128) revert IChainRegistry.BoundsExceeded();
-        out.append(bytes('['));
+        out.append(bytes("["));
         for (uint256 i; i < entries.length; ++i) {
-            if (i != 0) out.append(bytes(','));
+            if (i != 0) out.append(bytes(","));
             key(out, entries[i].input, entries[i].state);
         }
-        out.append(bytes(']'));
+        out.append(bytes("]"));
     }
 
     function initialKeys(RegistryBuffer.Sink memory out, IChainRegistry.KeyInput[] memory entries) private pure {
         if (entries.length > 128) revert IChainRegistry.BoundsExceeded();
-        out.append(bytes('['));
+        out.append(bytes("["));
         for (uint256 i; i < entries.length; ++i) {
-            if (i != 0) out.append(bytes(','));
+            if (i != 0) out.append(bytes(","));
             key(out, entries[i], KeyState.Accepted);
         }
-        out.append(bytes(']'));
+        out.append(bytes("]"));
     }
 
     function key(RegistryBuffer.Sink memory out, IChainRegistry.KeyInput memory entry, KeyState state) private pure {
-        out.append(bytes('{"alg":'));
+        out.append(bytes("{\"alg\":"));
         quoted(out, entry.alg);
         if (entry.hasExpiry) {
             if (entry.expires > 9007199254740991) revert IChainRegistry.TimeInvalid();
-            out.append(bytes(',"expires":'));
+            out.append(bytes(",\"expires\":"));
             out.append(RegistryText.decimal(entry.expires));
         } else if (entry.expires != 0) revert IChainRegistry.InvalidEntry();
-        out.append(bytes(',"key":'));
+        out.append(bytes(",\"key\":"));
         binaryValue(out, entry.key);
-        out.append(bytes(',"name":'));
+        out.append(bytes(",\"name\":"));
         quoted(out, entry.name);
-        out.append(bytes(',"proof":{"signer":'));
+        out.append(bytes(",\"proof\":{\"signer\":"));
         quoted(out, entry.signer);
-        out.append(bytes(',"value":'));
+        out.append(bytes(",\"value\":"));
         binaryValue(out, entry.proof);
-        out.append(bytes('},"state":'));
+        out.append(bytes("},\"state\":"));
         quoted(out, state == KeyState.Accepted ? "accepted" : "revoked");
-        out.append(bytes('}'));
+        out.append(bytes("}"));
     }
 
     function services(RegistryBuffer.Sink memory out, IChainRegistry.ServiceInput[] memory entries) private pure {
         if (entries.length > 16) revert IChainRegistry.BoundsExceeded();
-        out.append(bytes('['));
+        out.append(bytes("["));
         for (uint256 i; i < entries.length; ++i) {
-            if (i != 0) out.append(bytes(','));
-            out.append(bytes('{"name":'));
+            if (i != 0) out.append(bytes(","));
+            out.append(bytes("{\"name\":"));
             quoted(out, entries[i].name);
-            out.append(bytes(',"type":'));
+            out.append(bytes(",\"type\":"));
             quoted(out, entries[i].serviceType);
-            out.append(bytes(',"uri":'));
+            out.append(bytes(",\"uri\":"));
             quoted(out, entries[i].uri);
-            out.append(bytes('}'));
+            out.append(bytes("}"));
         }
-        out.append(bytes(']'));
+        out.append(bytes("]"));
     }
 
     function grantArray(RegistryBuffer.Sink memory out, Grant[] memory entries) private pure {
         if (entries.length > 128) revert IChainRegistry.BoundsExceeded();
-        out.append(bytes('['));
+        out.append(bytes("["));
         for (uint256 i; i < entries.length; ++i) {
-            if (i != 0) out.append(bytes(','));
+            if (i != 0) out.append(bytes(","));
             grant(out, entries[i]);
         }
-        out.append(bytes(']'));
+        out.append(bytes("]"));
     }
 
     function grant(RegistryBuffer.Sink memory out, Grant memory entry) private pure {
-        out.append(bytes('{"operator":'));
+        out.append(bytes("{\"operator\":"));
         addressValue(out, entry.operator);
-        out.append(bytes(',"scope":'));
+        out.append(bytes(",\"scope\":"));
         quoted(out, entry.scope);
-        out.append(bytes('}'));
+        out.append(bytes("}"));
     }
 
     function quoted(RegistryBuffer.Sink memory out, string memory value) private pure {
@@ -294,21 +294,21 @@ library RegistryJson {
     }
 
     function binaryValue(RegistryBuffer.Sink memory out, bytes memory value) private pure {
-        out.append(bytes('"'));
+        out.append(bytes("\""));
         out.append(RegistryText.base64url(value));
-        out.append(bytes('"'));
+        out.append(bytes("\""));
     }
 
     function addressValue(RegistryBuffer.Sink memory out, address value) private pure {
-        out.append(bytes('"'));
+        out.append(bytes("\""));
         out.append(RegistryText.addressText(value));
-        out.append(bytes('"'));
+        out.append(bytes("\""));
     }
 
     function versionValue(RegistryBuffer.Sink memory out, uint64 value) private pure {
-        out.append(bytes('"'));
+        out.append(bytes("\""));
         out.append(RegistryText.decimal(value));
-        out.append(bytes('"'));
+        out.append(bytes("\""));
     }
 
     function recordState(RecordState value) private pure returns (string memory) {

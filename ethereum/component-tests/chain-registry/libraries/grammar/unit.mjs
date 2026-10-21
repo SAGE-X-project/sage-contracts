@@ -54,7 +54,7 @@ function mappedCoverage(output, visited) {
   const source = output.sources[frameKey], statements = [];
   function walk(node) {
     if (!node || typeof node !== 'object') return;
-    if (['ExpressionStatement', 'VariableDeclarationStatement', 'IfStatement', 'ForStatement', 'Return', 'RevertStatement', 'InlineAssembly'].includes(node.nodeType)) {
+    if (['ExpressionStatement', 'VariableDeclarationStatement', 'IfStatement', 'ForStatement', 'Return', 'RevertStatement', 'InlineAssembly', 'Continue'].includes(node.nodeType)) {
       const [start, length, file] = node.src.split(':').map(Number);
       statements.push({id: node.id, type: node.nodeType, start, length, file});
     }

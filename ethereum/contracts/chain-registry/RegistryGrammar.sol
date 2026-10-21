@@ -49,7 +49,7 @@ library RegistryGrammar {
         if (!authority(data, 8, authorityEnd)) revert IChainRegistry.InvalidEntry();
         for (uint256 i = authorityEnd; i < data.length; ++i) {
             uint8 c = uint8(data[i]);
-            if (c == 63 || c == 47 || c == 58 || c == 64 || unreserved(c) || subdelimiter(c)) { }
+            if (c == 63 || c == 47 || c == 58 || c == 64 || unreserved(c) || subdelimiter(c)) { continue; }
             else if (c == 37 && percent(data, i, data.length)) i += 2;
             else revert IChainRegistry.InvalidEntry();
         }
