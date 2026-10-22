@@ -1,0 +1,105 @@
+{
+  "scope": "Isolated chain-ID1 normal CREATE unit addresses and compiler immutable expectations, not operating Registry parameters or an authority selection.",
+  "caller": "0x865f221dc3ee4d6220407017db1427dbb56464fb",
+  "modules": {
+    "RegistryRenderer": {
+      "address": "0x434f1c0e82b8b1769499e84284d063acc08e74b7",
+      "words": {}
+    },
+    "RegistryEd25519": {
+      "address": "0xe011472615b62f798fbe73dfc015cb8daee9004f",
+      "words": {}
+    },
+    "RegistryRules": {
+      "address": "0xbbfb003115d041f10f53546cd384dad8628b1dc3",
+      "words": {}
+    },
+    "RegistryCallValidator": {
+      "address": "0xfbf4d1a85f7042b18086f15b5e5267756eec5048",
+      "words": {}
+    },
+    "RegistryStoreFactory": {
+      "address": "0x5257360a7688b6412bbfd1aa42630becbe8d0f29",
+      "words": {}
+    },
+    "RegistryClaimProcessorFactory": {
+      "address": "0xfab94e272a5f76149068403df25391d3850c17a1",
+      "words": {}
+    },
+    "RegistryKeyServiceProcessorFactory": {
+      "address": "0x4835009bf22ece7321136d3bc17b59df1ca44f61",
+      "words": {}
+    },
+    "RegistryLifecycleProcessorFactory": {
+      "address": "0xc2c7eabef29b3ca88023077c83ee3840853a89de",
+      "words": {}
+    },
+    "RegistryStore": {
+      "address": "0x0c7d3393ca4ce8d3f4c8194594644116abd37056",
+      "words": {
+        "core": "0000000000000000000000002b6faadca8fbb0849a7bdc0c8c4fe7ea04a4d3cd",
+        "executionChain": "0000000000000000000000000000000000000000000000000000000000000001",
+        "instance": "0000000000000000000000000c7d3393ca4ce8d3f4c8194594644116abd37056"
+      }
+    },
+    "RegistryClaimProcessor": {
+      "address": "0x7f4d9b1b5956d57d6423d6aeb16fc5dfab66bca5",
+      "words": {
+        "core": "0000000000000000000000002b6faadca8fbb0849a7bdc0c8c4fe7ea04a4d3cd",
+        "store": "0000000000000000000000000c7d3393ca4ce8d3f4c8194594644116abd37056",
+        "renderer": "000000000000000000000000434f1c0e82b8b1769499e84284d063acc08e74b7",
+        "verifier": "000000000000000000000000e011472615b62f798fbe73dfc015cb8daee9004f",
+        "rules": "000000000000000000000000bbfb003115d041f10f53546cd384dad8628b1dc3",
+        "executionChain": "0000000000000000000000000000000000000000000000000000000000000001",
+        "instance": "0000000000000000000000007f4d9b1b5956d57d6423d6aeb16fc5dfab66bca5"
+      }
+    },
+    "RegistryKeyServiceProcessor": {
+      "address": "0xcc1038e3cd307146d2e93093f51f81692b5840d2",
+      "words": {
+        "core": "0000000000000000000000002b6faadca8fbb0849a7bdc0c8c4fe7ea04a4d3cd",
+        "store": "0000000000000000000000000c7d3393ca4ce8d3f4c8194594644116abd37056",
+        "renderer": "000000000000000000000000434f1c0e82b8b1769499e84284d063acc08e74b7",
+        "verifier": "000000000000000000000000e011472615b62f798fbe73dfc015cb8daee9004f",
+        "rules": "000000000000000000000000bbfb003115d041f10f53546cd384dad8628b1dc3",
+        "executionChain": "0000000000000000000000000000000000000000000000000000000000000001",
+        "instance": "000000000000000000000000cc1038e3cd307146d2e93093f51f81692b5840d2"
+      }
+    },
+    "RegistryLifecycleProcessor": {
+      "address": "0x7fb3bac5a22928901ecaf93eaeb5d6bd2d342341",
+      "words": {
+        "core": "0000000000000000000000002b6faadca8fbb0849a7bdc0c8c4fe7ea04a4d3cd",
+        "store": "0000000000000000000000000c7d3393ca4ce8d3f4c8194594644116abd37056",
+        "renderer": "000000000000000000000000434f1c0e82b8b1769499e84284d063acc08e74b7",
+        "verifier": "000000000000000000000000e011472615b62f798fbe73dfc015cb8daee9004f",
+        "rules": "000000000000000000000000bbfb003115d041f10f53546cd384dad8628b1dc3",
+        "executionChain": "0000000000000000000000000000000000000000000000000000000000000001",
+        "instance": "0000000000000000000000007fb3bac5a22928901ecaf93eaeb5d6bd2d342341"
+      }
+    },
+    "ChainRegistry": {
+      "address": "0x2b6faadca8fbb0849a7bdc0c8c4fe7ea04a4d3cd",
+      "words": {
+        "executionChain": "0000000000000000000000000000000000000000000000000000000000000001",
+        "instance": "0000000000000000000000002b6faadca8fbb0849a7bdc0c8c4fe7ea04a4d3cd",
+        "renderer": "000000000000000000000000434f1c0e82b8b1769499e84284d063acc08e74b7",
+        "verifier": "000000000000000000000000e011472615b62f798fbe73dfc015cb8daee9004f",
+        "rules": "000000000000000000000000bbfb003115d041f10f53546cd384dad8628b1dc3",
+        "validator": "000000000000000000000000fbf4d1a85f7042b18086f15b5e5267756eec5048",
+        "store": "0000000000000000000000000c7d3393ca4ce8d3f4c8194594644116abd37056",
+        "claimProcessor": "0000000000000000000000007f4d9b1b5956d57d6423d6aeb16fc5dfab66bca5",
+        "keyProcessor": "000000000000000000000000cc1038e3cd307146d2e93093f51f81692b5840d2",
+        "lifecycleProcessor": "0000000000000000000000007fb3bac5a22928901ecaf93eaeb5d6bd2d342341",
+        "rendererHash": "a889c2ae2ff1b85ba636ca4ade9e0cc2a24bcf4fc19db177ee314463f3f621f7",
+        "verifierHash": "45e48088f6118dd71271ae0b572970785fa8251a4b8b9ac80a7d1dd1a8392786",
+        "rulesHash": "c9d1ee6136f526cd6afeb42ae81ba3ba4aa49bcc4704032a399feba4453f33f1",
+        "validatorHash": "84aa366d51c290f4953e6d08d2672a74ff331c733c269b7b6f55c7b1c8bcf464",
+        "storeHash": "f72314991f3bd79b161dcef8f0e642f7c18a5db48ee8e65f9078ef4ab9ca45a3",
+        "claimHash": "4b3ea0d56812b01fb19e0fed9ab10c899a97e6a1dd5381163398b4581f0d0757",
+        "keyHash": "df4e46e9286eddca91cc1f5ef164dc4b2777776de07d83814059e8f2681694bd",
+        "lifecycleHash": "8988b98bb7a543719fe6b7fc556c86dc664048bd05dc1d5ad23e5f7407d8cc03"
+      }
+    }
+  }
+}
