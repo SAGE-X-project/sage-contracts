@@ -1,0 +1,155 @@
+{
+  "scope": "Fixed expected unit data prior345 plus10owned claim-window/clock requests, SOURCE proposal only",
+  "baseline": {
+    "head": "03bb76e5793858231804453a77a7550a0abd580d",
+    "source_sha256": "fb0aa5df05c13c30a061a0c238d0c25241604a7155bed1931bca32dc49d1eb2c",
+    "prior_authority_and_READ6_rows_per_fork": 189,
+    "actual_input_sha256": "61012fa72f998b3bba42e7287ff15cbd2cabc1e17a5bdad8ac377d3e74bde8a3",
+    "actual_review_sha256": "ed3b9e1e468aa5fd64ea92514b0cff0ba649c4e6a84f0ecb7f2832dc4846bd0d"
+  },
+  "authority_semantics": "Original13mutations14authorityrefusals/alltimestamps/model unchanged; new reads appended after terminal checks. No old actual PASS transfer.",
+  "original_fixed_read_cases": [
+    {
+      "id": "zero-existing",
+      "operation": "historyItem",
+      "requested_version": 0,
+      "identity": "existing terminal",
+      "error": "InvalidEntry"
+    },
+    {
+      "id": "zero-missing",
+      "operation": "historyItem",
+      "requested_version": 0,
+      "identity": "absent",
+      "error": "InvalidEntry",
+      "priority": "scalar positivity before identity lookup"
+    },
+    {
+      "id": "future-terminal",
+      "operation": "historyItem",
+      "requested_version": 14,
+      "identity": "terminal version13",
+      "error": "HistoryUnavailable"
+    },
+    {
+      "id": "positive-missing",
+      "operation": "historyItem",
+      "requested_version": 1,
+      "identity": "absent",
+      "error": "WrongRecordState"
+    },
+    {
+      "id": "grants-missing",
+      "operation": "activeGrants",
+      "identity": "absent",
+      "error": "WrongRecordState"
+    },
+    {
+      "id": "record-missing",
+      "operation": "record",
+      "identity": "absent",
+      "expected": [
+        "false",
+        "empty bytes"
+      ]
+    }
+  ],
+  "scalar_extension": {
+    "scope": "Unpublished read-only G1 subset source/data draft, no test run or new production selector. Preserve original189 row schedule and13mutation/admitted model; append27 fixed canonical reads (23refusals/4successes) after terminal+READ6 baseline.",
+    "baseline_source_sha256": "fb0aa5df05c13c30a061a0c238d0c25241604a7155bed1931bca32dc49d1eb2c",
+    "data_sha256": "c3123f8843c8ce0d51cca09eee14a0cba8840594c9dfb545ded3f6bc97f452a6",
+    "expected_counts": {
+      "per_fork": 216,
+      "two_forks": 432
+    },
+    "atomicity": "After every new call, fullterminalrecord/all13history/claim and target rawabsentStore recheck; sender nonce/time may advance but Registryadmitted/version unchanged",
+    "coverage": "No new PC observer or product90 claim; F1canonicalbad-bytes/validator and G2\u2013G6 remain separate",
+    "execution_policy": "No Node/compiler/VM/project tests whilecapacity29960 running. No integration/publicbranch/manifest/CI changes yet; SOURCEreview and freshremoteCI actual required. No nextheadpush beforecurrent03bb fullCIcollection/review.",
+    "execution_ready": false,
+    "diagnostic_specificity": "Five bad-content history cases use positive1; scalar InvalidEntry is distinguishable from absent WrongRecordState.65byte+0 is framing first, not Grammar-only priority. Other prior cases unchanged."
+  },
+  "planned_rows_per_fork": 355,
+  "planned_rows_total": 710,
+  "assertions": "Original13mutations/modelclocks/14authorityrefusals/READ6 unchanged. New27readcalls:23fixedrefusals4successes; canonical input/ungrantedEOA1, exact public22error/noEvents, allterminalrecord/grants/admitted/13retainedhistory/claim preserved; absenttarget rawpresence0 only. 65bytehistory0 is framing-first; five bad-content positivehistory1 distinguish grammar InvalidEntry from missing WrongRecordState.",
+  "coverage": "Raw fresh harness>=90 required; no new PC observer or product90 result",
+  "execution_ready": false,
+  "executed": false,
+  "operating_ready": false,
+  "fixed5_complete": false,
+  "stages7_8_complete": false,
+  "claim_extension": {
+    "scope": "SOURCE and fixed expected unit data only for owned claim namespace/window subset; no external transmission, attack/replay/forgery producer, no state/code injection, no operating Source. Seven new commits and15 fixed refusals per fork; no successful reveal/new record. Baseline216 rows/13mutations/model clocks preserved. Same-blockdelta0 and forward257 are explicit unit block schedules; block0 and accepted delta1/256 plus headroom/proof-failure and successful consume retry remain unobserved here.",
+    "execution_ready": false,
+    "executed": false,
+    "baseline_source_sha256": "a8aec27fb1406fb04666828e1f473e39153d5d1ddd80f152262c5ca7f6f49dc2",
+    "fixed_claim_calls_per_fork": 22,
+    "planned_total_rows": 476,
+    "new_commits_per_fork": 7,
+    "new_refusals_per_fork": 15,
+    "expected_invariants": "Before and after every new call: baseline terminal record/all13retainedcommand+history/currentgrants/admitted unchanged, all5newagents absent, exact14 actor/digest claim maps with committed height/present/consumed (including zero digest and other owner), expected event only for7commit successes. No RecordChanged, no consume, no unknown error or OOG accepted. baseline216 rows and prior189+27 subsets exact; all previous fixtures/timing preserved.",
+    "not_observed": [
+      "block0 presence",
+      "windowdelta1success",
+      "windowdelta256success",
+      "lateheadroomrefusal",
+      "lateinvalidproofrefusal",
+      "successfulrevealandconsumeafterrefusal",
+      "allG2",
+      "productPC90",
+      "fixed5",
+      "stages7_8"
+    ],
+    "revision": "R2 same-block declared-gas accounting before first execution",
+    "unit_block_gas_limit": "200000000",
+    "transaction_execution_gas_limit": "100000000",
+    "prior216_headers_unchanged": "100000000",
+    "same_block_expected_transactions": 2,
+    "same_block_declared_limit_total": "200000000",
+    "same_block_header_bytes_must_match": true,
+    "full_block_consensus_qualification": false,
+    "original_source_input_sha256": "3676de5433200840a9adbe28b204074aab18d0fee9a3ead6834d874ef172ba82",
+    "original_source_review_sha256": "7b5f93358ad64b9373de83efb4106bed2d29aac7fcde758ba0dbb03a74a7e1d0",
+    "correction": "The originalunit instantiated each100M transaction against anindependent100M header; it did not demonstrate cumulative blockgas feasibility for the same-blockpair. Thatunexecuted SOURCE assessment is superseded onlyfor this schedulequalification. No oldactual verdict or publicsource changes. New200Munitheader permits sumofbothdeclared100Mgaslimits, recordsidenticalrawheader, andretains txgas100M/512heap/currentcapacitylimits. No chain,operatingbudget,consensusblockvalidation selected.",
+    "source_input_sha256": "5537b6410222517c6edea1f1015db60c5cea49a72bf0fc1a11b1726ff03dbec4"
+  },
+  "lifecycle_extension": {
+    "source_input_sha256": "8fb49a74d45507aa12383732201e2759bd72946ab11e4db891ebfbca40094211",
+    "base_head": "291deca39b4a533ae94e95e87351a7e8c37e23cf",
+    "baseline_rows_per_fork": 238,
+    "new_rows_per_fork": 64,
+    "new_success_per_fork": 34,
+    "new_refusals_per_fork": 30,
+    "new_mutations_per_fork": 30,
+    "planned_rows_per_fork": 302,
+    "data_sha256": "2b62d52b9f1ecade0a1e247384cb3b0234b825758f144eb49c060a365e0ae78c",
+    "model_sha256": "70f35dabff84369bc4728fe5fb26c4b7294c737987aec1d3e496970036831038",
+    "scope": "Four fixed owned schedules, complete prior13history andactor/digest namespaces preserved; allnew success JCS/events/current/fullhistory/claim joins andrefusalatomicity. Eachnewrequest own100Munitblock afteroldR2 onlyonepair200M; honestfutureexpiryheightjumps, no rollback orzero sender. Source/composition only, not executed. Correct grantedoperatoradd/revoke, createdcontrollerrevoke/deactivate, sortedmultipleactivatecleanup+terminalcleanup, explicitfirst/middle/lastpairremoval, expiry equalityactivationrefusal andcontrollerrecovery. Remainingclock/claim-window/proof/headroom/wholeproductcoverage/operating Source gates remain.",
+    "execution_ready": false,
+    "executed": false
+  },
+  "entry_extension": {
+    "plan_sha256": "65526b4b6c18a87ac2168fc42ae8aef93c64d4354448fbdab1e69b396488ffd2",
+    "base_rows_per_fork": 302,
+    "new_requests_per_fork": 43,
+    "new_success_per_fork": 12,
+    "new_mutations_per_fork": 11,
+    "new_refusals_per_fork": 31,
+    "data_sha256": "906b750baf917839ede890a6e72cbfb8585d8a49780c27453caae241b127d6af",
+    "model_sha256": "6e1a01ddf0f28f4d84c9f858c500dd0fcca7e82f99af709b91b86542ec983189",
+    "fixtures_sha256": "53946bb5e59598b4fb5510a4cbf01cbbd0f5162e5a74757ae8825d66cbb70fbd",
+    "scope": "Fixed owned entry/service priorities, namespace retention, expired/revoked/KEM-role eligibility, normal four separately indexed KEM endorsements; exactJCS/events/allStore/history/claims andprior302invariants. No new PoP corruption/attackgenerator, no external client, no proofcallorder/wholeG4/PC90/Source/operating closure. All earliermodel/clocks/claimheaders unchanged.",
+    "execution_ready": false,
+    "executed": false
+  },
+  "claim_clock_extension": {
+    "base_rows_per_fork": 345,
+    "new_requests_per_fork": 10,
+    "successes": 8,
+    "refusals": 2,
+    "mutations": 4,
+    "data_sha256": "c836a74f27cd40cdbd58a7091ea171f46a17d092da9563f87678e156fa1b105c",
+    "model_sha256": "f82c49376724df30c351e3ceb5d82ac44f42c9b6b6a4a311c47d508b1c2f1afe",
+    "execution_ready": false,
+    "executed": false
+  }
+}

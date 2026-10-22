@@ -1,0 +1,51 @@
+{
+  "scope": "Fixed isolated pure production-validator UNIT calls only; no Core transaction, operating Source, attack input generator or network transport. Native ABI-decoder empty refusals remain distinct from Registry custom errors. Not whole F1/G1 or product coverage.",
+  "framing_fixture_sha256": "63a642e4462ad870092125ce726970f1ba21b9b6d06d18aaf82b8927a6b2fc11",
+  "expected_canonical_methods": 13,
+  "literal_refusals": [
+    {
+      "name": "nonzero byte padding",
+      "validator_outcome": "MalformedCall"
+    },
+    {
+      "name": "offset outside bounded input",
+      "validator_outcome": "native-empty"
+    },
+    {
+      "name": "noncanonical blob offset",
+      "validator_outcome": "MalformedCall"
+    },
+    {
+      "name": "noncanonical uint64 padding",
+      "validator_outcome": "native-empty"
+    },
+    {
+      "name": "noncanonical tuple offset",
+      "validator_outcome": "MalformedCall"
+    },
+    {
+      "name": "missing tuple static head",
+      "validator_outcome": "native-empty"
+    },
+    {
+      "name": "noncanonical boolean padding",
+      "validator_outcome": "MalformedCall"
+    },
+    {
+      "name": "noncanonical array offset",
+      "validator_outcome": "MalformedCall"
+    },
+    {
+      "name": "noncanonical service tuple offset",
+      "validator_outcome": "MalformedCall"
+    }
+  ],
+  "expected_calls_per_fork": 22,
+  "planned_forks": [
+    "paris",
+    "shanghai"
+  ],
+  "executed": false,
+  "product_PC_observation": false,
+  "revision": "Correct two static expectations before first execution: calldata KeyInput tuple decoder checks minimal head before body, RegistryFraming diagnoses raw tuple-offset/bool first."
+}

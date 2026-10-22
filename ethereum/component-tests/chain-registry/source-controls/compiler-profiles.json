@@ -1,0 +1,116 @@
+{
+  "scope": "Exact compiler settings for distinct product and supplemental test subjects; no optimizer profile is a production replacement.",
+  "profiles": {
+    "product": {
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "viaIR": true,
+      "metadata": {
+        "bytecodeHash": "ipfs",
+        "appendCBOR": true
+      }
+    },
+    "stateless": {
+      "optimizer": {
+        "enabled": true,
+        "runs": 200,
+        "details": {
+          "peephole": false,
+          "inliner": false,
+          "jumpdestRemover": false,
+          "orderLiterals": false,
+          "deduplicate": false,
+          "cse": false,
+          "constantOptimizer": false,
+          "yul": true,
+          "yulDetails": {
+            "stackAllocation": true,
+            "optimizerSteps": "u:"
+          }
+        }
+      },
+      "viaIR": true,
+      "metadata": {
+        "bytecodeHash": "ipfs",
+        "appendCBOR": true
+      }
+    },
+    "rules": {
+      "optimizer": {
+        "enabled": true,
+        "runs": 200,
+        "details": {
+          "peephole": true,
+          "inliner": false,
+          "jumpdestRemover": true,
+          "orderLiterals": true,
+          "deduplicate": true,
+          "cse": true,
+          "constantOptimizer": true,
+          "yul": true,
+          "yulDetails": {
+            "stackAllocation": true,
+            "optimizerSteps": "u:"
+          }
+        }
+      },
+      "viaIR": true,
+      "metadata": {
+        "bytecodeHash": "ipfs",
+        "appendCBOR": true
+      }
+    },
+    "processor": {
+      "optimizer": {
+        "enabled": true,
+        "runs": 200,
+        "details": {
+          "peephole": false,
+          "inliner": false,
+          "jumpdestRemover": false,
+          "orderLiterals": false,
+          "deduplicate": false,
+          "cse": false,
+          "constantOptimizer": false,
+          "yul": true,
+          "yulDetails": {
+            "stackAllocation": true,
+            "optimizerSteps": "u:"
+          }
+        }
+      },
+      "viaIR": true,
+      "metadata": {
+        "bytecodeHash": "ipfs",
+        "appendCBOR": true
+      }
+    },
+    "semantic": {
+      "optimizer": {
+        "enabled": true,
+        "runs": 200,
+        "details": {
+          "peephole": false,
+          "inliner": false,
+          "jumpdestRemover": false,
+          "orderLiterals": false,
+          "deduplicate": false,
+          "cse": false,
+          "constantOptimizer": false,
+          "yul": true,
+          "yulDetails": {
+            "stackAllocation": true,
+            "optimizerSteps": "u:"
+          }
+        }
+      },
+      "viaIR": true,
+      "metadata": {
+        "bytecodeHash": "ipfs",
+        "appendCBOR": true
+      }
+    }
+  }
+}

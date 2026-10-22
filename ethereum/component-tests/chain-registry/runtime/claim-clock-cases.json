@@ -1,0 +1,92 @@
+{
+  "scope": "Fixed owned isolated claim-window/clock unit only; no external client, attack producer, code/storage injection, consensus or operating-chain budget qualification. Source proposal not executed. Prior345 rows/headers unchanged.",
+  "execution_ready": false,
+  "baseline_rows_per_fork": 345,
+  "planned_rows_per_fork": 355,
+  "new_requests_per_fork": 10,
+  "new_successful_transactions": 8,
+  "new_refusals": 2,
+  "new_mutations": 4,
+  "unit_block_gas_limit": "200000000",
+  "transaction_execution_gas_limit": "100000000",
+  "cases": [
+    {
+      "label": "upper-commit",
+      "block_offset": 0,
+      "fixture": "upper",
+      "method": "commitClaim",
+      "error": null
+    },
+    {
+      "label": "upper-reveal-256",
+      "block_offset": 256,
+      "fixture": "upper",
+      "method": "revealClaim",
+      "error": null
+    },
+    {
+      "label": "retry-commit",
+      "block_offset": 257,
+      "fixture": "retry",
+      "method": "commitClaim",
+      "error": null
+    },
+    {
+      "label": "retry-reveal-zero",
+      "block_offset": 257,
+      "fixture": "retry",
+      "method": "revealClaim",
+      "error": "ClaimWindowInvalid"
+    },
+    {
+      "label": "retry-reveal-one",
+      "block_offset": 258,
+      "fixture": "retry",
+      "method": "revealClaim",
+      "error": null
+    },
+    {
+      "label": "retry-activate-equal-time",
+      "block_offset": 258,
+      "fixture": "retry",
+      "method": "activate",
+      "error": null
+    },
+    {
+      "label": "collision-commit",
+      "block_offset": 259,
+      "fixture": "collision",
+      "method": "commitClaim",
+      "error": null
+    },
+    {
+      "label": "collision-refusal",
+      "block_offset": 260,
+      "fixture": "collision",
+      "method": "revealClaim",
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "corrected-distinct-commit",
+      "block_offset": 261,
+      "fixture": "corrected",
+      "method": "commitClaim",
+      "error": null
+    },
+    {
+      "label": "corrected-reveal",
+      "block_offset": 262,
+      "fixture": "corrected",
+      "method": "revealClaim",
+      "error": null
+    }
+  ],
+  "deferred": [
+    "late headroom",
+    "proof failure/call-order",
+    "present-at-block0",
+    "backward operating clock",
+    "whole product coverage",
+    "operating Source"
+  ]
+}

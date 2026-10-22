@@ -1,0 +1,30 @@
+{
+  "status": "UNREVIEWED_PREPARATION/NOT_RUN",
+  "scope": "Portable compiler and ordinary owned isolated VM validation; no live network, deployment or operating Source qualification",
+  "source_origin": "Bound source32 exact retained local graph, not new runtime qualification",
+  "ordinary_source_origin": "Accepted isolated ordinary constructor test port; change only manifest/evidence/public-relative paths, no old PASS transfer",
+  "execution_order": [
+    "Verify fixed dependency/compiler downloads",
+    "Compile both forks with one bounded512MiBNode",
+    "Run independent compiler checker to evidence/compiler-check.json",
+    "Run two ordinary traces serially with one512MiBNode",
+    "Independent actual raw evidence/CI review"
+  ],
+  "unchanged": [
+    "normal13mutation EOA and normal contract wallet",
+    "35 actual production Ed25519 cases",
+    "all retained history and full typed Store observations",
+    "fixed ACL/terminal defensive checks",
+    "512MiB heap,100M finite isolated diagnostic gas ceiling; not operating budget"
+  ],
+  "remaining": [
+    "Selfcontained source manifest/package/workflow and dependency identity",
+    "Static independent source review before executing portable tools",
+    "Fresh portable compiler and ordinary observations and actual review",
+    "Separate full capacity, fixed defensive unit and product PC coverage support",
+    "Actual PR/main CI artifact verification and review",
+    "Concrete operating Source51 choices and separately approved deployment/transactions"
+  ],
+  "operating_ready": false,
+  "fixed5_complete": false
+}

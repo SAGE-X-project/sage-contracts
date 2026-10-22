@@ -1,0 +1,22 @@
+{
+  "scope": "Static portable adapter extension only. Independently prepared407fixed expectations, original351 unchanged.21scope adapters+15actual records+20headroom=56new;41formerlyunmapped helperdata mapped,5duplicateactualrowsavoided. Zero unmappedDATA does not mean semantic/Registry/operating completion.",
+  "execution_ready": false,
+  "executed": false,
+  "expected_cases_per_fork": 407,
+  "expected_outcomes_total": 814,
+  "pc_policy": {
+    "max_input_bytes": 1024,
+    "max_expected_output_bytes": 1024,
+    "max_steps": 2048,
+    "max_memory_bytes": 4096
+  },
+  "product_denominator": "all29compiledSol remains; no source/method/statement removal",
+  "synthetic_unit_methods": 4,
+  "synthetic_negative_labels": 43,
+  "tool_line_coverage_gate": 90,
+  "new_public_selector": false,
+  "network": false,
+  "source_contract_changes": false,
+  "fixed5_complete": false,
+  "stages7_8_complete": false
+}

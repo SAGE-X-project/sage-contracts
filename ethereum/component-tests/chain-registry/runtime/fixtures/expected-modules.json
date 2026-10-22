@@ -1,0 +1,106 @@
+{
+  "scope": "Full compiled artifact digests for both supported targets; no automatic rebinding or fallback. Reproducible from the exact source graph and compiler settings. Not deployed-code or operating qualification.",
+  "compiler": "0.8.20+commit.a1b79de6.Emscripten.clang",
+  "targets": {
+    "paris": {
+      "RENDERER": {
+        "contract": "RegistryRenderer",
+        "runtime_sha256": "45fa43f314408d6d7de2dc83240dc4db767c5842a65a6659223648fb67092852",
+        "creation_sha256": "6187eda3332af3cf98bc99e286cad43948853144bd4a43295bd59e2281ac27e6",
+        "runtime_keccak256": "66a6f6801b73ed655d1e5ae63fed835795b949f5e3ab4bbf4d8f1e4874ac7cfa"
+      },
+      "VERIFIER": {
+        "contract": "RegistryEd25519",
+        "runtime_sha256": "2a13541f6c732fa3b31815dfd3c5848aa64804fc54946546d5aa740774bddb16",
+        "creation_sha256": "9afb4f60d2cbaf0fdf2e7690b9efdec6a203d7e6ea15f7ab9708aea72ebded3f",
+        "runtime_keccak256": "7817e29432af86ac5f676ebdf0f8aa9c4d6a9e428f0367ebaf2ab76c11af03bb"
+      },
+      "RULES": {
+        "contract": "RegistryRules",
+        "runtime_sha256": "7bcc84ca9dccb5724148495b81353c3386a439ea1d244d8f73a993047e085156",
+        "creation_sha256": "85b418a4eb5187397ba4bd02f3581f6482e8d066647289a0e763ae818e4769cd",
+        "runtime_keccak256": "432bb2d0bff28ad487b5abfa19f56459d95e9e2e025556bec9d178907387bbf3"
+      },
+      "VALIDATOR": {
+        "contract": "RegistryCallValidator",
+        "runtime_sha256": "5d552e70ac14ccb54ecd0ec23014be202bce681038106f2aa3b91ccf395eb677",
+        "creation_sha256": "249a5a12b1238972eb83b526ba26a258baad2b4ef4c9a9cc800770315ef8be6f",
+        "runtime_keccak256": "29e2aeef7c12c59bfb4ce96014bfebb67bda3120fb8dc3c046e94dd72a55735e"
+      },
+      "STOREFACTORY": {
+        "contract": "RegistryStoreFactory",
+        "runtime_sha256": "90a4a8c1f869f3dbee3789705a808ea3de581530cc1d920fe16a3aa0a9e4bf69",
+        "creation_sha256": "2d4e88d8488a4bc15edf61cffacae37d781cfd9d36c73a2153b1300deb0bde93",
+        "runtime_keccak256": "5705dbecd8ff775308d40cb9828d230a194d301759af3c2d1747cc8c51653a6b"
+      },
+      "CLAIMFACTORY": {
+        "contract": "RegistryClaimProcessorFactory",
+        "runtime_sha256": "ddd2386dbc37f70e4c431f72e4a3998abcbac84ee52a18ae4a3287f39b7af2bb",
+        "creation_sha256": "e36c8a8d01bf3f7a924d4c989427bc96d2ec6fb2d4a9dc8a47ecd1f2f43201e9",
+        "runtime_keccak256": "005f170b1d7e9d398f8c36661b28f8acadb5484c617fa0527c863336607c43d6"
+      },
+      "KEYFACTORY": {
+        "contract": "RegistryKeyServiceProcessorFactory",
+        "runtime_sha256": "2f480c03dc7bb636d18fdbf78ce7656b1ae976013b27f6c7d3b463c55d5c3377",
+        "creation_sha256": "c0ac9e9c348262d4f5ad24a5668df012386868e1c00786d569c554e488296687",
+        "runtime_keccak256": "b90e0e0e81e35667a8b8000c109cde3b7c4e64483ee9c8cc27304e7d3976a18f"
+      },
+      "LIFECYCLEFACTORY": {
+        "contract": "RegistryLifecycleProcessorFactory",
+        "runtime_sha256": "ac5a3c0973f11b5cb9706dd57f23abecaac03012f75cf29db4921610fecc592e",
+        "creation_sha256": "5209c6f3e139c09541b2754e0fe4ba3303b49795e475a894e2c505a12204f337",
+        "runtime_keccak256": "c1bb68aed614bb803b6daa055c4587766dda7ef2aa63f9a950df2185e7e221d7"
+      }
+    },
+    "shanghai": {
+      "RENDERER": {
+        "contract": "RegistryRenderer",
+        "runtime_sha256": "fc07a9649209682985b032dd8681d105e8f63e9b585d0a3ee48e4f7f2f6c8cbb",
+        "creation_sha256": "e57425fbf8fd56a0addc08fc82c66e4756cf41a3cad20cd8402ab641b8e6bbdb",
+        "runtime_keccak256": "a889c2ae2ff1b85ba636ca4ade9e0cc2a24bcf4fc19db177ee314463f3f621f7"
+      },
+      "VERIFIER": {
+        "contract": "RegistryEd25519",
+        "runtime_sha256": "2016a31ffab422d2f63163f43a057e4f6d52854eee24e99a23d55ac067738cf6",
+        "creation_sha256": "2af0f5d348945ec61faff60be541af38c7fd111bb1c49f5ac3fae9cc151c9453",
+        "runtime_keccak256": "45e48088f6118dd71271ae0b572970785fa8251a4b8b9ac80a7d1dd1a8392786"
+      },
+      "RULES": {
+        "contract": "RegistryRules",
+        "runtime_sha256": "4e47c647c60a452ff11123d3f128489a7ca1b9c09978f6a77889cfbe94f058c7",
+        "creation_sha256": "b9dcd76932734b393cf5f01e6549d3f60ea6a3eebf8f0674c64c1bbc297ba830",
+        "runtime_keccak256": "c9d1ee6136f526cd6afeb42ae81ba3ba4aa49bcc4704032a399feba4453f33f1"
+      },
+      "VALIDATOR": {
+        "contract": "RegistryCallValidator",
+        "runtime_sha256": "86daceef58df1b5600b9c35777e217d8fd167782222025fbcd707b1604e56d7d",
+        "creation_sha256": "4903ff7385f3c005bc3459206a7b0448d05b489e240bbadbd63896d30ce84af3",
+        "runtime_keccak256": "84aa366d51c290f4953e6d08d2672a74ff331c733c269b7b6f55c7b1c8bcf464"
+      },
+      "STOREFACTORY": {
+        "contract": "RegistryStoreFactory",
+        "runtime_sha256": "dbeb77a94ae46eb6edc721a5f26c1de621b193da1872784efa0f9fccb7e48936",
+        "creation_sha256": "e7b22394221a88fa2fb7d22c431508d90c502d174afc0861ebb15222780a2847",
+        "runtime_keccak256": "6a968cefd2c32ca3abae0c03eded55e57105f92c37e59944ec4825b041e6309f"
+      },
+      "CLAIMFACTORY": {
+        "contract": "RegistryClaimProcessorFactory",
+        "runtime_sha256": "b1446a3a3e6a90c681719d141c3b96c9dbcad61740f45fd594927982fe63f0ca",
+        "creation_sha256": "85d643b330aa5cb56158fad8dd5f76e2be2f3039b7a716cd1e5ee8cf694e7d2e",
+        "runtime_keccak256": "78b2118f34ccf4bad60a329aeaa0b428c04089f426ebfc766c248f4704c7273d"
+      },
+      "KEYFACTORY": {
+        "contract": "RegistryKeyServiceProcessorFactory",
+        "runtime_sha256": "1dbbefa8a0738f50a9c6fe99d07642667133547cfbe04fc7d3bb0f8e8af9cf15",
+        "creation_sha256": "6be08e42e526eb15b07f2a02a19e38ba9a046b5b5ed000c6a3d931368bb92b5d",
+        "runtime_keccak256": "18fe73c8494c5ca964fe15ed5268ec42d7372b2c6145e4ea09e58696f518fe88"
+      },
+      "LIFECYCLEFACTORY": {
+        "contract": "RegistryLifecycleProcessorFactory",
+        "runtime_sha256": "65f7197fe9897508cac0f1418f4b5060af0a844c6595162095486756a157cf43",
+        "creation_sha256": "ed61e0af4d21c802bc90c2b355195425bb64fdc28e83681ba02da38720ec1995",
+        "runtime_keccak256": "07a24ef07ea05b6b87c307cbbcfe77429abad4db189a35a3556382c59743b51b"
+      }
+    }
+  }
+}

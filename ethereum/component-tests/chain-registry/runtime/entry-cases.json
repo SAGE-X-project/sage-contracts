@@ -1,0 +1,330 @@
+{
+  "scope": "Fixed owned entry/service UNIT data only; SOURCE draft not executed. No external transmission or arbitrary input generation.",
+  "execution_ready": false,
+  "agent": "owned-entry-targets",
+  "baseline_rows_per_fork": 302,
+  "new_rows_per_fork": 43,
+  "planned_rows_per_fork": 345,
+  "new_successful_transactions": 12,
+  "new_mutations": 11,
+  "new_refusals": 31,
+  "cases": [
+    {
+      "label": "create",
+      "method": "revealClaim",
+      "args": [
+        "$agent",
+        "$controller",
+        "$initialKeys",
+        "$initialServices",
+        "$salt"
+      ],
+      "sender": 0,
+      "error": null
+    },
+    {
+      "label": "activate",
+      "method": "activate",
+      "args": [
+        "$agent",
+        1
+      ],
+      "sender": 0,
+      "error": null
+    },
+    {
+      "label": "empty-key-name-before-caller",
+      "diagnostic": "empty-key-name-before-caller",
+      "sender": 1,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "absent-expiry-nonzero-before-caller",
+      "diagnostic": "absent-expiry-nonzero-before-caller",
+      "sender": 1,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "unsafe-expiry-before-caller",
+      "diagnostic": "unsafe-expiry-before-caller",
+      "sender": 1,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "algorithm-width-before-caller",
+      "diagnostic": "algorithm-width-before-caller",
+      "sender": 1,
+      "error": "BoundsExceeded"
+    },
+    {
+      "label": "key-width-before-caller",
+      "diagnostic": "key-width-before-caller",
+      "sender": 1,
+      "error": "BoundsExceeded"
+    },
+    {
+      "label": "proof-width-before-caller",
+      "diagnostic": "proof-width-before-caller",
+      "sender": 1,
+      "error": "BoundsExceeded"
+    },
+    {
+      "label": "signer-width-before-caller",
+      "diagnostic": "signer-width-before-caller",
+      "sender": 1,
+      "error": "BoundsExceeded"
+    },
+    {
+      "label": "fragment-uri-before-caller",
+      "diagnostic": "fragment-uri-before-caller",
+      "sender": 1,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "service-target-after-caller",
+      "diagnostic": "service-target-after-caller",
+      "sender": 1,
+      "error": "UnauthorizedCaller"
+    },
+    {
+      "label": "predecessor-before-algorithm",
+      "diagnostic": "predecessor-before-algorithm",
+      "sender": 0,
+      "error": "PreviousVersionMismatch"
+    },
+    {
+      "label": "unsupported-before-width",
+      "diagnostic": "unsupported-before-width",
+      "sender": 0,
+      "error": "UnsupportedKeyAlgorithm"
+    },
+    {
+      "label": "ed-key-width",
+      "diagnostic": "ed-key-width",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "ed-proof-width",
+      "diagnostic": "ed-proof-width",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "ed-self-signer",
+      "diagnostic": "ed-self-signer",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "accepted-name-before-material",
+      "diagnostic": "accepted-name-before-material",
+      "sender": 0,
+      "error": "KeyNameReused"
+    },
+    {
+      "label": "accepted-material-after-name",
+      "diagnostic": "accepted-material-after-name",
+      "sender": 0,
+      "error": "KeyMaterialReused"
+    },
+    {
+      "label": "live-service-name-blocks-key",
+      "diagnostic": "live-service-name-blocks-key",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "service-inversion",
+      "diagnostic": "service-inversion",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "service-duplicate",
+      "diagnostic": "service-duplicate",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "kem-role-signer",
+      "diagnostic": "kem-role-signer",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "kem-absent-signer",
+      "diagnostic": "kem-absent-signer",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "kem-cross-record-signer",
+      "diagnostic": "kem-cross-record-signer",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "uri-width-before-caller",
+      "diagnostic": "uri-width-before-caller",
+      "sender": 1,
+      "error": "BoundsExceeded"
+    },
+    {
+      "label": "add-expired-ed",
+      "method": "addKey",
+      "args": [
+        "$agent",
+        2,
+        "$expired"
+      ],
+      "sender": 0,
+      "error": null
+    },
+    {
+      "label": "kem-expired-signer",
+      "diagnostic": "kem-expired-signer",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "add-live-m-add",
+      "method": "addKey",
+      "args": [
+        "$agent",
+        3,
+        "$added"
+      ],
+      "sender": 0,
+      "error": null
+    },
+    {
+      "label": "add-kem-n-kem",
+      "method": "addKey",
+      "args": [
+        "$agent",
+        4,
+        "$kemAdded"
+      ],
+      "sender": 0,
+      "error": null
+    },
+    {
+      "label": "revoke-m-add",
+      "method": "revokeKey",
+      "args": [
+        "$agent",
+        5,
+        "m-add"
+      ],
+      "sender": 0,
+      "error": null
+    },
+    {
+      "label": "revoked-name-retained",
+      "diagnostic": "revoked-name-retained",
+      "sender": 0,
+      "error": "KeyNameReused"
+    },
+    {
+      "label": "revoked-material-retained",
+      "diagnostic": "revoked-material-retained",
+      "sender": 0,
+      "error": "KeyMaterialReused"
+    },
+    {
+      "label": "kem-revoked-m-add-signer",
+      "diagnostic": "kem-revoked-m-add-signer",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "revoked-key-blocks-service",
+      "diagnostic": "revoked-key-blocks-service",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "remove-services",
+      "method": "updateServices",
+      "args": [
+        "$agent",
+        6,
+        []
+      ],
+      "sender": 0,
+      "error": null
+    },
+    {
+      "label": "add-service-name-svc-ed",
+      "method": "addKey",
+      "args": [
+        "$agent",
+        7,
+        "$service"
+      ],
+      "sender": 0,
+      "error": null
+    },
+    {
+      "label": "revoke-z-sign",
+      "method": "revokeKey",
+      "args": [
+        "$agent",
+        8,
+        "z-sign"
+      ],
+      "sender": 0,
+      "error": null
+    },
+    {
+      "label": "accepted-key-blocks-service",
+      "diagnostic": "accepted-key-blocks-service",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "kem-revoked-z-sign-signer",
+      "diagnostic": "kem-revoked-z-sign-signer",
+      "sender": 0,
+      "error": "InvalidEntry"
+    },
+    {
+      "label": "update-other-service",
+      "method": "updateServices",
+      "args": [
+        "$agent",
+        9,
+        "$freshServices"
+      ],
+      "sender": 0,
+      "error": null
+    },
+    {
+      "label": "revoke-last-usable-svc",
+      "method": "revokeKey",
+      "args": [
+        "$agent",
+        10,
+        "svc"
+      ],
+      "sender": 0,
+      "error": null
+    },
+    {
+      "label": "terminal-before-predecessor-target",
+      "diagnostic": "terminal-before-predecessor-target",
+      "sender": 0,
+      "error": "WrongRecordState"
+    }
+  ],
+  "not_qualified": [
+    "wholeG4",
+    "proof-verification call ordering",
+    "all framing/native guards",
+    "wholeproductcoverage",
+    "Source",
+    "fixed5",
+    "stages7_8"
+  ]
+}

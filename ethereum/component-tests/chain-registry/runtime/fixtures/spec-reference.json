@@ -1,0 +1,7 @@
+{
+  "repository": "SAGE-X-project/sage-spec",
+  "revision": "a22a275b4d88f1d415b53cdffc5bed41231b77a0",
+  "path": "profiles/sage-0.11.0/registry-management.json",
+  "sha256": "b3573f6d0b553bb697bdfc8e81ca170cf927b53c44f6b25caa8770eac77ded5f",
+  "scope": "Adopted management profile input, not an operating Source or deployment approval"
+}

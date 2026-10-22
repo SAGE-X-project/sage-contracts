@@ -1,0 +1,169 @@
+name: Registry constructor controls
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ethereum/contracts/chain-registry/**'
+      - 'ethereum/component-tests/chain-registry/**'
+      - '.github/workflows/registry-runtime.yml'
+  pull_request:
+    paths:
+      - 'ethereum/contracts/chain-registry/**'
+      - 'ethereum/component-tests/chain-registry/**'
+      - '.github/workflows/registry-runtime.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  constructor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: ethereum/component-tests/chain-registry
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ethereum/component-tests/chain-registry/package-lock.json
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+      - name: Install fixed dependencies without lifecycle scripts
+        run: |
+          mkdir -p runtime/evidence
+          npm ci --ignore-scripts --no-audit --no-fund > runtime/evidence/npm-ci.log 2>&1
+          npm ls --all --json > runtime/evidence/npm-tree.json
+      - name: Preserve actual checkout and job context
+        run: python3 -B runtime/ci-context.py
+      - name: Prepare fixed compiler
+        run: python3 -B prepare.py
+      - name: Check full graph and ordinary owned calls
+        run: python3 -B runtime/run.py
+      - name: Check synthetic receipt contracts and source coverage
+        run: |
+          python3 -B - <<'PY' > runtime/evidence/adapter-checker-units.log 2>&1
+          from pathlib import Path
+          import hashlib, json, runpy, trace, unittest
+          root = Path('runtime/adapter').resolve()
+          evidence = root.parent / 'evidence'
+          files = [root / name for name in ['verify-pc.py', 'test_verify_pc.py']]
+          before = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
+          counter = trace.Trace(count=True, trace=False)
+          result = None
+          completed = []
+          failure = None
+          try:
+              namespace = counter.runfunc(runpy.run_path, str(root / 'test_verify_pc.py'), run_name='sage_checker_units')
+              case = namespace['CheckerDataTests']
+              suite = unittest.defaultTestLoader.loadTestsFromTestCase(case)
+              result = counter.runfunc(unittest.TextTestRunner(verbosity=2).run, suite)
+              completed = case.completed_invalid_data
+          except BaseException as exc:
+              failure = type(exc).__name__ + ': ' + str(exc)
+          finally:
+              records = []
+              for path in files:
+                  source = hashlib.sha256(path.read_bytes()).hexdigest()
+                  assert source == before[str(path)], 'Source changed during checker units'
+                  executable = set(trace._find_executable_linenos(str(path)))
+                  raw = sorted([line, count] for (filename, line), count in counter.results().counts.items() if filename == str(path))
+                  hit = {line for line, count in raw if count > 0} & executable
+                  records.append({'file': path.name, 'sha256': source, 'raw_line_counts': raw,
+                                  'hit_lines': sorted(hit), 'missing_lines': sorted(executable - hit),
+                                  'executable_lines': sorted(executable),
+                                  'percent': 100 * len(hit) / len(executable) if executable else 0})
+              observed = {'scope': 'Synthetic fixed-data checker units only, not actual compiler/Registry/PC evidence',
+                          'success': result is not None and result.wasSuccessful() and failure is None,
+                          'test_methods': result.testsRun if result is not None else 0,
+                          'completed_invalid_data_labels': completed, 'failure': failure,
+                          'coverage': records, 'whole_registry_coverage_qualified': False,
+                          'fixed5_complete': False, 'operating_ready': False}
+              with (evidence / 'adapter-checker-units.json').open('x') as stream:
+                  json.dump(observed, stream, indent=2)
+                  stream.write('\n')
+          assert observed['success'] and observed['test_methods'] == 4
+          assert len(completed) == len(set(completed)) == 43
+          assert all(v['percent'] >= 90 for v in records)
+          print(json.dumps(observed))
+          PY
+      - name: Run fixed stateless adapter units with bounded PC observations
+        run: |
+          node --max-old-space-size=512 --test --test-concurrency=1 --experimental-test-coverage \
+            --test-coverage-lines=90 --test-coverage-include='**/adapter/unit.mjs' \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=lcov --test-reporter-destination=runtime/evidence/adapter-unit-coverage.lcov \
+            runtime/adapter/unit.mjs > runtime/evidence/adapter-unit.log 2>&1
+      - name: Check complete PC receipts and retain the full source denominator
+        run: |
+          python3 -B runtime/adapter/verify-pc.py > runtime/evidence/adapter-pc.json 2> runtime/evidence/adapter-pc.log
+      - name: Check wallet authority, lifecycle and claim guards and retained state
+        run: |
+          node --max-old-space-size=512 --test --test-concurrency=1 --experimental-test-coverage \
+            --test-coverage-lines=90 --test-coverage-include='**/authorization-unit.mjs' \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=lcov --test-reporter-destination=runtime/evidence/authorization-unit-coverage.lcov \
+            runtime/authorization-unit.mjs > runtime/evidence/authorization-unit.log 2>&1
+      - name: Check fixed pure validator units and native decoder boundaries
+        run: |
+          node --max-old-space-size=512 --test --test-concurrency=1 --experimental-test-coverage \
+            --test-coverage-lines=90 --test-coverage-include='**/validator-unit.mjs' \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=lcov --test-reporter-destination=runtime/evidence/validator-unit-coverage.lcov \
+            runtime/validator-unit.mjs > runtime/evidence/validator-unit.log 2>&1
+      - name: Check fixed message observer cleanup and failure bookkeeping
+        run: |
+          node --max-old-space-size=512 --test --test-concurrency=1 --experimental-test-coverage \
+            --test-coverage-lines=90 --test-coverage-include='**/message-observer*.mjs' \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=lcov --test-reporter-destination=runtime/evidence/message-observer-unit-coverage.lcov \
+            runtime/message-observer-unit.mjs > runtime/evidence/message-observer-unit.log 2>&1
+      - name: Check normal proof-call order and retained state
+        run: |
+          node --max-old-space-size=512 --test --test-concurrency=1 --experimental-test-coverage \
+            --test-coverage-lines=90 --test-coverage-include='**/proof-order-unit.mjs' \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=lcov --test-reporter-destination=runtime/evidence/proof-order-unit-coverage.lcov \
+            runtime/proof-order-unit.mjs > runtime/evidence/proof-order-unit.log 2>&1
+      - name: Check separate fixed-size observation bookkeeping
+        run: |
+          node --max-old-space-size=512 --test --test-concurrency=1 --experimental-test-coverage \
+            --test-coverage-lines=90 --test-coverage-include='**/late-headroom-message-observer*.mjs' \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=lcov --test-reporter-destination=runtime/evidence/late-headroom-message-observer-unit-coverage.lcov \
+            runtime/late-headroom-message-observer-unit.mjs > runtime/evidence/late-headroom-message-observer-unit.log 2>&1
+      - name: Check fixed owned admission headroom and retained state
+        run: |
+          node --max-old-space-size=512 --test --test-concurrency=1 --experimental-test-coverage \
+            --test-coverage-lines=90 --test-coverage-include='**/late-headroom-unit.mjs' \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=lcov --test-reporter-destination=runtime/evidence/late-headroom-unit-coverage.lcov \
+            runtime/late-headroom-unit.mjs > runtime/evidence/late-headroom-unit.log 2>&1
+      - name: Select fixed Node for supplemental source controls
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24.4.1'
+      - name: Check supplemental normal source controls
+        run: python3 -B source-controls/run.py
+      - name: Preserve source and actual observations
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: registry-runtime
+          if-no-files-found: error
+          include-hidden-files: true
+          path: |
+            .github/workflows/registry-runtime.yml
+            ethereum/contracts/chain-registry/
+            ethereum/component-tests/chain-registry/
+            !ethereum/component-tests/chain-registry/node_modules/
+            !ethereum/component-tests/chain-registry/__pycache__/
+            !ethereum/component-tests/chain-registry/evidence/soljson.cjs
