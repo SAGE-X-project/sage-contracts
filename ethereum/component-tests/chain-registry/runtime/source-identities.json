@@ -36,7 +36,7 @@
     "ethereum/contracts/chain-registry/vendor/Sha2Ext.upstream.sol.txt": "6805690675019ff8e343da59d4cabfc6cc364b733a80cae7829caffdd0ceb19a"
   },
   "tool_files_sha256": {
-    ".github/workflows/registry-runtime.yml": "15dd05504db6466259d3d0c66f2cc10b247e13dc998d75e76a7c2fe7f08bd6a0",
+    ".github/workflows/registry-runtime.yml": "3a3c4bfa7290554e41c1e8e9854f605090b0e82c4532308332ed883ca0690698",
     "ethereum/component-tests/chain-registry/fixtures/abi-selector-reference.json": "14a125e9e6e66222c877fc3905edc671dd8f11a5f33c9bd4de0c9e37fe22bb22",
     "ethereum/component-tests/chain-registry/fixtures/error-selector-reference.json": "c61175afcc8f5557915964d48d516aeb23cddcf76b90a4cee16cd881374e21c9",
     "ethereum/component-tests/chain-registry/fixtures/functions.json": "0f31f995b0169b27c2ce4797b967a754b4c0b2b0a733e4c21da1b54089380f5f",
