@@ -90,6 +90,19 @@ def main():
     assert verify_sources() == manifest
     record['execution_complete'] = True
 
+def python_coverage(path, counts):
+    raw_executable = set(trace._find_executable_linenos(str(path)))
+    source_lines = len(path.read_text().splitlines())
+    executable = {line for line in raw_executable if 1 <= line <= source_lines}
+    raw = sorted([line, count] for (filename, line), count in counts.items() if filename == str(path))
+    hit = {line for line, count in raw if count > 0} & executable
+    return {'file': path.name, 'sha256': sha(path), 'raw_line_counts': raw,
+            'raw_executable_lines': sorted(raw_executable),
+            'excluded_non_source_lines': sorted(raw_executable - executable),
+            'executable_lines': sorted(executable), 'hit_lines': sorted(hit),
+            'missing_lines': sorted(executable - hit),
+            'percent': 100 * len(hit) / len(executable) if executable else 0}
+
 if __name__ == '__main__':
     counter = trace.Trace(count=True, trace=False)
     failure = None
@@ -103,12 +116,7 @@ if __name__ == '__main__':
         coverage = []
         for path in sorted(HERE.glob('*.py')):
             if path.name.startswith('test_') or path.name == 'run.py': continue
-            executable = set(trace._find_executable_linenos(str(path)))
-            raw = sorted([line, count] for (filename, line), count in counter.results().counts.items() if filename == str(path))
-            hit = {line for line, count in raw if count > 0} & executable
-            coverage.append({'file': path.name, 'sha256': sha(path), 'raw_line_counts': raw,
-                'executable_lines': sorted(executable), 'hit_lines': sorted(hit), 'missing_lines': sorted(executable - hit),
-                'percent': 100 * len(hit) / len(executable) if executable else 0})
+            coverage.append(python_coverage(path, counter.results().counts))
         with (OUT / 'python-tool-coverage.json').open('x') as stream: json.dump(coverage, stream, indent=2); stream.write('\n')
         record['python_tool_coverage_met'] = bool(coverage) and all(row['percent'] >= 90 for row in coverage)
         from result_contract import finalize
