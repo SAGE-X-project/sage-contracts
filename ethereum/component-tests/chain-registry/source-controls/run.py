@@ -45,10 +45,24 @@ def stage(name, command, seconds):
     record.pop('active_stage', None)
     assert observed['complete'] and observed['cleanup_confirmed'], 'Preserve first failed prefix; no automatic retry'
 
-def node_units(name, path, include, seconds=180):
+NORMAL_GROUPS = {
+    'components': ('stateless-paris', 'stateless-shanghai', 'rules-paris', 'rules-shanghai', 'processor-shanghai'),
+    'composition': ('core-shanghai', 'semantic-shanghai'),
+}
+
+def node_units(name, path, include, seconds=180, pattern=None, coverage_gate=True):
+    selection = [] if pattern is None else ['--test-name-pattern=' + pattern]
+    coverage = ['--test-coverage-lines=90'] if coverage_gate else []
     stage(name, ['node', '--max-old-space-size=512', '--test', '--test-isolation=none', '--test-concurrency=1', '--experimental-test-coverage',
-        '--test-coverage-lines=90', '--test-coverage-include=' + include, '--test-reporter=spec', '--test-reporter-destination=stdout',
-        '--test-reporter=lcov', '--test-reporter-destination=evidence/' + name + '-coverage.lcov', path], seconds)
+        *coverage, '--test-coverage-include=' + include, '--test-reporter=spec', '--test-reporter-destination=stdout',
+        '--test-reporter=lcov', '--test-reporter-destination=evidence/' + name + '-coverage.lcov', *selection, path], seconds)
+
+def normal_units():
+    for name, parts in NORMAL_GROUPS.items():
+        pattern = '^normal source controls: (' + '|'.join(parts) + ')$'
+        node_units('normal-controls-' + name, 'normal-unit.mjs', '**/source-controls/normal-unit.mjs', 300, pattern, coverage_gate=False)
+    from normal_coverage import verify
+    verify(HERE / 'normal-unit.mjs', OUT)
 
 def main():
     assert os.environ.get('NODE_OPTIONS', '') == os.environ.get('DEBUG', '') == ''
@@ -69,7 +83,7 @@ def main():
     finally:
         os.environ.pop('SAGE_CONTROL_BUILD', None)
     prepare.subjects()
-    node_units('normal-controls', 'normal-unit.mjs', '**/source-controls/normal-unit.mjs', 300)
+    normal_units()
     observations = importlib.import_module('collect').collect()
     record['fresh_observed_count'] = observations['observed_count']
     record['fresh_whole_source_threshold_met'] = observations['whole_source_threshold_met']
