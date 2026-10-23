@@ -37,9 +37,12 @@ was included in block 11974670. No Agent registration was sent.
 
 Two public RPC endpoints independently returned the expected runtime bytes
 for all thirteen instances at the final creation block and the expected
-`registryId()` ABI return. Every creation receipt and receipt-block hash was
-checked before sending the next transaction. Runtime hashes identify the
-exact instances, including their constructor-bound immutable values.
+`registryId()` ABI return. The successful sender enforced receipt, receipt-block
+hash and new-code assertions before each subsequent transaction. Its intermediate
+block/code RPC responses were not archived; directly preserved two-provider
+code responses cover all thirteen instances at the final creation block.
+Runtime hashes identify the exact instances, including constructor-bound
+immutable values.
 
 Total actual gas was 238,344,377; actual fees were **0.000000241442853901 ETH**.
 The approved total ceiling was 0.001 ETH. Fixed gas limits and a 1,000,000 wei

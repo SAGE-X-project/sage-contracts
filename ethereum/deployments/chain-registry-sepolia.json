@@ -30,12 +30,13 @@
     "creation_transactions": 9,
     "deployed_instances": 13,
     "all_creation_receipts_successful": true,
-    "runtime_code_at_receipt_block": "exact bytes matched on both RPCs",
+    "runtime_code_at_receipt_block": "Per-transaction sender assertions passed; intermediate code/block RPC response bytes were not archived",
     "registry_id_at_last_creation_block": "exact ABI return matched on both RPCs",
     "finalized_source_qualified": false,
     "full_live_lifecycle_qualified": false,
     "agent_registration_transactions": 0,
-    "limitation": "RPC observations do not establish authenticated consensus, finality policy, Source trust, custody, readiness or full conformance."
+    "limitation": "RPC observations do not establish authenticated consensus, finality policy, Source trust, custody, readiness or full conformance.",
+    "runtime_code_at_last_creation_block": "Preserved raw responses from both RPCs match all thirteen complete runtime byte sequences"
   },
   "fee": {
     "paid_wei": "241442853901",
