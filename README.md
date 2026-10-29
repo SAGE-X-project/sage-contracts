@@ -24,6 +24,20 @@ SHA-256 checksum to the GitHub release.
 
 ## Deployed contracts (Sepolia, chain id 11155111)
 
+The SAGE 0.11.0 `ChainRegistry` was deployed separately on 2026-10-23 at
+[`0x9361223865e641f9941f4640d8fe34faad54bf23`](https://sepolia.etherscan.io/address/0x9361223865e641f9941f4640d8fe34faad54bf23).
+The [deployment record](ethereum/deployments/chain-registry-sepolia.json)
+contains all thirteen instance addresses, runtime SHA-256 hashes and nine
+successful creation receipts; the [deployment notes](ethereum/deployments/chain-registry-sepolia.md)
+describe verification and remaining qualification. Its exact compiled
+[ABI](ethereum/deployments/chain-registry-sepolia-abi.json) is pinned separately.
+This is a test deployment with no registered Agent. RPC code and identity
+agreement does not establish a finalized authoritative Source or production
+readiness. Existing 0.10.0 integrations retain their separate qualification.
+
+The following older deployments are preserved; they are not aliases or
+fallbacks for the new Registry:
+
 | Contract | Address |
 |---|---|
 | AgentCardRegistry | `0xC7eCF7Ad6ee71CB0d94f0eb00F46f1DDf432a808` |
