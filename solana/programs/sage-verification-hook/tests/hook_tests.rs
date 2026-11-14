@@ -271,11 +271,10 @@ mod hook_tests {
 mod signature_verification_tests {
     use super::*;
     use ed25519_dalek::{Signature, Signer, SigningKey, Verifier, SECRET_KEY_LENGTH};
-    use rand_core::{OsRng, RngCore};
 
     fn generate_signing_key() -> SigningKey {
         let mut secret_bytes = [0u8; SECRET_KEY_LENGTH];
-        OsRng.fill_bytes(&mut secret_bytes);
+        rand::fill(&mut secret_bytes);
         SigningKey::from_bytes(&secret_bytes)
     }
 
