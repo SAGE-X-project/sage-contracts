@@ -25,7 +25,7 @@ jobs:
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
           cache: npm
@@ -55,7 +55,8 @@ jobs:
           tracker = trace.Trace(count=True, trace=False)
           namespace = {'__name__': '__main__', '__file__': str(source)}
           tracker.runctx(compile(source.read_bytes(), str(source), 'exec'), namespace, namespace)
-          executable = set(trace._find_executable_linenos(str(source)))
+          # Python 3.14 also reports code objects without a line number; they are not executable lines.
+          executable = {line for line in trace._find_executable_linenos(str(source)) if line is not None}
           hit = {line for (name, line), count in tracker.results().counts.items() if name == str(source) and count and line in executable}
           assert executable and 100 * len(hit) / len(executable) >= 90
           value = {'file': 'seal.py', 'sha256': hashlib.sha256(source.read_bytes()).hexdigest(), 'scope': 'Executed basic file/accounting checks, not independent state or branch coverage', 'hit': sorted(hit), 'missing': sorted(executable - hit), 'percent': 100 * len(hit) / len(executable)}

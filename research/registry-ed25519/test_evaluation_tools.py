@@ -78,7 +78,8 @@ if __name__=='__main__':
  results=tracer.results();rows=[]
  for name in ['prepare.py','check_source_coverage.py']:
   file=Path(__file__).parent/name
-  executable=set(trace._find_executable_linenos(str(file)))
+  # Python 3.14 also reports code objects without a line number; they are not executable lines.
+  executable={line for line in trace._find_executable_linenos(str(file)) if line is not None}
   hits={line for (filename,line),count in results.counts.items() if Path(filename).resolve()==file.resolve() and count>0}
   # Module definitions/imports execute before tracing; measure them in a separate import run.
   import runpy
