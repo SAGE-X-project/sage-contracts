@@ -27,7 +27,8 @@ const ACCOUNTS = {
 
 function options() {
   const {values} = parseArgs({options: {rpc: {type: 'string'}, deployment: {type: 'string'}, out: {type: 'string'},
-    agent: {type: 'string', default: 'payment-agent'}, 'keep-active': {type: 'boolean', default: false}}});
+    agent: {type: 'string', default: 'payment-agent'}, 'keep-active': {type: 'boolean', default: false},
+    'key-index-base': {type: 'string', default: '100'}}});
   if (!values.rpc || !values.deployment || !values.out) throw new Error('--rpc, --deployment and --out are required');
   return values;
 }
@@ -119,7 +120,11 @@ async function main() {
   const agent = args.agent;
   const did = `did:sage:${registryId}:${agent}`;
   const controller = actors.controller.address;
-  const key = (name, index, extra = {}) => ownedKey(registryId, agent, name, {index, ...extra});
+  // Key recipes are base+1 .. base+9; a different base gives another agent
+  // its own key material.
+  const base = Number(args['key-index-base']);
+  if (!Number.isSafeInteger(base) || base < 0) throw new Error('--key-index-base must be a non-negative integer');
+  const key = (name, index, extra = {}) => ownedKey(registryId, agent, name, {index: base + index - 100, ...extra});
 
   // 1. Registration: commit, then reveal with one signing and one KEM key.
   const sig1 = key('sig-1', 101);

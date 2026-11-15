@@ -43,7 +43,9 @@ the canonical record and grants before and after, and the `RecordChanged`
 event, so every change of Registry data or of the acting subject can be
 inspected. It also keeps all history items and commands. `--keep-active` stops
 before removal and leaves the agent active with `sig-3` (and `kem-2`) usable,
-so other components can verify messages it signs.
+so other components can verify messages it signs. `--key-index-base` (default
+100) shifts the disclosed key recipes so a second agent gets its own keys; the
+agent's key `sig-3` uses recipe base+3.
 
 This directory stores deployment information for AgentCard contracts across multiple blockchain networks.
 
