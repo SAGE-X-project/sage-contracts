@@ -27,6 +27,22 @@ node scripts/deploy-chain-registry.mjs --rpc http://127.0.0.1:8545 --network anv
   settings `ChainRegistry` creation used about 12M gas; on Sepolia it used
   88.8M. Do not treat local gas as a testnet cost estimate.
 
+### Lifecycle scenarios
+
+`scripts/registry-lifecycle-scenarios.mjs` drives one agent through
+registration, metadata changes, a leaked signing key, a scoped operator grant
+and removal on chain ID 31337, and checks every refusal by its error name.
+
+```bash
+node scripts/registry-lifecycle-scenarios.mjs --rpc http://127.0.0.1:8545 \
+  --deployment deployments/chain-registry-anvil.json --out /tmp/registry-trace.json
+```
+
+For each step the trace keeps the acting account, the call, the transaction,
+the canonical record and grants before and after, and the `RecordChanged`
+event, so every change of Registry data or of the acting subject can be
+inspected. It also keeps all history items and commands.
+
 This directory stores deployment information for AgentCard contracts across multiple blockchain networks.
 
 ## Supported Networks
