@@ -27,7 +27,8 @@ const ACCOUNTS = {
 
 function options() {
   const {values} = parseArgs({options: {rpc: {type: 'string'}, deployment: {type: 'string'}, out: {type: 'string'},
-    agent: {type: 'string', default: 'payment-agent'}}});
+    agent: {type: 'string', default: 'payment-agent'}, 'keep-active': {type: 'boolean', default: false},
+    'key-index-base': {type: 'string', default: '100'}}});
   if (!values.rpc || !values.deployment || !values.out) throw new Error('--rpc, --deployment and --out are required');
   return values;
 }
@@ -119,7 +120,11 @@ async function main() {
   const agent = args.agent;
   const did = `did:sage:${registryId}:${agent}`;
   const controller = actors.controller.address;
-  const key = (name, index, extra = {}) => ownedKey(registryId, agent, name, {index, ...extra});
+  // Key recipes are base+1 .. base+9; a different base gives another agent
+  // its own key material.
+  const base = Number(args['key-index-base']);
+  if (!Number.isSafeInteger(base) || base < 0) throw new Error('--key-index-base must be a non-negative integer');
+  const key = (name, index, extra = {}) => ownedKey(registryId, agent, name, {index: base + index - 100, ...extra});
 
   // 1. Registration: commit, then reveal with one signing and one KEM key.
   const sig1 = key('sig-1', 101);
@@ -164,12 +169,16 @@ async function main() {
   await trace.expectSuccess('grant: controller revokes operator', actors.controller, 'revokeOperator', [agent, 9n, actors.operator.address, 'revoke-key'], agent);
   await trace.expectRefusal('grant: revoked operator acts again', actors.operator, 'revokeKey', [agent, 10n, 'sig-3'], agent, 'UnauthorizedCaller');
 
-  // 5. Removal is terminal.
-  await trace.expectSuccess('remove: deactivate', actors.controller, 'deactivate', [agent, 10n], agent);
-  await trace.expectRefusal('remove: reactivate after deactivation', actors.controller, 'activate', [agent, 11n], agent, 'WrongRecordState');
+  // 5. Removal is terminal. --keep-active stops before it so other components
+  // can verify messages signed by the agent's remaining keys.
+  if (!args['keep-active']) {
+    await trace.expectSuccess('remove: deactivate', actors.controller, 'deactivate', [agent, 10n], agent);
+    await trace.expectRefusal('remove: reactivate after deactivation', actors.controller, 'activate', [agent, 11n], agent, 'WrongRecordState');
+  }
 
   const history = [];
-  for (let version = 1n; version <= 11n; version++) {
+  const lastVersion = args['keep-active'] ? 10n : 11n;
+  for (let version = 1n; version <= lastVersion; version++) {
     const [item, command] = await registry.historyItem(agent, version);
     history.push({version: Number(version), history: ethers.toUtf8String(item), command: ethers.toUtf8String(command)});
   }
