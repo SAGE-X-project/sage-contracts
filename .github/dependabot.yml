@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: npm
-    directory: /ethereum
+    directories: [/v1/ethereum, /v4/ethereum]
     schedule:
       interval: weekly
       day: monday
@@ -11,7 +11,7 @@ updates:
       prefix: chore(deps)
     versioning-strategy: increase
   - package-ecosystem: cargo
-    directory: /solana
+    directory: /v1/solana
     schedule:
       interval: weekly
       day: monday

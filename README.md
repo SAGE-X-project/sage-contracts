@@ -1,78 +1,44 @@
 # sage-contracts
 
-Smart contracts for SAGE (Secure Agent Guarantee Engine): the on-chain
-agent registry, ERC-8004 registries and governance contracts on EVM chains,
-and the Solana programs. Extracted from
-[`sage`](https://github.com/SAGE-X-project/sage) (`contracts/`) on
+Smart contracts for SAGE (Secure Agent Guarantee Engine), kept per
+[`sage-spec`](https://github.com/SAGE-X-project/sage-spec) version. Extracted
+from [`sage`](https://github.com/SAGE-X-project/sage) (`contracts/`) on
 2026-09-12 with full history.
 
-| Path | What |
-|---|---|
-| `ethereum/` | Hardhat project: Solidity 0.8.20 sources, 219 tests, deployment and verification scripts, docs |
-| `solana/` | Anchor programs `sage-registry` and `sage-verification-hook` (not yet built in CI, see below) |
-| `abi/` | Exported ABI of every deployable contract, kept in sync with the sources by CI |
-| `examples/` | Client examples |
-| `scripts/export-abi.sh` | Regenerates `abi/` from the Hardhat artifacts |
+## Versions
+
+| Folder | Spec version | Spec reference | Contracts | Status |
+|---|---|---|---|---|
+| [`v1/`](v1/README.md) | 0.9.0-draft.1 | sage-spec `a34dd49` | AgentCard registry and hook, ERC-8004 registries, governance, Solana programs, exported ABI | Deployed on Sepolia 2025-11-03; known defects, redeployment planned |
+| [`v2/`](v2/README.md) | 0.9.0-draft.2 | sage-spec `f4a4e7f` | none | Never released |
+| [`v3/`](v3/README.md) | 0.10.0 | sage-spec `spec/09-registry.md` | none (abstract contract only) | No contract of its own |
+| [`v4/`](v4/README.md) | 0.11.0 (draft) | sage-spec `profiles/sage-0.11.0` at `a22a275` | chain Registry (13 instances), component tests, research | Test deployment on Sepolia 2026-10-23 |
+
+Each folder has a `README.md` (spec version and commit, contents, status,
+build and test commands) and `docs/DEPLOYMENTS.md` (deployment history).
+`scripts/export-abi.sh` regenerates `v1/abi/` from the v1 Hardhat artifacts.
+
+## Layout rule
+
+- A spec version that changes a contract gets its own `vN/` folder; the next
+  one is `v5/`. Older folders stay as the record of what they deployed.
+- A deployed source changes only together with a new entry in that folder's
+  `docs/DEPLOYMENTS.md` that records the new deployment. Never edit a deployed
+  source in place without one.
+- Every pinned path in `v4/` is relative to `v4/` (source unit names
+  `ethereum/contracts/chain-registry/...`), so the compiled bytecode matches the
+  Sepolia deployment. Workflows are named `vN-*.yml`; the v4 manifests pin
+  `.github/workflows/v4-registry-runtime.yml` by SHA-256.
 
 ## Consumers
 
-The Go core generates its bindings from `abi/` at a pinned git ref of this
-repository (`.contracts-version` in `sage`, `make bindings`); the protocol
-specification lives in [`sage-spec`](https://github.com/SAGE-X-project/sage-spec).
-A release tag `vX.Y.Z` attaches `sage-contracts-abi-vX.Y.Z.tar.gz` with a
-SHA-256 checksum to the GitHub release.
-
-## Deployed contracts (Sepolia, chain id 11155111)
-
-The SAGE 0.11.0 `ChainRegistry` was deployed separately on 2026-10-23 at
-[`0x9361223865e641f9941f4640d8fe34faad54bf23`](https://sepolia.etherscan.io/address/0x9361223865e641f9941f4640d8fe34faad54bf23).
-The [deployment record](ethereum/deployments/chain-registry-sepolia.json)
-contains all thirteen instance addresses, runtime SHA-256 hashes and nine
-successful creation receipts; the [deployment notes](ethereum/deployments/chain-registry-sepolia.md)
-describe verification and remaining qualification. Its exact compiled
-[ABI](ethereum/deployments/chain-registry-sepolia-abi.json) is pinned separately.
-This is a test deployment with no registered Agent. RPC code and identity
-agreement does not establish a finalized authoritative Source or production
-readiness. Existing 0.10.0 integrations retain their separate qualification.
-
-The following older deployments are preserved; they are not aliases or
-fallbacks for the new Registry:
-
-| Contract | Address |
-|---|---|
-| AgentCardRegistry | `0xC7eCF7Ad6ee71CB0d94f0eb00F46f1DDf432a808` |
-| AgentCardVerifyHook | `0xf3be150cd4EC0819bef95890DeeE0B71d9C94F6b` |
-| ERC8004IdentityRegistry | `0x5B0763c3649eee889966dF478a73e53Df0420C84` |
-| ERC8004ReputationRegistry | `0xE953B278fd2378BA4987FE07f71575dd3353C9a8` |
-| ERC8004ValidationRegistry | `0x97291e2D3023d166878ed45BBD176F92E5Fda098` |
-
-Deployed 2025-11-03 and verified on Etherscan. The Sepolia
-`ERC8004ValidationRegistry` runs the code from before the access-control fix
-(sage BACKLOG C-01) and will be redeployed before any mainnet or public
-demo use. The Go core's `chain.Presets` table is the runtime source of these
-addresses.
-
-## Development
-
-```bash
-cd ethereum
-npm ci --ignore-scripts
-npm run lint        # solhint
-npm run compile
-npm test            # 219 tests
-cd .. && scripts/export-abi.sh   # refresh abi/ after a contract change
-```
-
-`ethereum/README.md` documents the contracts, deployment scripts and the
-multi-network configuration in detail.
-
-## Solana
-
-The programs under `solana/` target Anchor 0.29 but have no `Anchor.toml`,
-lockfile or CI build yet (sage BACKLOG C-04). CI only checks their Rust
-formatting until that is fixed.
+The Go core generates its bindings from `v1/abi/` at a pinned git ref of this
+repository (`.contracts-version` in `sage`, `make bindings`). A release tag
+`vX.Y.Z` attaches `sage-contracts-abi-vX.Y.Z.tar.gz` (built from `v1/abi/`)
+with a SHA-256 checksum to the GitHub release. The 0.11.0 chain Registry
+record and ABI are in `v4/ethereum/deployments/`.
 
 ## Licence
 
-MIT (see `LICENSE`). The Solidity sources under `ethereum/` and the programs
-under `solana/` carry their own MIT licence files from the original tree.
+MIT (see `LICENSE`). The Solidity sources and the Solana programs carry their
+own MIT licence files from the original tree.

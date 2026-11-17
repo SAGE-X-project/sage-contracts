@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # Export the ABI of every deployable contract from the Hardhat artifacts into
-# abi/<Contract>.json (ABI array only, sorted keys, stable formatting) so
+# v1/abi/<Contract>.json (ABI array only, sorted keys, stable formatting) so
 # consumers such as the Go core can generate bindings from a git ref or a
 # release tarball without compiling Solidity.
 #
-# Usage: scripts/export-abi.sh [OUT_DIR]   (default: abi)
+# Usage: scripts/export-abi.sh [OUT_DIR]   (default: v1/abi)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-ARTIFACTS="$ROOT/ethereum/artifacts/contracts"
-OUT="${1:-$ROOT/abi}"
+ARTIFACTS="$ROOT/v1/ethereum/artifacts/contracts"
+OUT="${1:-$ROOT/v1/abi}"
 
 # Contract name -> artifact path (relative to artifacts/contracts).
 CONTRACTS=(
@@ -26,7 +26,7 @@ CONTRACTS=(
 )
 
 if [ ! -d "$ARTIFACTS" ]; then
-  echo "artifacts not found at $ARTIFACTS; run 'npm run compile' in ethereum/ first" >&2
+  echo "artifacts not found at $ARTIFACTS; run 'npm run compile' in v1/ethereum/ first" >&2
   exit 1
 fi
 command -v jq >/dev/null || { echo "jq is required" >&2; exit 1; }
