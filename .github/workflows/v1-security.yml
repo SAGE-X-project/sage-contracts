@@ -1,0 +1,78 @@
+name: v1 Security
+
+# Slither and licence checks for the 0.9.0-draft.1 Hardhat project (v1/ethereum).
+# The 0.11.0 chain Registry has its own triaged Slither job in v4-security.yml.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 1 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  slither:
+    name: Slither (v1)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: v1/ethereum
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: v1/ethereum/package-lock.json
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+      - name: Compile
+        run: npx hardhat compile
+      - name: Install the pinned analyzer
+        run: pip3 install slither-analyzer==0.11.6 crytic-compile==0.4.2
+      - name: Run Slither (blocking on High)
+        # crytic-compile >= 0.4 is required to read Hardhat 3 build-info files.
+        run: |
+          status=0
+          slither . --config-file .slither.config.json --compile-force-framework hardhat --fail-high --sarif ../../slither-v1-results.sarif --json ../../slither-v1-results.json > ../../slither-v1-run.log 2>&1 || status=$?
+          cat ../../slither-v1-run.log
+          exit "$status"
+      - name: Preserve analysis output
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: slither-v1
+          if-no-files-found: warn
+          path: |
+            slither-v1-run.log
+            slither-v1-results.json
+            slither-v1-results.sarif
+      - name: Upload SARIF
+        if: always() && hashFiles('slither-v1-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: slither-v1-results.sarif
+          category: v1-hardhat
+
+  npm-licenses:
+    name: npm licences (v1)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: v1/ethereum
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+      - name: Check licences
+        run: |
+          npx --yes license-checker@25.0.1 --summary
+          npx --yes license-checker@25.0.1 --failOn "GPL;AGPL"
